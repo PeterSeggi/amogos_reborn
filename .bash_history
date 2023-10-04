@@ -38,3 +38,20 @@ cd x64barebones/
 ls
 cd ..
 exit
+cd root/
+vim .bashrc
+exit
+exit
+ls
+la
+ls -la
+exit
+ls
+pwd
+cd ..
+exit
+ls
+la
+clear
+ls
+exit
