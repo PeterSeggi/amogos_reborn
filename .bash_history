@@ -55,3 +55,22 @@ la
 clear
 ls
 exit
+ls
+ls
+pwd
+clear
+pwd
+make clean /root/Toolchain/
+make clean /root/
+make /root/Toolchain/
+make /root/
+exit
+exit
+clear
+make clean /root/Toolchain/
+pwd
+make clean /root/Toolchain/
+ls
+cat Makefile 
+make clean /root/Toolchain/
+exit
