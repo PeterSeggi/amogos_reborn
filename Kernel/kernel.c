@@ -3,6 +3,7 @@
 #include <lib.h>
 #include <moduleLoader.h>
 #include <naiveConsole.h>
+#include <ourlib.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -84,7 +85,7 @@ int main()
 {	
 	ncPrint("[Kernel Main]");
 	ncNewline();
-	ncPrintColor("holiwis", 0x1F);
+	ourPrintColor("holiwis", 0x1F);
 	ncNewline();
 	ncPrint("  Sample code module at 0x");
 	ncPrintHex((uint64_t)sampleCodeModuleAddress);

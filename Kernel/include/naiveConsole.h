@@ -5,8 +5,6 @@
 
 void ncPrint(const char * string);
 void ncPrintChar(char character);
-void ncPrintColor(const char * string, char color);
-void ncPrintCharColor(char character, char color);
 void ncNewline();
 void ncPrintDec(uint64_t value);
 void ncPrintHex(uint64_t value);
