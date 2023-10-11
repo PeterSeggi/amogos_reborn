@@ -4,6 +4,7 @@
 #include <moduleLoader.h>
 #include <naiveConsole.h>
 #include <ourlib.h>
+#include <videoDriver.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -85,8 +86,6 @@ int main()
 {	
 	ncPrint("[Kernel Main]");
 	ncNewline();
-	ourPrintColor("holiwis", 0x1F);
-	ncNewline();
 	ncPrint("  Sample code module at 0x");
 	ncPrintHex((uint64_t)sampleCodeModuleAddress);
 	ncNewline();
@@ -103,5 +102,18 @@ int main()
 	ncNewline();
 
 	ncPrint("[Finished]");
+	//bokita code
+	for(int i=0; i<300; i++){
+		for(int j=0;j<35;j++){
+			putPixel(0x000000FF,i,j);
+		}
+		for(int j=35;j<65;j++){
+			putPixel(0x00FFFF00,i,j);
+		}
+		for(int j=65;j<100;j++){
+			putPixel(0x000000FF,i,j);
+		}
+	}
+
 	return 0;
 }
