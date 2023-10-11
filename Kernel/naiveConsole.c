@@ -16,10 +16,26 @@ void ncPrint(const char * string)
 		ncPrintChar(string[i]);
 }
 
+void ncPrintColor(const char * string, char color)
+{
+	int i;
+
+	for (i = 0; string[i] != 0; i++)
+		ncPrintCharColor(string[i],color);
+}
+
 void ncPrintChar(char character)
 {
 	*currentVideo = character;
 	currentVideo += 2;
+}
+
+void ncPrintCharColor(char character, char color)
+{
+	*currentVideo = character;
+	currentVideo++;
+	*currentVideo = color;
+	currentVideo++;
 }
 
 void ncNewline()

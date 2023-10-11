@@ -84,6 +84,8 @@ int main()
 {	
 	ncPrint("[Kernel Main]");
 	ncNewline();
+	ncPrintColor("holiwis", 0x1F);
+	ncNewline();
 	ncPrint("  Sample code module at 0x");
 	ncPrintHex((uint64_t)sampleCodeModuleAddress);
 	ncNewline();
