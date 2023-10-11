@@ -2,6 +2,7 @@
 #include <string.h>
 #include <lib.h>
 #include <moduleLoader.h>
+#include <videoDriver.h>
 #include <naiveConsole.h>
 
 extern uint8_t text;
@@ -83,6 +84,19 @@ void * initializeKernelBinary()
 int main()
 {	
 	ncPrint("[Kernel Main]");
+
+    for (int i = 0; i < 100; i++){
+        for (int j = 0; j < 100; j++){
+            putPixel(0x00FFFFFF, i, j);
+        }
+    }
+
+    for (int i = 100; i < 200; i++){
+        for (int j = 0; j < 100; j++){
+            putPixel(0x0000FFFF, i, j);
+            
+        }
+    }
 	ncNewline();
 	ncPrint("  Sample code module at 0x");
 	ncPrintHex((uint64_t)sampleCodeModuleAddress);
