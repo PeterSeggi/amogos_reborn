@@ -52,3 +52,11 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y){
 	framebuffer[offset+1]=(hexColor>>8) & 0x0000FF;
 	framebuffer[offset+2]=(hexColor>>16) & 0x00FF;
 }
+
+void draw_rectangle(uint64_t ancho, uint64_t alto, uint32_t color, uint64_t init_x, uint64_t init_y){
+	for(uint64_t i=0; i<ancho; i++){
+		for(uint64_t j=0;j<alto;j++){
+			putPixel(color,i+init_x,j+init_y);
+		}
+	}
+}

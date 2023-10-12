@@ -103,17 +103,9 @@ int main()
 
 	ncPrint("[Finished]");
 	//bokita code
-	for(int i=0; i<300; i++){
-		for(int j=0;j<35;j++){
-			putPixel(0x000000FF,i,j);
-		}
-		for(int j=35;j<65;j++){
-			putPixel(0x00FFFF00,i,j);
-		}
-		for(int j=65;j<100;j++){
-			putPixel(0x000000FF,i,j);
-		}
-	}
+	draw_rectangle(300,35,0x000000FF,0,0);
+	draw_rectangle(300,30,0x0000FF00,0,35);
+	draw_rectangle(300,35,0x00FF0000,0,65);
 
 	return 0;
 }
