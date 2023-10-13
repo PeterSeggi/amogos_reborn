@@ -102,10 +102,24 @@ int main()
 	ncNewline();
 
 	ncPrint("[Finished]");
-	//bokita code
-	draw_rectangle(300,35,0x000000FF,0,0);
-	draw_rectangle(300,30,0x0000FF00,0,35);
-	draw_rectangle(300,35,0x00FF0000,0,65);
+	ncNewline();
+
+	//bokita code (funca en video mode, no textmode)
+
+	//draw_rectangle(300,35,0x000000FF,0,0);
+	//draw_rectangle(300,30,0x0000FF00,0,35);
+	//draw_rectangle(300,35,0x000000FF,0,65);
+
+	//prueba RTC
+	ncPrint("Segundos");
+	ncNewline();
+	int rta = _getSeconds();
+	ncPrintDec(rta);
+	ncNewline();
+
+	ncPrint("Pooling");
+	ncNewline();
+	ncPrintHex(_getKey());
 
 	return 0;
 }
