@@ -111,13 +111,9 @@ int main()
 	//draw_rectangle(300,35,0x000000FF,0,65);
 
 	//prueba RTC
-	ncPrint("Segundos");
-	ncNewline();
-	int rta = _getSeconds();
-	ncPrintDec(rta);
-	ncNewline();
+	printDateTime();
 
-	ncPrint("Pooling");
+	ncPrint("Pooling: Presione una tecla para ver su scancode");
 	ncNewline();
 	ncPrintHex(_getKey());
 
