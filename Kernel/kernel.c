@@ -1,3 +1,4 @@
+#include "include/lib.h"
 #include <stdint.h>
 #include <string.h>
 #include <lib.h>
@@ -85,18 +86,31 @@ int main()
 {	
 	ncPrint("[Kernel Main]");
 
+    ncNewline();
+    ncPrintColor("BOOOOCAAAAAA", 0xE1);
+
+    ncNewline();
+    ncPrintHex(rtcInfo(0));    
+    
+
+    /*
+    // ESTO ES DE VIDEO MODE
     for (int i = 0; i < 100; i++){
         for (int j = 0; j < 100; j++){
-            putPixel(0x00FFFFFF, i, j);
+            putPixel(0x000000FF, i, j);
         }
     }
 
     for (int i = 100; i < 200; i++){
         for (int j = 0; j < 100; j++){
-            putPixel(0x0000FFFF, i, j);
+            putPixel(0x00FFFF00, i, j);
             
         }
     }
+
+    */
+
+    
 	ncNewline();
 	ncPrint("  Sample code module at 0x");
 	ncPrintHex((uint64_t)sampleCodeModuleAddress);

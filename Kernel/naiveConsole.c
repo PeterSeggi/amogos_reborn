@@ -22,6 +22,21 @@ void ncPrintChar(char character)
 	currentVideo += 2;
 }
 
+void ncPrintColor(const char * string, int color)
+{
+	int i;
+
+	for (i = 0; string[i] != 0; i++)
+		ncPrintCharColor(string[i], color);
+}
+
+void ncPrintCharColor(char character, int color){
+    *currentVideo = character;
+    currentVideo++;
+    *currentVideo = color;
+    currentVideo++;
+}
+
 void ncNewline()
 {
 	do

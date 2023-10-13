@@ -4,7 +4,9 @@
 #include <stdint.h>
 
 void ncPrint(const char * string);
+void ncPrintColor(const char * string, int color);
 void ncPrintChar(char character);
+void ncPrintCharColor(char character, int color);
 void ncNewline();
 void ncPrintDec(uint64_t value);
 void ncPrintHex(uint64_t value);
