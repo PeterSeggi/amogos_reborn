@@ -51,12 +51,11 @@ readKey:
     cli
 
 .wait:
-    in al, 64h     ; Traemos el input
-    cmp al, 0x01     ; Si 64h esta en 1 es que no puedo leer todavia
+    in al, 64h        ; Traemos el input
+    cmp al, 0x01      ; Si 64h esta en 1 es que no puedo leer todavia
     je .wait         
 
-    in al, 60h     ; leemos el buffer
-    ; movzx rax, al   ; lleno de 0 para q retorne bien
+    in al, 60h        ; leemos el buffer
 
     mov rsp, rbp
     pop rbp

@@ -98,18 +98,18 @@ _sti:
 	ret
 
 picMasterMask:
-	push rbp
-    mov rbp, rsp
-    mov ax, di
-    out	21h,al
-    pop rbp
+	push    rbp
+    mov     rbp, rsp
+    mov     ax, di
+    out	    21h,al
+    pop     rbp
     retn
 
 picSlaveMask:
 	push    rbp
     mov     rbp, rsp
     mov     ax, di  ; ax = mascara de 16 bits
-    out	0A1h,al
+    out	    0A1h,al
     pop     rbp
     retn
 

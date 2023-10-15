@@ -97,18 +97,9 @@ int main()
     ncPrintColor("BOOOOCAAAAAA", 0x1E);
     ncNewline();
     
-    set_clock_location();
-    ncPrintHex(rtcInfo(4));    
-    ncPrint(":");
-    ncPrintHex(rtcInfo(2));    
-    ncPrint(":");
-    ncPrintHex(rtcInfo(0));    
 
+    while (1);
 
-
-    while (1){
-
-    }
     /*
     // ESTO ES DE VIDEO MODE (Y ES BOCA)
     for (int i = 0; i < 100; i++){
