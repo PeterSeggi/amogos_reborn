@@ -93,3 +93,46 @@ static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 
 	return digits;
 }
+
+
+//================================================================================================================================
+// videoDriver functions for textmode
+//================================================================================================================================
+void ourPrintCharColor(char character, char color)
+{
+	*currentVideo = character;
+	currentVideo++;
+	*currentVideo = color;
+	currentVideo++;
+}
+
+void ourPrintColor(const char * string, char color)
+{
+	int i;
+
+	for (i = 0; string[i] != 0; i++)
+		ourPrintCharColor(string[i],color);
+}
+
+void ourPrintSpace(const char * string, uint8_t column, uint8_t row){
+	uint8_t * aux = currentVideo;
+	currentVideo = (video + (column * 2)) + (row * width * 2);
+
+	int i;
+
+	for (i = 0; string[i] != 0; i++)
+		ncPrintChar(string[i]);
+
+	currentVideo = aux;
+}
+
+void ourPrintDecSpace(uint64_t value, uint8_t column, uint8_t row){
+	ourPrintBaseSpace(value, 10, column, row);
+}
+
+void ourPrintBaseSpace(uint64_t value, uint32_t base, uint8_t column, uint8_t row){
+	uintToBase(value, buffer, base);
+    ourPrintSpace(buffer, column, row);
+}
+
+//================================================================================================================================

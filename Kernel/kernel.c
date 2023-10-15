@@ -5,6 +5,8 @@
 #include <naiveConsole.h>
 #include <ourlib.h>
 #include <videoDriver.h>
+#include <time.h>
+#include <idtLoader.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -78,6 +80,13 @@ void * initializeKernelBinary()
 
 	ncPrint("[Done]");
 	ncNewline();
+
+	ncPrint("[Initializing IDT]");
+	ncNewline();
+	load_idt();
+	ncPrint("[Done]");
+	ncNewline();
+
 	ncNewline();
 	return getStackBase();
 }
@@ -110,12 +119,20 @@ int main()
 	//draw_rectangle(300,30,0x0000FF00,0,35);
 	//draw_rectangle(300,35,0x000000FF,0,65);
 
-	//prueba RTC
-	printDateTime();
+	sleep(5);
+	
+	ncClear();
 
-	ncPrint("Pooling: Presione una tecla para ver su scancode");
+	ncPrint("Welcome Back!");
 	ncNewline();
-	ncPrintHex(_getKey());
+
+	//ncPrint("Pooling: Presione una tecla para ver su scancode");
+	//ncNewline();
+	//ncPrintHex(_getKey());
+
+
+
+	while(1);
 
 	return 0;
 }
