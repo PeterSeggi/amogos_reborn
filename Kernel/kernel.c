@@ -5,6 +5,7 @@
 #include <moduleLoader.h>
 #include <videoDriver.h>
 #include <naiveConsole.h>
+#include <idtLoader.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -77,6 +78,12 @@ void * initializeKernelBinary()
 	ncNewline();
 
 	ncPrint("[Done]");
+
+	ncNewline();
+	ncPrint("[Initializing IDTR]");
+	ncNewline();
+    load_idt();
+    ncPrint("[Done]");
 	ncNewline();
 	ncNewline();
 	return getStackBase();
@@ -87,14 +94,23 @@ int main()
 	ncPrint("[Kernel Main]");
 
     ncNewline();
-    ncPrintColor("BOOOOCAAAAAA", 0xE1);
-
+    ncPrintColor("BOOOOCAAAAAA", 0x1E);
     ncNewline();
-    ncPrintHex(rtcInfo(0));    
     
+    set_clock_location();
+    ncPrintHex(rtcInfo(4));    
+    ncPrint(":");
+    ncPrintHex(rtcInfo(2));    
+    ncPrint(":");
+    ncPrintHex(rtcInfo(0));    
 
+
+
+    while (1){
+
+    }
     /*
-    // ESTO ES DE VIDEO MODE
+    // ESTO ES DE VIDEO MODE (Y ES BOCA)
     for (int i = 0; i < 100; i++){
         for (int j = 0; j < 100; j++){
             putPixel(0x000000FF, i, j);
@@ -110,7 +126,7 @@ int main()
 
     */
 
-    
+    /* 
 	ncNewline();
 	ncPrint("  Sample code module at 0x");
 	ncPrintHex((uint64_t)sampleCodeModuleAddress);
@@ -128,5 +144,7 @@ int main()
 	ncNewline();
 
 	ncPrint("[Finished]");
+    */
 	return 0;
+
 }

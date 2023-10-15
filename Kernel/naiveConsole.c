@@ -1,4 +1,5 @@
 #include <naiveConsole.h>
+#include <stdint.h>
 
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
@@ -74,6 +75,14 @@ void ncClear()
 	for (i = 0; i < height * width; i++)
 		video[i * 2] = ' ';
 	currentVideo = video;
+}
+
+uint8_t * getCurrentVideo(){
+    return currentVideo;
+}
+
+void setCurrentVideo(uint8_t location){
+    *currentVideo = location;
 }
 
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
