@@ -65,6 +65,7 @@ getKey:
 	;primero nos aseguramos q se pueda leer 
 .loop:
 	in al, 64h  ;guardamos el bit 0
+	and al, 1   ;pedazo ilegal de knd
 	cmp al, 1 	 ;ya q es el q debe estar en 1 para q se pueda leer el port
 	jne .loop	 ;si no estaba en 1 vuelvo al loop
 

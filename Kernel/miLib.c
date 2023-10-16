@@ -52,8 +52,7 @@ void printRTC(){
 
 void ej4(){
     ncPrint("antes");
-    int key = getKey();
-    ncPrintHex(key);
+    ncPrintHex(getKey());
     ncPrint("dsp");
     ncNewline();
 }
