@@ -20,7 +20,7 @@ void formatTime(uint8_t* sec, uint8_t* min, uint8_t* hour){
 
 //nos fijamos si hay que corregir el formato
 	uint8_t format = _getDateTimeFormat();
-	if(!(format & 0x02) && (*hour & 0x80)){	//si esta en 12hs, lo pasamos a 24
+	if((!(format & 0x02)) && (*hour & 0x80)){	//si esta en 12hs, lo pasamos a 24
 		*hour = ((*hour & 0x7F) + 12) % 24;
 	}
 	if(!(format & 0x04)){	//si esta en BCD pasamos a decimal
@@ -31,7 +31,10 @@ void formatTime(uint8_t* sec, uint8_t* min, uint8_t* hour){
 
 //la hora viene en UTC, por lo que la asignamos en UTC-3 para Argentina (ignoramos la lógica del caso con daylight savings)
 
-	*hour -=3;
+	if(*hour>=3) *hour -=3;
+	else{
+		*hour = *hour + 21;
+	}
 }
 
 void formatDate(uint8_t* dayWeek, uint8_t* dayMonth, uint8_t* month, uint16_t* year){
@@ -39,6 +42,7 @@ void formatDate(uint8_t* dayWeek, uint8_t* dayMonth, uint8_t* month, uint16_t* y
 	*dayMonth = _getDayMonth();
 	*month = _getMonth();
 	*year = _getYear();	//solo trae los dos ultimos numeros
+	uint8_t hour = _getHours();
 
 //nos fijamos si hay que corregir el formato
 	uint8_t format = _getDateTimeFormat();
@@ -51,6 +55,32 @@ void formatDate(uint8_t* dayWeek, uint8_t* dayMonth, uint8_t* month, uint16_t* y
 //colocamos completo el año
 	*year += MILLENIUM;
 	*year += CENTURY;
+
+	//esta en UTC, por lo que tengo que corregir la fecha segun hora, etc.
+	if(hour<3){
+		if(*dayMonth==1){//caso cambio de mes
+			if(*month==1){//caso cambio de año
+				*year=*year-1;
+				*month=12;
+			}
+			else *month=*month-1;
+			*dayMonth=calculateMonthLastDay(*month, *year);
+		}
+		else *dayMonth=*dayMonth-1;
+		*dayWeek=((*dayWeek+5)%7)+1; //siempre va a ser el anterior
+	}
+}
+
+//calcula el ultimo dia del mes dado
+uint8_t calculateMonthLastDay(uint8_t month, uint16_t year){
+	if(month==2){//hay que fijarse si es bisiesto
+		if( (year%4==0) || (year%100!=0)  || (year%400==0) ) return 29;
+		else return 28;
+	}
+	else{
+		if((month%2==0 && month<8) || (month%2==1 && month>8)) return 30;
+		else return 31;
+	}
 }
 
 void printClock(){
@@ -133,4 +163,31 @@ void printTime(){
 	ncPrintDec(sec);
 	ncNewline();
 }
+//================================================================================================================================
+
+//================================================================================================================================
+// keyboard functions for textmode
+// naiveConsole for writing on screen
+//================================================================================================================================
+//P stands for pressed
+/*
+char * scancodeSet1[]={"escP", "1P", "2P", "3P", "4P", "5P", "6P", "7P", "8P", "9P", "0P", "-P", "=P", "backspaceP", 
+						"tabP", "QP", "WP", "EP", "RP", "TP", "YP", "UP", "IP", "OP", "PP", "[P", "]P", "enterP", "leftControlP", 
+						"AP", "SP", "DP", "FP", "GP", "HP", "IP", "JP", "KP", "LP", ";P", "'P", "`P", 
+						"lshiftP", "\\P", "ZP", "XP", "CP", "VP", "BP", "NP", "MP", ",P", ".P", "/P", "rshiftP",
+						"keypad*P", "laltP", "spaceP", "capslockP",
+						"F1P", "F2P", "F3P", "F4P", "F5P", "F6P", "F7P", "F8P", "F9P", "F10P", 
+						"numlockP", "scrolllockP", "keypad7P", "keypad8P", "keypad9P", "keypad-P", "keypad4P", "keypad5P", "keypad6P",
+						"keypad+P", "keypad1P", "keypad2P", "keypad3P", "keypad0P", "keypad.P", "", "", "", "F11P", "F12P", 
+						"", "", "", "", "",
+						}
+
+
+char * scancodeToString(uint8_t code){
+	char * toReturn;
+
+
+	return toReturn;
+}
+*/
 //================================================================================================================================
