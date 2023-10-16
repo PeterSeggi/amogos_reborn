@@ -23,5 +23,5 @@ void int_20() {
 }
 
 void int_21() {
-    ncPrint("k");
+    key_handler();
 }

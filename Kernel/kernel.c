@@ -6,6 +6,7 @@
 #include <videoDriver.h>
 #include <naiveConsole.h>
 #include <idtLoader.h>
+#include <keyboard.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
