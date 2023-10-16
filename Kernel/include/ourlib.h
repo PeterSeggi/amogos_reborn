@@ -15,6 +15,5 @@ void printTime();
 uint8_t calculateMonthLastDay(uint8_t month, uint16_t year);
 
 //textmode keyboard functions
-//char * scancodeToString(uint8_t code);
 
 #endif

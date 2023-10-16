@@ -169,25 +169,4 @@ void printTime(){
 // keyboard functions for textmode
 // naiveConsole for writing on screen
 //================================================================================================================================
-//P stands for pressed
-/*
-char * scancodeSet1[]={"escP", "1P", "2P", "3P", "4P", "5P", "6P", "7P", "8P", "9P", "0P", "-P", "=P", "backspaceP", 
-						"tabP", "QP", "WP", "EP", "RP", "TP", "YP", "UP", "IP", "OP", "PP", "[P", "]P", "enterP", "leftControlP", 
-						"AP", "SP", "DP", "FP", "GP", "HP", "IP", "JP", "KP", "LP", ";P", "'P", "`P", 
-						"lshiftP", "\\P", "ZP", "XP", "CP", "VP", "BP", "NP", "MP", ",P", ".P", "/P", "rshiftP",
-						"keypad*P", "laltP", "spaceP", "capslockP",
-						"F1P", "F2P", "F3P", "F4P", "F5P", "F6P", "F7P", "F8P", "F9P", "F10P", 
-						"numlockP", "scrolllockP", "keypad7P", "keypad8P", "keypad9P", "keypad-P", "keypad4P", "keypad5P", "keypad6P",
-						"keypad+P", "keypad1P", "keypad2P", "keypad3P", "keypad0P", "keypad.P", "", "", "", "F11P", "F12P", 
-						"", "", "", "", "",
-						}
-
-
-char * scancodeToString(uint8_t code){
-	char * toReturn;
-
-
-	return toReturn;
-}
-*/
 //================================================================================================================================
