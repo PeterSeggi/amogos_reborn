@@ -46,8 +46,14 @@ void printRTC(){
     ncPrintDec(sec);
     ncNewline();
 
-   //22:55:1
-   //22:55:17
-   //osea q esta 3 hrs adelante de Arg
+   //esta 3 hrs adelante de Arg
    //y da la casualidad q vino en formato 24hrs
+}
+
+void ej4(){
+    ncPrint("antes");
+    int key = getKey();
+    ncPrintHex(key);
+    ncPrint("dsp");
+    ncNewline();
 }

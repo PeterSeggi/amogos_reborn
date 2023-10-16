@@ -1,6 +1,7 @@
 GLOBAL cpuVendor
 GLOBAL rtcFunc
 GLOBAL getFormat
+GLOBAL getKey
 
 section .text
 	
@@ -57,3 +58,19 @@ getFormat:
     pop rbp
     ret
 
+getKey:
+	push rbp
+	mov rbp, rsp
+
+	;primero nos aseguramos q se pueda leer 
+.loop:
+	in al, 64h  ;guardamos el bit 0
+	cmp al, 1 	 ;ya q es el q debe estar en 1 para q se pueda leer el port
+	jne .loop	 ;si no estaba en 1 vuelvo al loop
+
+	;ya se puede leer
+	in al, 60h ;guardo la info
+
+	mov rsp, rbp
+	pop rbp
+	ret
