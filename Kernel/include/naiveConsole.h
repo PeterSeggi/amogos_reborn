@@ -17,5 +17,7 @@ void ourPrintColor(const char * string, char color);
 void ourPrintSpace(const char * string, uint8_t column, uint8_t row);
 void ourPrintDecSpace(uint64_t value, uint8_t column, uint8_t row);
 void ourPrintBaseSpace(uint64_t value, uint32_t base, uint8_t column, uint8_t row);
+void ourPrintCant(const char * string, uint64_t cant);
+void ourPrintCantColor(const char * string, uint64_t cant, char color);
 
 #endif

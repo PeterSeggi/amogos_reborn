@@ -135,4 +135,17 @@ void ourPrintBaseSpace(uint64_t value, uint32_t base, uint8_t column, uint8_t ro
     ourPrintSpace(buffer, column, row);
 }
 
+void ourPrintCant(const char * string, uint64_t cant){
+	int i;
+
+	for(i=0; i<cant; i++)
+		ncPrintChar(string[i]);
+}
+
+void ourPrintCantColor(const char * string, uint64_t cant, char color){
+	int i;
+
+	for(i=0; i<cant; i++)
+		ourPrintCharColor(string[i],color);
+}
 //================================================================================================================================
