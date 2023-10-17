@@ -97,6 +97,7 @@ int main()
     ncNewline();
     ncPrintColor("BOOOOCAAAAAA", 0x1E);
     ncNewline();
+    write_out();
     
 
     while (1);
