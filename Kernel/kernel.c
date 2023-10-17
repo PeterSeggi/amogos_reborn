@@ -126,15 +126,22 @@ int main()
     ncNewline();
 	*/
 
-	load_idt();
-
 	/*
 	ej5(5);
 	ncPrint("test ej 5");
 	while(1);
 	*/
 
-	while(1);
-	
+
+	ncPrint("antes");
+	ncNewline();
+	load_idt();
+	while(1){
+		//ncPrintHex(getKey());
+		//ncPrint("  ");
+	}
+	ncPrint("dsp");
+	ncNewline();
+
 	return 0;
 }
