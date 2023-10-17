@@ -4,6 +4,8 @@
 #include <moduleLoader.h>
 #include <naiveConsole.h>
 #include <miLib.h>
+#include <time.h>
+#include <idtLoader.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -107,9 +109,14 @@ int main()
 	ncPrint("[Finished]");
 	ncNewline();
 
+	/*
+	ej3
 	printRTC();
 	ncNewline();
-	
+	*/
+
+	/*
+	ej4
 	ncPrint("antes");
 	ncNewline();
     int key = getKey();
@@ -117,6 +124,17 @@ int main()
 	ncNewline();
     ncPrint("dsp");
     ncNewline();
+	*/
 
+	load_idt();
+
+	/*
+	ej5(5);
+	ncPrint("test ej 5");
+	while(1);
+	*/
+
+	while(1);
+	
 	return 0;
 }

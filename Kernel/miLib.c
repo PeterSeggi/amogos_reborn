@@ -2,7 +2,6 @@
 #include <naiveConsole.h>
  
 static uint8_t * currentVideo = (uint8_t*)0xB8000;
-
 /*
      ESTO SERIA EL DRIVER DEL EJ2, como usa el mismo currentVideo que
      ncPrintChar puede haber quilombo
@@ -22,7 +21,6 @@ void ncPrintCharColor(char character, char color){
 /*
     EJ3 
 */
-
 void printRTC(){
     
     uint8_t hrs = rtcFunc(4);
