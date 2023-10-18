@@ -97,10 +97,6 @@ int main()
     ncNewline();
     ncPrintColor("BOOOOCAAAAAA", 0x1E);
     ncNewline();
-    write_out();
-    
-    intTest();
-
 
     /*
     // ESTO ES DE VIDEO MODE (Y ES BOCA)
@@ -119,17 +115,19 @@ int main()
 
     */
 
-    /*
-     
+    /* 
 	ncNewline();
 	ncPrint("  Sample code module at 0x");
 	ncPrintHex((uint64_t)sampleCodeModuleAddress);
 	ncNewline();
-	ncPrint("  Calling the sample code module returned: ");
-	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
+    */
+	ncPrint("[Heading to Userland...]");
+    ncNewline();
+    ((EntryPoint) sampleCodeModuleAddress)();
+	//ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
 	ncNewline();
-	ncNewline();
-
+    
+    /*
 	ncPrint("  Sample data module at 0x");
 	ncPrintHex((uint64_t)sampleDataModuleAddress);
 	ncNewline();
@@ -137,9 +135,10 @@ int main()
 	ncPrint((char*)sampleDataModuleAddress);
 	ncNewline();
 
+    */
 	ncPrint("[Finished]");
 
-    */
+
     
     while (1);
 	return 0;

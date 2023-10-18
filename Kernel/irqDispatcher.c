@@ -19,7 +19,6 @@ void irqDispatcher(uint64_t irq) {
         case 128:
             int_80();
             break;
-        ncPrintDec(irq);
 	}
 	return;
 }
