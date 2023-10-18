@@ -48,3 +48,4 @@ void * memcpy(void * destination, const void * source, uint64_t length)
 
 	return destination;
 }
+

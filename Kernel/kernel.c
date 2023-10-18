@@ -1,8 +1,12 @@
+#include "include/lib.h"
 #include <stdint.h>
 #include <string.h>
 #include <lib.h>
 #include <moduleLoader.h>
+#include <videoDriver.h>
 #include <naiveConsole.h>
+#include <idtLoader.h>
+#include <keyboard.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -75,6 +79,12 @@ void * initializeKernelBinary()
 	ncNewline();
 
 	ncPrint("[Done]");
+
+	ncNewline();
+	ncPrint("[Initializing IDTR]");
+	ncNewline();
+    load_idt();
+    ncPrint("[Done]");
 	ncNewline();
 	ncNewline();
 	return getStackBase();
@@ -83,15 +93,41 @@ void * initializeKernelBinary()
 int main()
 {	
 	ncPrint("[Kernel Main]");
+
+    ncNewline();
+    ncPrintColor("BOOOOCAAAAAA", 0x1E);
+    ncNewline();
+
+    /*
+    // ESTO ES DE VIDEO MODE (Y ES BOCA)
+    for (int i = 0; i < 100; i++){
+        for (int j = 0; j < 100; j++){
+            putPixel(0x000000FF, i, j);
+        }
+    }
+
+    for (int i = 100; i < 200; i++){
+        for (int j = 0; j < 100; j++){
+            putPixel(0x00FFFF00, i, j);
+            
+        }
+    }
+
+    */
+
+    /* 
 	ncNewline();
 	ncPrint("  Sample code module at 0x");
 	ncPrintHex((uint64_t)sampleCodeModuleAddress);
 	ncNewline();
-	ncPrint("  Calling the sample code module returned: ");
-	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
+    */
+	ncPrint("[Heading to Userland...]");
+    ncNewline();
+    ((EntryPoint) sampleCodeModuleAddress)();
+	//ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
 	ncNewline();
-	ncNewline();
-
+    
+    /*
 	ncPrint("  Sample data module at 0x");
 	ncPrintHex((uint64_t)sampleDataModuleAddress);
 	ncNewline();
@@ -99,6 +135,12 @@ int main()
 	ncPrint((char*)sampleDataModuleAddress);
 	ncNewline();
 
+    */
 	ncPrint("[Finished]");
+
+
+    
+    while (1);
 	return 0;
+
 }

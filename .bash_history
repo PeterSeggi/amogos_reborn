@@ -38,3 +38,39 @@ cd x64barebones/
 ls
 cd ..
 exit
+cd root/
+vim .bashrc
+exit
+exit
+ls
+la
+ls -la
+exit
+ls
+pwd
+cd ..
+exit
+ls
+la
+clear
+ls
+exit
+ls
+ls
+pwd
+clear
+pwd
+make clean /root/Toolchain/
+make clean /root/
+make /root/Toolchain/
+make /root/
+exit
+exit
+clear
+make clean /root/Toolchain/
+pwd
+make clean /root/Toolchain/
+ls
+cat Makefile 
+make clean /root/Toolchain/
+exit

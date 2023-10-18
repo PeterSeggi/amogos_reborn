@@ -1,4 +1,5 @@
 #include <naiveConsole.h>
+#include <stdint.h>
 
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
@@ -7,6 +8,9 @@ static uint8_t * const video = (uint8_t*)0xB8000;
 static uint8_t * currentVideo = (uint8_t*)0xB8000;
 static const uint32_t width = 80;
 static const uint32_t height = 25 ;
+
+// *currentVideo -> char mostrado
+// currentVideo -> direccion 
 
 void ncPrint(const char * string)
 {
@@ -20,6 +24,21 @@ void ncPrintChar(char character)
 {
 	*currentVideo = character;
 	currentVideo += 2;
+}
+
+void ncPrintColor(const char * string, int color)
+{
+	int i;
+
+	for (i = 0; string[i] != 0; i++)
+		ncPrintCharColor(string[i], color);
+}
+
+void ncPrintCharColor(char character, int color){
+    *currentVideo = character;
+    currentVideo++;
+    *currentVideo = color;
+    currentVideo++;
 }
 
 void ncNewline()
@@ -59,6 +78,14 @@ void ncClear()
 	for (i = 0; i < height * width; i++)
 		video[i * 2] = ' ';
 	currentVideo = video;
+}
+
+uint8_t * getCurrentVideo(){
+    return currentVideo;
+}
+
+void setCurrentVideo(uint8_t *location){
+    currentVideo = location;
 }
 
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)

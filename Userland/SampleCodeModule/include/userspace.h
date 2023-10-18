@@ -1,0 +1,2 @@
+
+int returns_48();
