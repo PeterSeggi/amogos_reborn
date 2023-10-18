@@ -125,12 +125,9 @@ int main()
 
 	ncPrint("Welcome Back!");
 	ncNewline();
-	print("holassss");
-	printError("es error");
 	//ncPrint("Pooling: Presione una tecla para ver su scancode");
 	//ncNewline();
 	//ncPrintHex(_getKey());
-	ncPrint("done?");
 
 	while(1);
 

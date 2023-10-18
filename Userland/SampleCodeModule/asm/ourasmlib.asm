@@ -6,7 +6,7 @@ GLOBAL _print
 ;================================================================================================================================
 ;_print imprime en pantalla un string null terminated
 ;int 80h para usar la syscall
-;IN: rdi=puntero a str; rsi=strlen
+;IN: rdi=puntero a str; rsi=strlen; rdx: fd-> 1 STDOUT -> 2 STDERROR
 ;================================================================================================================================
 ;================================================================================================================================
 _print:
@@ -17,10 +17,10 @@ _print:
     push rdx
 	pushf
 
+    mov rbx, rdx   ;fd 
     mov rcx, rdi   ;paso el pointer;
     mov rdx, rsi   ;paso la cantidad de chars a imprimir
     mov rax, 0x04   ;sysID de sysWrite
-    mov rbx, 0x01   ;fd STDOUT
 
     int 80h;
 

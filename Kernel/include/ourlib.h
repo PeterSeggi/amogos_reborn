@@ -16,8 +16,4 @@ uint8_t calculateMonthLastDay(uint8_t month, uint16_t year);
 
 //textmode keyboard functions
 
-
-void print(char * string);
-void printError(char* string);
-
 #endif
