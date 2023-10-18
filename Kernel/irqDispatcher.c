@@ -2,6 +2,7 @@
 #include <keyboardDriver.h>
 #include <syscalls.h>
 #include <stdint.h>
+#include <naiveConsole.h>
 
 static void int_20();
 static void int_21();
@@ -31,5 +32,6 @@ void int_21() {
 }
 
 void int_80(){
-	syscall_handler();
+	int a = _getSysID();
+	syscall_handler(a);
 }

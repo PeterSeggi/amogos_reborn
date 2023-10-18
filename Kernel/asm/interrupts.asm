@@ -142,6 +142,7 @@ _irq05Handler:
 
 ;SysCalls
 _irq80Handler:
+	mov r12, rax
 	irqHandlerMaster 128
 
 

@@ -1,4 +1,4 @@
-#include <ourlib.h>
+/*#include <ourlib.h>
 #include <ourasmlib.h>
 
 void printf(char * string){
@@ -9,4 +9,4 @@ int strlen(char * string){
     int i=0;
     while(string[i]!=0);
     return i;
-}
+}*/

@@ -35,7 +35,7 @@ void load_idt() {
 
 
 	//actuan como mascara para abilitar que int leer
-	picMasterMask(0x7C); 
+	picMasterMask(0xFC); 
 	picSlaveMask(0xFF);
         
 	_sti();

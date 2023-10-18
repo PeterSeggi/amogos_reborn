@@ -1,7 +1,9 @@
 #ifndef _SYSCALLS_H_
 #define _SYSCALLS_H_
 
-void syscall_handler();
+#include <stdint.h>
+
+void syscall_handler(uint64_t id);
 
 void sys_write();
 
