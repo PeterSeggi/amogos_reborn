@@ -1,6 +1,7 @@
 GLOBAL cpuVendor
 GLOBAL rtcInfo
 GLOBAL readKey
+GLOBAL intTest
 
 section .text
 	
@@ -56,6 +57,16 @@ readKey:
     je .wait         
 
     in al, 60h        ; leemos el buffer
+
+    mov rsp, rbp
+    pop rbp
+    ret
+
+intTest:
+    push rbp
+    mov rbp, rsp
+
+    int 80h
 
     mov rsp, rbp
     pop rbp

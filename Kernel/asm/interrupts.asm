@@ -12,6 +12,7 @@ GLOBAL _irq02Handler
 GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler
+GLOBAL _irq128Handler
 
 GLOBAL _exception0Handler
 
@@ -137,6 +138,10 @@ _irq04Handler:
 ;USB
 _irq05Handler:
 	irqHandlerMaster 5
+
+;syscall
+_irq128Handler:
+	irqHandlerMaster 128
 
 
 ;Zero Division Exception

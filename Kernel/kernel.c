@@ -99,8 +99,8 @@ int main()
     ncNewline();
     write_out();
     
+    intTest();
 
-    while (1);
 
     /*
     // ESTO ES DE VIDEO MODE (Y ES BOCA)
@@ -119,7 +119,8 @@ int main()
 
     */
 
-    /* 
+    /*
+     
 	ncNewline();
 	ncPrint("  Sample code module at 0x");
 	ncPrintHex((uint64_t)sampleCodeModuleAddress);
@@ -137,7 +138,10 @@ int main()
 	ncNewline();
 
 	ncPrint("[Finished]");
+
     */
+    
+    while (1);
 	return 0;
 
 }
