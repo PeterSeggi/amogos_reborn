@@ -17,6 +17,7 @@ GLOBAL _irq128Handler
 GLOBAL _exception0Handler
 
 EXTERN irqDispatcher
+EXTERN syscall_handler
 EXTERN exceptionDispatcher
 
 SECTION .text
@@ -141,7 +142,10 @@ _irq05Handler:
 
 ;syscall
 _irq128Handler:
-	irqHandlerMaster 128
+    mov rcx, rax
+    call syscall_handler
+	; irqHandlerMaster 128
+
 
 
 ;Zero Division Exception

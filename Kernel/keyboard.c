@@ -2,8 +2,7 @@
 #include <lib.h>
 #include <naiveConsole.h>
 
-typedef void (*FuncPtr)();
-
+typedef void (*KeyPtr)(int); // Define a type alias for function pointers
 
 const unsigned char scan_chars[128] = {
     0,  27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b', '\t',
@@ -24,13 +23,15 @@ const unsigned char scan_chars_shift[128] = {
 };
 
 int key_buf;
-int write = 0;
-int awaiting = 0;
-int release;
-FuncPtr release_func;
+KeyPtr doWith;
 
 void key_handler(){
     key_buf = readKey();    
+}
+
+
+
+/*
     if (write && key_buf < 0x81){
         ncPrintChar(scan_chars[key_buf]);
     }
@@ -41,18 +42,5 @@ void key_handler(){
             awaiting = 0;
         }
     }
-}
 
-void set_await(int key, FuncPtr func){
-    awaiting = 1;
-    release = key;
-    release_func = func;
-}
-
-void write_out(){
-    write = 1;
-}
-
-void silent(){
-    write = 0;
-}
+*/

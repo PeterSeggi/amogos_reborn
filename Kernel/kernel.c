@@ -17,8 +17,8 @@ extern uint8_t endOfKernel;
 
 static const uint64_t PageSize = 0x1000;
 
-static void * const sampleCodeModuleAddress = (void*)0x400000;
-static void * const sampleDataModuleAddress = (void*)0x500000;
+static void * const userspaceAddress = (void*)0x400000;
+static void * const dataspaceAddress = (void*)0x500000;
 
 typedef int (*EntryPoint)();
 
@@ -39,32 +39,17 @@ void * getStackBase()
 
 void * initializeKernelBinary()
 {
-	char buffer[10];
-
-	ncPrint("[x64BareBones]");
-	ncNewline();
-
-	ncPrint("CPU Vendor:");
-	ncPrint(cpuVendor(buffer));
-	ncNewline();
-
-	ncPrint("[Loading modules]");
-	ncNewline();
 	void * moduleAddresses[] = {
-		sampleCodeModuleAddress,
-		sampleDataModuleAddress
+		userspaceAddress,
+		dataspaceAddress
 	};
 
 	loadModules(&endOfKernelBinary, moduleAddresses);
-	ncPrint("[Done]");
-	ncNewline();
-	ncNewline();
-
-	ncPrint("[Initializing kernel's binary]");
-	ncNewline();
 
 	clearBSS(&bss, &endOfKernel - &bss);
-
+    
+    /* 
+    // no borro esto porlas por si necesitamos para debugging later
 	ncPrint("  text: 0x");
 	ncPrintHex((uint64_t)&text);
 	ncNewline();
@@ -79,68 +64,29 @@ void * initializeKernelBinary()
 	ncNewline();
 
 	ncPrint("[Done]");
+    */
 
-	ncNewline();
-	ncPrint("[Initializing IDTR]");
-	ncNewline();
-    load_idt();
-    ncPrint("[Done]");
-	ncNewline();
-	ncNewline();
+    ncClear();
 	return getStackBase();
 }
 
 int main()
 {	
-	ncPrint("[Kernel Main]");
+    load_idt();
 
-    ncNewline();
-    ncPrintColor("BOOOOCAAAAAA", 0x1E);
-    ncNewline();
-
-    /*
-    // ESTO ES DE VIDEO MODE (Y ES BOCA)
-    for (int i = 0; i < 100; i++){
-        for (int j = 0; j < 100; j++){
-            putPixel(0x000000FF, i, j);
-        }
-    }
-
-    for (int i = 100; i < 200; i++){
-        for (int j = 0; j < 100; j++){
-            putPixel(0x00FFFF00, i, j);
-            
-        }
-    }
-
-    */
-
-    /* 
-	ncNewline();
-	ncPrint("  Sample code module at 0x");
-	ncPrintHex((uint64_t)sampleCodeModuleAddress);
-	ncNewline();
-    */
-	ncPrint("[Heading to Userland...]");
-    ncNewline();
-    ((EntryPoint) sampleCodeModuleAddress)();
-	//ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
-	ncNewline();
+    ((EntryPoint) userspaceAddress)();
     
     /*
 	ncPrint("  Sample data module at 0x");
-	ncPrintHex((uint64_t)sampleDataModuleAddress);
+	ncPrintHex((uint64_t)dataspaceAddress);
 	ncNewline();
 	ncPrint("  Sample data module contents: ");
-	ncPrint((char*)sampleDataModuleAddress);
+	ncPrint((char*)dataspaceAddress);
 	ncNewline();
 
     */
-	ncPrint("[Finished]");
+	ncPrint("[If we got here something went wrong...]");
 
-
-    
-    while (1);
 	return 0;
 
 }

@@ -12,6 +12,10 @@ static const uint32_t height = 25 ;
 // *currentVideo -> char mostrado
 // currentVideo -> direccion 
 
+//:================================================================================
+//:=============================== BLANK PRINTS ===================================
+//:================================================================================
+
 void ncPrint(const char * string)
 {
 	int i;
@@ -26,6 +30,19 @@ void ncPrintChar(char character)
 	currentVideo += 2;
 }
 
+void ncPrintCant(const char* string, int num){
+    for(int i = 0; i < num; i++){
+            ncPrintChar(string[i]);
+    }
+}
+
+
+
+//:================================================================================
+//:=============================== COLOR PRINTS ===================================
+//:================================================================================
+
+
 void ncPrintColor(const char * string, int color)
 {
 	int i;
@@ -39,6 +56,13 @@ void ncPrintCharColor(char character, int color){
     currentVideo++;
     *currentVideo = color;
     currentVideo++;
+}
+
+
+void ncPrintColorCant(const char* string, int num, int color){
+    for(int i = 0; i < num; i++){
+            ncPrintCharColor(string[i], color);
+    }
 }
 
 void ncNewline()
