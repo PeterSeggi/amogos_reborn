@@ -115,16 +115,18 @@ int main()
 
 	//bokita code (funca en video mode, no textmode)
 
-	//draw_rectangle(300,35,0x000000FF,0,0);
-	//draw_rectangle(300,30,0x0000FF00,0,35);
-	//draw_rectangle(300,35,0x000000FF,0,65);
+	draw_rectangle(300,35,0x000000FF,0,0);
+	draw_rectangle(300,30,0x00FFFF00,0,35);
+	draw_rectangle(300,35,0x000000FF,0,65);
 
-	sleep(5);
+	writeA();
+
+	//sleep(5);
 	
-	ncClear();
+	//ncClear();
 
-	ncPrint("Welcome Back!");
-	ncNewline();
+	//ncPrint("Welcome Back!");
+	//ncNewline();
 	//ncPrint("Pooling: Presione una tecla para ver su scancode");
 	//ncNewline();
 	//ncPrintHex(_getKey());

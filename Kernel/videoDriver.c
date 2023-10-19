@@ -1,4 +1,6 @@
 #include <videoDriver.h>
+#include <time.h>
+#include <fonts.h>
 
 typedef struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
@@ -57,3 +59,33 @@ void draw_rectangle(uint64_t ancho, uint64_t alto, uint32_t color, uint64_t init
 		}
 	}
 }
+
+//================================================================================================================================
+// Text for videoMode
+//================================================================================================================================
+//================================================================================================================================
+
+#define SCALE 3
+
+void putChar(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t init_x, uint64_t init_y){
+	for(uint64_t i=0; i<(charHeight*SCALE); i++){
+		for(uint64_t j=0; j<(charWidth*SCALE); j++){
+			if( ((font[character][(i/SCALE)]<<(j/SCALE)) & (1<<charWidth)) ){// 1<<charWidth permite leer de a un bit de izq a der del row de la font
+				putPixel(colorFont,init_x+j,init_y+i);
+			}
+			else{
+				putPixel(colorBg,init_x+j,init_y+i);
+			}
+			
+		}
+	}
+}
+
+void writeA(){
+	for(uint8_t c=0; c<128;c++){
+		putChar(c,0x00D94CFA,0x00BCF8FA,0,0);
+		sleep(1);
+	}
+}
+
+//================================================================================================================================
