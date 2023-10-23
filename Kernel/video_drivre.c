@@ -128,4 +128,20 @@ void printColorCant(const uint8_t * string, uint64_t cant, uint32_t fontColor, u
 		printCharColor(string[i],fontColor,bgColor);
 }
 
+
+void newLine(){
+    cursor_location_y += charHeight * SCALE;
+    cursor_location_x = 0;
+}
+
+void clear(){
+    cursor_location_x = 0;
+    cursor_location_y = 0;
+
+    for (int y = 0; y < VBE_mode_info->height; y++){
+        for (int x = 0; x < VBE_mode_info->width; x++){
+            putPixel(0x1002f, x, y);
+        }
+    }
+}
 //================================================================================================================================
