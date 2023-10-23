@@ -74,7 +74,12 @@ int main()
 {	
     load_idt();
 
-    putChar('a', 0xD3D3D3, 0x000000, 0, 0);
+    for (int i = 0; i <= 1000; i+=4){
+        putChar('b', 0xD3D3D3, 0x000000, 0, i*16);
+        putChar('o', 0xD3D3D3, 0x000000, 0, (i + 1)*16);
+        putChar('c', 0xD3D3D3, 0x000000, 0, (i + 2)*16);
+        putChar('a', 0xD3D3D3, 0x000000, 0, (i + 3)*16);
+    }
 
 
     ((EntryPoint) userspaceAddress)();
