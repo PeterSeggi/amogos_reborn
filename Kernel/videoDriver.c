@@ -65,7 +65,7 @@ void draw_rectangle(uint64_t ancho, uint64_t alto, uint32_t color, uint64_t init
 //================================================================================================================================
 //================================================================================================================================
 
-#define SCALE 3
+#define SCALE 1
 
 void putChar(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t init_x, uint64_t init_y){
 	for(uint64_t i=0; i<(charHeight*SCALE); i++){
@@ -82,10 +82,10 @@ void putChar(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t i
 }
 
 void writeA(){
-	for(uint8_t c=0; c<128;c++){
-		putChar(c,0x00D94CFA,0x00BCF8FA,0,0);
-		sleep(1);
-	}
+	//star
+	//putChar(130,0x00FAEF02,0x00010053,0,105);
+	//putChar(129,0x00FAD602,0x00010053,0,105);
+	putChar(128,0x00FAEF02,0x00010053,0,105);
 }
 
 //================================================================================================================================
