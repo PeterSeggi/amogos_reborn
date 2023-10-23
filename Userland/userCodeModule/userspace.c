@@ -5,11 +5,13 @@
 int main(){
     // esto se core
 
-    char* test = "Hello amogOS!";
+    char* test = "Hello amogOS!\n";
     char* test_error = "Oh no! Emergency meeting called";
+    char buffer_space[50];
 
-    printf(test);
+    print(test);
     printError(test_error);
+    read(buffer_space, 5);
 
     while(1);
     return 0;

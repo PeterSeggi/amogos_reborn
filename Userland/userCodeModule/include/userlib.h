@@ -2,7 +2,7 @@
 #define _OURLIB_H_
 
 //escritura
-void printf(char * string);
+void print(char * string);
 void printError(char * string);
 
 int strlen(char * string);
