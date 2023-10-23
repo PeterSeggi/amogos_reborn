@@ -74,6 +74,9 @@ int main()
 {	
     load_idt();
 
+    putChar('a', 0xD3D3D3, 0x000000, 0, 0);
+
+
     ((EntryPoint) userspaceAddress)();
     
     /*
@@ -85,8 +88,7 @@ int main()
 	ncNewline();
 
     */
-	ncPrint("[If we got here something went wrong...]");
-
+    
 	return 0;
 
 }
