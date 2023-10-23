@@ -48,7 +48,8 @@ uint16_t width;
 uint8_t bpp;
 
 
-uint32_t cursor_location = 0x0000;
+uint16_t cursor_location_x = 0x0000;
+uint16_t cursor_location_y = 0x0000;
 
 
 
@@ -89,12 +90,42 @@ void putChar(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t i
 	}
 }
 
-uint16_t getHeight(){
-    return VBE_mode_info->height; 
+void printChar(uint8_t character){
+	putChar(character, 0xB0CA07, 0x07B0CA, cursor_location_x, cursor_location_y);
+	cursor_location_x += charWidth;
+	if(cursor_location_x >= (VBE_mode_info->width)){
+		cursor_location_x = 0;
+		cursor_location_y += charHeight;
+	}
 }
 
-uint16_t getWidth(){
-    return VBE_mode_info->width; 
+void printCharColor(uint8_t character, uint32_t fontColor, uint32_t bgColor){
+	putChar(character, fontColor, bgColor, cursor_location_x, cursor_location_y);
+	cursor_location_x += charWidth;
+	if(cursor_location_x >= (VBE_mode_info->width)){
+		cursor_location_x = 0;
+		cursor_location_y += charHeight;
+	}
+}
+
+void print(const uint8_t * string){
+	for(int i=0; string[i]!=0; i++)
+		printChar(string[i]);
+}
+
+void printCant(const uint8_t * string, uint64_t cant){
+	for(int i=0; string[i]!=0 && i<cant; i++)
+		printChar(string[i]);
+}
+
+void printColor(const uint8_t * string, uint32_t fontColor, uint32_t bgColor){
+	for(int i=0; string[i]!=0; i++)
+		printCharColor(string[i],fontColor,bgColor);
+}
+
+void printColorCant(const uint8_t * string, uint64_t cant, uint32_t fontColor, uint32_t bgColor){
+	for(int i=0; string[i]!=0 && i<cant; i++)
+		printCharColor(string[i],fontColor,bgColor);
 }
 
 //================================================================================================================================
