@@ -92,19 +92,19 @@ void putChar(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t i
 
 void printChar(uint8_t character){
 	putChar(character, 0xB0CA07, 0x07B0CA, cursor_location_x, cursor_location_y);
-	cursor_location_x += charWidth;
+	cursor_location_x += (charWidth * SCALE);
 	if(cursor_location_x >= (VBE_mode_info->width)){
 		cursor_location_x = 0;
-		cursor_location_y += charHeight;
+		cursor_location_y += (charHeight * SCALE);
 	}
 }
 
 void printCharColor(uint8_t character, uint32_t fontColor, uint32_t bgColor){
 	putChar(character, fontColor, bgColor, cursor_location_x, cursor_location_y);
-	cursor_location_x += charWidth;
+	cursor_location_x += (charWidth * SCALE);
 	if(cursor_location_x >= (VBE_mode_info->width)){
 		cursor_location_x = 0;
-		cursor_location_y += charHeight;
+		cursor_location_y += (charHeight * SCALE);
 	}
 }
 
