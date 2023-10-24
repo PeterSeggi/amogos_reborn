@@ -20,4 +20,8 @@ void printColorCant(const uint8_t * string, uint64_t cant, uint32_t fontColor, u
 void newLine();
 void clear();
 
+void printBase(uint64_t value, uint32_t base);
+void printDec(uint64_t value);
+void printHex(uint64_t value);
+
 #endif

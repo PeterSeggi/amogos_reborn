@@ -1,4 +1,5 @@
 #include "include/lib.h"
+#include "include/videoDriver.h"
 #include <stdint.h>
 #include <string.h>
 #include <lib.h>

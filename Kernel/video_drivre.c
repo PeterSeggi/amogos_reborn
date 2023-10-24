@@ -1,7 +1,7 @@
-#include "include/videoDriver.h"
 #include <videoDriver.h>
 #include <stdint.h>
 #include <fonts.h>
+#include <lib.h>
 
 typedef struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
@@ -47,6 +47,8 @@ VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 uint16_t pitch; 
 uint16_t width; 
 uint8_t bpp;
+
+static char buffer[64] = {'0'};
 
 
 uint16_t cursor_location_x = 0x0000;
@@ -97,7 +99,7 @@ void printChar(uint8_t character){
     }
 
     else{
-        putChar(character, 0xB0CA07, 0x07B0CA, cursor_location_x, cursor_location_y);
+        putChar(character, 0xDADADA, 0x01002F, cursor_location_x, cursor_location_y);
         cursor_location_x += (charWidth * SCALE);
         if(cursor_location_x >= (VBE_mode_info->width)){
             cursor_location_x = 0;
@@ -134,6 +136,23 @@ void printColorCant(const uint8_t * string, uint64_t cant, uint32_t fontColor, u
 	for(int i=0; string[i]!=0 && i<cant; i++)
 		printCharColor(string[i],fontColor,bgColor);
 }
+
+
+// Number stuff
+void printBase(uint64_t value, uint32_t base){
+    uintToBase(value, buffer, base);
+
+    print(buffer);
+}
+
+void printDec(uint64_t value){
+    printBase(value, 10);
+}
+
+void printHex(uint64_t value){
+    printBase(value, 16);
+}
+
 
 
 void newLine(){

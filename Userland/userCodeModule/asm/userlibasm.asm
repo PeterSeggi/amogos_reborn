@@ -1,5 +1,6 @@
 GLOBAL int_test
 GLOBAL _print
+GLOBAL _read
 
 section .text
 

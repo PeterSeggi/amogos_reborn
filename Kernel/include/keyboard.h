@@ -1,4 +1,4 @@
 typedef void (*FuncPtr)();
 void key_handler();
-int read_key(int key);
+int read_key();
 void insert_key(int key);

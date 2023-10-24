@@ -1,12 +1,12 @@
+#include <keyboard.h>
 #include <lib.h>
 #include <stdint.h>
 #include <syscall_handler.h>
 #include <videoDriver.h>
 
-#define STDIN  0
+#define STDIN 0
 #define STDOUT 1
 #define STDERR 2
-
 
 #define ERRCOLORFONT 0xFF0000 // texto rojo, bg gris;
 #define ERRCOLORBACK 0xDADADA // texto rojo, bg gris;
@@ -37,10 +37,22 @@ void sys_write(uint64_t fd, uint64_t message, uint64_t length) {
   }
 }
 
-void sys_read(uint64_t fd, uint64_t buffer, uint64_t length) {
- switch (fd) {
-    case(STDIN):
-        print("Tamos en sysread!\n");
-        break;        
- }
+int sys_read(uint64_t fd, uint64_t buffer, uint64_t length) {
+  int retVal = 0;
+  switch (fd) {
+  case (STDIN):
+    retVal = read_chars((char *)buffer, length);
+    break;
+  }
+  return retVal;
+}
+
+int read_chars(char *buffer, int length) {
+  int chars_read = 0;
+  for (int i = 0; i < length ; i++) {
+    chars_read++;
+    buffer[i] = read_key();
+    if (buffer[i] == 0)
+        i = length; // si llego a un null dejo de leer 
+  }
 }
