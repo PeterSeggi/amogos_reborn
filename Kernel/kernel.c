@@ -1,4 +1,5 @@
 #include "include/lib.h"
+#include "include/videoDriver.h"
 #include <stdint.h>
 #include <string.h>
 #include <lib.h>
@@ -73,7 +74,11 @@ void * initializeKernelBinary()
 int main()
 {	
     load_idt();
+    flush_buffer();
 
+    //printColorCant("bokesooooooo",5,0x07B0CA,0xB0CA07);
+	//printColor("holiwiws",0x07B0CA,0xB0CA07);
+    clear();
     ((EntryPoint) userspaceAddress)();
     
     /*
@@ -85,8 +90,7 @@ int main()
 	ncNewline();
 
     */
-	ncPrint("[If we got here something went wrong...]");
-
+    
 	return 0;
 
 }

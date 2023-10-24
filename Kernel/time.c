@@ -143,3 +143,15 @@ void printDate(){
 	ncPrintDec(year);
 	ncNewline();
 }
+
+void sleep(int sec){
+	unsigned long t0 = ticks_elapsed();
+	while( (ticks_elapsed()-t0)/18 < sec );
+}
+
+void my_ints(){
+	if(ticks%18 == 0){
+		printTime();
+	}
+}
+

@@ -1,5 +1,6 @@
 GLOBAL int_test
 GLOBAL _print
+GLOBAL _read
 
 section .text
 
@@ -22,6 +23,19 @@ _print:
 	pop rbp
 	ret
 
+_read:
+    push rbp
+	mov rbp, rsp
+
+    mov rax, 0
+    int 80h;
+
+	mov rsp, rbp
+	pop rbp
+	ret
+    
+
+
 int_test:
     push rbp
     mov rbp, rsp
@@ -38,3 +52,8 @@ int_test:
     ret
 
 ;================================================================================================================================
+
+
+section .bss
+    newLineString db "hello" 
+    

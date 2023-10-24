@@ -1,11 +1,19 @@
 #ifndef _OURLIB_H_
 #define _OURLIB_H_
 
-//escritura
-void printf(char * string);
-void printError(char * string);
+#include <stdint.h>
 
+//escritura
+void print(char * string);
+void printError(char * string);
+void printBase(uint64_t value, uint32_t base);
+void printDec(uint64_t value);
+
+// lectura
+int read(char* buffer, int length);
+
+// general purpose
 int strlen(char * string);
-int returns_48();
+uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
 #endif

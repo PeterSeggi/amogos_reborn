@@ -1,5 +1,5 @@
 typedef void (*FuncPtr)();
 void key_handler();
-void set_await(int key, FuncPtr func);
-void silent();
-void write_out();
+int read_key();
+void insert_key(int key);
+void flush_buffer();
