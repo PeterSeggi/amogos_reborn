@@ -65,12 +65,12 @@ void draw_rectangle(uint64_t ancho, uint64_t alto, uint32_t color, uint64_t init
 //================================================================================================================================
 //================================================================================================================================
 
-#define SCALE 1
+#define SCALE 5
 
 void putChar(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t init_x, uint64_t init_y){
 	for(uint64_t i=0; i<(charHeight*SCALE); i++){
 		for(uint64_t j=0; j<(charWidth*SCALE); j++){
-			if( ((font[character][(i/SCALE)]<<(j/SCALE)) & (1<<charWidth)) ){// 1<<charWidth permite leer de a un bit de izq a der del row de la font
+			if( ((font[character][(i/SCALE)]<<(j/SCALE)) & (1<<(charWidth-1))) ){// 1<<charWidth permite leer de a un bit de izq a der del row de la font
 				putPixel(colorFont,init_x+j,init_y+i);
 			}
 			else{
@@ -82,10 +82,8 @@ void putChar(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t i
 }
 
 void writeA(){
-	//star
-	//putChar(130,0x00FAEF02,0x00010053,0,105);
-	//putChar(129,0x00FAD602,0x00010053,0,105);
-	putChar(128,0x00FAEF02,0x00010053,0,105);
+	putChar(129,0x00FAEF02,0x00010053,0,105);
+	putChar(128,0x00FAEF02,0x00010053,charWidth*SCALE,105);
 }
 
 //================================================================================================================================
