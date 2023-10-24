@@ -49,10 +49,13 @@ int sys_read(uint64_t fd, uint64_t buffer, uint64_t length) {
 
 int read_chars(char *buffer, int length) {
   int chars_read = 0;
-  for (int i = 0; i < length ; i++) {
+  for (int i = 0; i < length; i++) {
     chars_read++;
     buffer[i] = read_key();
-    if (buffer[i] == 0)
-        i = length; // si llego a un null dejo de leer 
+    if (buffer[i] == 0) {
+      i = length; // si llego a un null dejo de leer
+      chars_read--;
+    }
   }
+  return chars_read;
 }

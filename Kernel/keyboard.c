@@ -4,7 +4,7 @@
 #include <naiveConsole.h>
 #include <stdint.h>
 
-#define KEY_BUF_SIZE 128
+#define KEY_BUF_SIZE 16
 
 const unsigned char scan_chars[128] = {
     0,    27,   '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-',  '=',
@@ -38,8 +38,6 @@ void key_handler() { insert_key(readKey()); }
 void insert_key(int key) {
   key_buf[insert_index++] = key;
   to_read = 1;
-  if (key < 128)
-    printChar(scan_chars[key]);
   if (insert_index == KEY_BUF_SIZE)
     insert_index = 0;
 }
@@ -50,11 +48,18 @@ int read_key() {
     return 0;
 
   int toRet = key_buf[read_index++];
-  if (read_index == insert_index)
-    to_read = 0;
-
   if (read_index == KEY_BUF_SIZE)
     read_index = 0;
 
+  if (read_index == insert_index)
+    to_read = 0;
+
   return toRet;   
+}
+
+// flush the input buffer
+void flush_buffer(){
+    read_index = 0;
+    insert_index = 0;
+    to_read = 0;
 }

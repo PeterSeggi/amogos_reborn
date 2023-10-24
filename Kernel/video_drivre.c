@@ -3,6 +3,10 @@
 #include <fonts.h>
 #include <lib.h>
 
+#define DEFAULT_FONT 0xDADADA
+#define DEFAULT_BACK 0X01002F
+
+
 typedef struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
 	uint8_t window_a;			// deprecated
@@ -99,7 +103,7 @@ void printChar(uint8_t character){
     }
 
     else{
-        putChar(character, 0xDADADA, 0x01002F, cursor_location_x, cursor_location_y);
+        putChar(character, DEFAULT_FONT, DEFAULT_BACK, cursor_location_x, cursor_location_y);
         cursor_location_x += (charWidth * SCALE);
         if(cursor_location_x >= (VBE_mode_info->width)){
             cursor_location_x = 0;
@@ -166,7 +170,7 @@ void clear(){
 
     for (int y = 0; y < VBE_mode_info->height; y++){
         for (int x = 0; x < VBE_mode_info->width; x++){
-            putPixel(0x1002f, x, y);
+            putPixel(DEFAULT_BACK, x, y);
         }
     }
 }
