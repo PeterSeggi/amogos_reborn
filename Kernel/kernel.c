@@ -119,7 +119,8 @@ int main()
 	draw_rectangle(300,30,0x00FFFF00,0,35);
 	draw_rectangle(300,35,0x000000FF,0,65);
 
-	writeA();
+	writeSky();
+	writeStar();
 
 	//sleep(5);
 	

@@ -64,8 +64,9 @@ void draw_rectangle(uint64_t ancho, uint64_t alto, uint32_t color, uint64_t init
 // Text for videoMode
 //================================================================================================================================
 //================================================================================================================================
-
-#define SCALE 5
+#define SCALE_REAL 1
+#define SCALE 10
+#define SCALE_MAIN 10
 
 void putChar(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t init_x, uint64_t init_y){
 	for(uint64_t i=0; i<(charHeight*SCALE); i++){
@@ -81,9 +82,101 @@ void putChar(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t i
 	}
 }
 
-void writeA(){
-	putChar(129,0x00FAEF02,0x00010053,0,105);
-	putChar(128,0x00FAEF02,0x00010053,charWidth*SCALE,105);
+void putCharMain(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t init_x, uint64_t init_y){
+	for(uint64_t i=0; i<(charHeight*SCALE_MAIN); i++){
+		for(uint64_t j=0; j<(charWidth*SCALE_MAIN); j++){
+			if( ((font[character][(i/SCALE_MAIN)]<<(j/SCALE_MAIN)) & (1<<(charWidth-1))) ){// 1<<charWidth permite leer de a un bit de izq a der del row de la font
+				putPixel(colorFont,init_x+j,init_y+i);
+			}
+			else{
+				putPixel(colorBg,init_x+j,init_y+i);
+			}
+			
+		}
+	}
+}
+
+void putDibujito(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t init_x, uint64_t init_y){
+	for(uint64_t i=0; i<(charHeight*SCALE); i++){
+		for(uint64_t j=0; j<(charWidth*SCALE); j++){
+			if( ((dibujitos[character][(i/SCALE)]<<(j/SCALE)) & (1<<(charWidth-1))) ){// 1<<charWidth permite leer de a un bit de izq a der del row de la font
+				putPixel(colorFont,init_x+j,init_y+i);
+			}
+			else{
+				putPixel(colorBg,init_x+j,init_y+i);
+			}
+			
+		}
+	}
+}
+
+void putDibujitoMain(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t init_x, uint64_t init_y){
+	for(uint64_t i=0; i<(charHeight*SCALE_MAIN); i++){
+		for(uint64_t j=0; j<(charWidth*SCALE_MAIN); j++){
+			if( ((dibujitos[character][(i/SCALE_MAIN)]<<(j/SCALE_MAIN)) & (1<<(charWidth-1))) ){// 1<<charWidth permite leer de a un bit de izq a der del row de la font
+				putPixel(colorFont,init_x+j,init_y+i);
+			}
+			else{
+				putPixel(colorBg,init_x+j,init_y+i);
+			}
+			
+		}
+	}
+}
+
+void putDibujitoReal(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t init_x, uint64_t init_y){
+	for(uint64_t i=0; i<(charHeight*SCALE_REAL); i++){
+		for(uint64_t j=0; j<(charWidth*SCALE_REAL); j++){
+			if( ((dibujitos[character][(i/SCALE_REAL)]<<(j/SCALE_REAL)) & (1<<(charWidth-1))) ){// 1<<charWidth permite leer de a un bit de izq a der del row de la font
+				putPixel(colorFont,init_x+j,init_y+i);
+			}
+			else{
+				putPixel(colorBg,init_x+j,init_y+i);
+			}
+			
+		}
+	}
+}
+
+void writeStar(){
+	int middleStartX= (VBE_mode_info->width)/2 - ((charWidth*SCALE_MAIN)/2);
+	int middleStartY= (VBE_mode_info->height)/2 - ((charHeight*SCALE_MAIN)/2);
+	int title_len=6;
+	int titleStartX = middleStartX - ((charWidth*SCALE_MAIN)*(title_len-1)/2);
+	int titleStartY = middleStartY - ((charHeight*SCALE_MAIN)/2);
+
+	int start_time=ticks_elapsed();
+	putDibujitoMain(0,0x00FAEF02,0x00010053,middleStartX,middleStartY);
+	uint8_t starFlag=1;
+	putChar('A',0x00FAEF02,0x00010053,titleStartX,titleStartY);
+	putChar('M',0x00FAEF02,0x00010053,titleStartX+(charWidth*SCALE_MAIN),titleStartY);
+	putChar('O',0x00FAEF02,0x00010053,titleStartX+(charWidth*SCALE_MAIN*2),titleStartY);
+	putChar('G',0x00FAEF02,0x00010053,titleStartX+(charWidth*SCALE_MAIN*3),titleStartY);
+	putChar('O',0x00FAEF02,0x00010053,titleStartX+(charWidth*SCALE_MAIN*4)+4,titleStartY);
+	putChar('S',0x00FAEF02,0x00010053,titleStartX+(charWidth*SCALE_MAIN*5)+4,titleStartY);
+	while(1){
+		if(ticks_elapsed()-start_time>18){
+			if(starFlag) putDibujitoMain(0,0x00FAEF02,0x00010053,middleStartX,middleStartY);
+			else putDibujitoMain(1,0x00FAEF02,0x00010053,middleStartX,middleStartY);
+			starFlag=!starFlag;
+			start_time=ticks_elapsed();
+		}
+	}
+}
+
+void writeMoon(uint16_t x, uint16_t y){
+	putDibujito(6,0x00FAEF02,0x00010053,x,y);
+}
+
+void writeSky(){
+	int marginX = (VBE_mode_info->width) % (charWidth*SCALE_REAL);
+	int marginY = (VBE_mode_info->height) % (charHeight*SCALE_REAL);
+
+	for(int i=0;i<VBE_mode_info->height;i++){
+		for(int j=0;j<VBE_mode_info->width;j++){
+			putPixel(0x00010053,j,i);
+		}
+	}
 }
 
 //================================================================================================================================
