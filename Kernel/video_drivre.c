@@ -82,7 +82,7 @@ void draw_rectangle(uint64_t ancho, uint64_t alto, uint32_t color, uint64_t init
 void putChar(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t init_x, uint64_t init_y){
 	for(uint64_t i=0; i<(charHeight*SCALE); i++){
 		for(uint64_t j=0; j<(charWidth*SCALE); j++){
-			if( ((font[character][(i/SCALE)]<<(j/SCALE)) & (1<<charWidth)) ){// 1<<charWidth permite leer de a un bit de izq a der del row de la font
+			if( ((font[character][(i/SCALE)]<<(j/SCALE)) & (1<<(charWidth-1))) ){// 1<<charWidth permite leer de a un bit de izq a der del row de la font
 				putPixel(colorFont,init_x+j,init_y+i);
 			}
 			else{
