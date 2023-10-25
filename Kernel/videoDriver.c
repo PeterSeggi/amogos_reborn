@@ -145,6 +145,8 @@ void writeStar(){
 	int titleStartX = middleStartX - ((charWidth*SCALE_MAIN)*(title_len-1)/2);
 	int titleStartY = middleStartY - ((charHeight*SCALE_MAIN)/2);
 
+	//putDibujito(7,0x00FAEF02,0x00010053,middleStartX,middleStartY+(charHeight*SCALE_MAIN));
+
 	int start_time=ticks_elapsed();
 	putDibujitoMain(0,0x00FAEF02,0x00010053,middleStartX,middleStartY);
 	uint8_t starFlag=1;
@@ -177,6 +179,34 @@ void writeSky(){
 			putPixel(0x00010053,j,i);
 		}
 	}
+	
+	beep();
 }
 
 //================================================================================================================================
+
+//================================================================================================================================
+// Sound testing for videoMode
+//================================================================================================================================
+//================================================================================================================================
+
+void beep(){
+	talk(1000);
+	ticks_wait(36);
+	shut_up();
+}
+
+void talk(uint32_t freq){
+	uint32_t div;
+
+	//PIT settings para la freq
+	div = (1193180)/freq;	//input signal de 1.193182 MHz
+	_PITsetup(div);
+
+	//ahora que empiece a sonar
+	_talk();
+}
+
+void shut_up(){
+	_shutup();
+}

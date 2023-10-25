@@ -20,6 +20,11 @@ GLOBAL _getBReg
 GLOBAL _getCReg
 GLOBAL _getDReg
 
+;sound
+GLOBAL _talk
+GLOBAL _shutup
+GLOBAL _PITsetup
+
 ;================================================================================================================================
 ;_getDateTimeFormat devuelve el formato del RTC
 ;en al retorna 0x00000xy0  donde y indica si es 24hs(1) o no(0) y x indica si es binario(1) o BCD(0)
@@ -358,4 +363,77 @@ _getDReg:
 	ret
 
 ;================================================================================================================================
+
+;SOUNDTESTING
+
+;================================================================================================================================
+;_shutup 
+;================================================================================================================================
+;================================================================================================================================
+
+_shutup:
+	push rbp
+	mov rbp, rsp
+	pushf
+
+	cli
+	in al, 61h		;tomo lo que estaba en el reg
+	and al, 0xFC	;bit 0 = 0 (connected with PIT low), y bit 1 = 0 (move position to in)
+	out 61h, al
+	sti		;retomar interrupciones
+
+.end:
+	popf
+	mov rsp, rbp
+	pop rbp
+	ret
+
+;================================================================================================================================
+;_talk
+;================================================================================================================================
+;================================================================================================================================
+
+_talk:
+	push rbp
+	mov rbp, rsp
+	pushf
+
+	cli
+	
+	sti		;retomar interrupciones
+
+.end:
+	popf
+	mov rsp, rbp
+	pop rbp
+	ret
+
+;================================================================================================================================
+;_PITsetup 
+;rdi: div for freq
+;================================================================================================================================
+;================================================================================================================================
+
+_PITsetup:
+	push rbp
+	mov rbp, rsp
+	pushf
+
+	cli
+	mov al, 0xB6	;1011 0110
+	out 43h, al	;b0 BCD, b3b2b1 "SQUARE WAVE GEN", b5b4 access lobyte/hibyte, b7b6 Channel2
+	mov rax, rdi
+	out 42h, al	;42h is Channel2 port, first low
+	mov al, ah
+	out 42h, al	;then high
+	in al, 61h	;recupero el valor del PIT port
+	or al, 0x03	;aseguramos bit 0 = 1 (connected with PIT high), y bit 1 = 1 (move position to out)
+	out 61h, al
+	sti		;retomar interrupciones
+
+.end:
+	popf
+	mov rsp, rbp
+	pop rbp
+	ret
 

@@ -21,6 +21,11 @@ void sleep(int sec){
 	while( (ticks_elapsed()-t0)/18 < sec );
 }
 
+void ticks_wait(int amount){
+	unsigned long t0 = ticks;
+	while( (ticks-t0) < amount );
+}
+
 void my_ints(){
 	if(ticks%18 == 0){
 		printClock();
