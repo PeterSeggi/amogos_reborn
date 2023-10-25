@@ -36,6 +36,9 @@ void printDec(uint64_t value){
     printBase(value, 10);
 }
 
+void printHex(uint64_t value){
+    printBase(value, 16);
+}
 
 
 

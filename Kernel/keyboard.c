@@ -35,19 +35,20 @@ int to_read = 0;
 
 void key_handler() { insert_key(readKey()); }
 
-void insert_key(uint32_t key) {
+void insert_key(int key) {
   key_buf[insert_index++] = key;
   to_read = 1;
+  printChar(key_buf[key]);
   if (insert_index == KEY_BUF_SIZE)
     insert_index = 0;
 }
 
 // returns the actual key, 0 if nothing was read
-uint32_t read_key() {
+int read_key() {
   if (!to_read)
     return 0;
 
-  uint32_t toRet = key_buf[read_index++];
+  int toRet = key_buf[read_index++];
   if (read_index == KEY_BUF_SIZE)
     read_index = 0;
 

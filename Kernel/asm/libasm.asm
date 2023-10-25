@@ -75,7 +75,7 @@ readKey:
     cmp al, 0x01      ; Si 64h esta en 1 es que no puedo leer todavia
     je .wait         
 
-    in eax, 60h        ; leemos el buffer
+    in al, 60h        ; leemos el buffer
 
     mov rsp, rbp
     pop rbp

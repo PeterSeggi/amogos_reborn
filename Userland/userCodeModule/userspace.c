@@ -11,9 +11,6 @@ int main(){
     print(test);
 
     while(1){
-        if (read(buffer_space, 1) == 1){
-            printDec(buffer_space[0]);
-        }
     }
     return 0;
 }
