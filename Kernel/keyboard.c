@@ -35,7 +35,7 @@ int to_read = 0;
 
 void key_handler() { insert_key(readKey()); }
 
-void insert_key(int key) {
+void insert_key(uint32_t key) {
   key_buf[insert_index++] = key;
   to_read = 1;
   if (insert_index == KEY_BUF_SIZE)
