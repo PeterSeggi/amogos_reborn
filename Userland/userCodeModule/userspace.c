@@ -12,8 +12,7 @@ int main(){
 
     while(1){
         if (read(buffer_space, 1) == 1){
-            if (buffer_space[0] == 0x1E)
-                print("a pressed ");
+            printDec(buffer_space[0]);
         }
     }
     return 0;

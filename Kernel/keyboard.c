@@ -43,11 +43,11 @@ void insert_key(uint32_t key) {
 }
 
 // returns the actual key, 0 if nothing was read
-int read_key() {
+uint32_t read_key() {
   if (!to_read)
     return 0;
 
-  int toRet = key_buf[read_index++];
+  uint32_t toRet = key_buf[read_index++];
   if (read_index == KEY_BUF_SIZE)
     read_index = 0;
 
