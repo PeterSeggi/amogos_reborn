@@ -78,19 +78,9 @@ uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 //================================================================================================================================
 // Sleep
 //================================================================================================================================
-static unsigned long ticks = 0;
 
-void timer_handler() {
-  ticks++;
-}
-
-int ticks_elapsed() { 
-	return ticks; 
-}
-
-void sleep(int sec){
-	unsigned long t0 = ticks_elapsed();
-	while( (ticks_elapsed()-t0)/18 < sec );
+void nanosleep(int cant, int unidad){
+	_nanosleep(cant, unidad);
 }
 
 //================================================================================================================================

@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <syscall_handler.h>
 #include <videoDriver.h>
+#include <time.h>
 
 #define STDIN 0
 #define STDOUT 1
@@ -22,9 +23,13 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax) {
     break;
 
   case (0x23):
-    sys_sleep(rdi, rsi);
+    sys_nanosleep(rdi, rsi);
     break;  
-  }
+  /*
+  case (0x4e):
+   sys_gettimeofday(rdi, rsi);
+   break;
+  */}
 }
 
 void sys_write(uint64_t fd, uint64_t message, uint64_t length) {
@@ -64,6 +69,24 @@ int read_chars(char *buffer, int length) {
   return chars_read;
 }
 
-void sys_sleep(){
-
+void sys_nanosleep(uint64_t  cant,uint64_t  unidad){
+  //hacemos de cuenta q esto es nano
+  timer_handler();
+  sleep(cant); 
 }
+
+/*
+struct timeval {
+               time_t      tv_sec;     // seconds 
+               suseconds_t tv_usec;    // microseconds 
+           };
+
+struct timezone {
+               int tz_minuteswest;     // minutes west of Greenwich 
+               int tz_dsttime;         // type of DST correction 
+           }
+
+int sys_gettimeofday(timeval *hora, timezone *zona){
+
+ }
+ */

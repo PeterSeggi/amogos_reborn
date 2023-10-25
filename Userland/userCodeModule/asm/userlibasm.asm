@@ -1,6 +1,7 @@
 GLOBAL int_test
 GLOBAL _print
 GLOBAL _read
+GLOBAL _nanosleep
 
 GLOBAL _getDateTimeFormat
 GLOBAL _getSeconds
@@ -39,8 +40,6 @@ _read:
 	pop rbp
 	ret
     
-
-
 int_test:
     push rbp
     mov rbp, rsp
@@ -56,6 +55,16 @@ int_test:
     pop rbp
     ret
 
+_nanosleep:
+	push rbp
+	mov rbp, rsp
+
+    mov rax, 0x23
+    int 80h;
+
+	mov rsp, rbp
+	pop rbp
+	ret
 ;================================================================================================================================
 
 

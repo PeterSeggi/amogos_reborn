@@ -10,7 +10,7 @@ int main(){
 
     print(test);
     printTime();
-    sleep(3);
+    nanosleep(3, 1);
     printTime();
 
     while(1){

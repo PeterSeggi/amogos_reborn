@@ -16,6 +16,9 @@ int read(char* buffer, int length);
 int strlen(char * string);
 uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
+//sleep
+void nanosleep(int cant, int unidad);
+
 //clock
 void formatTime(uint8_t *sec, uint8_t *min, uint8_t *hour);
 void printTime();
