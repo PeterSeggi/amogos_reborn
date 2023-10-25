@@ -41,7 +41,7 @@ int sys_read(uint64_t fd, uint64_t buffer, uint64_t length) {
   int retVal = 0;
   switch (fd) {
   case (STDIN):
-    retVal = read_chars((char *)buffer, length);
+    retVal = read_chars(fd, (char *)buffer, length);
     break;
   }
   return retVal;
