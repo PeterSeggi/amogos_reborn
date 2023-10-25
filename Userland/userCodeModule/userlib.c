@@ -37,9 +37,6 @@ void printDec(uint64_t value){
 }
 
 
-
-
-
 //================================================================================================================================
 // Number handling
 //================================================================================================================================
@@ -75,5 +72,70 @@ uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 	}
 
 	return digits;
+}
+
+
+//================================================================================================================================
+// Sleep
+//================================================================================================================================
+static unsigned long ticks = 0;
+
+void timer_handler() {
+  ticks++;
+}
+
+int ticks_elapsed() { 
+	return ticks; 
+}
+
+void sleep(int sec){
+	unsigned long t0 = ticks_elapsed();
+	while( (ticks_elapsed()-t0)/18 < sec );
+}
+
+//================================================================================================================================
+// Clock
+//================================================================================================================================
+
+void formatTime(uint8_t *sec, uint8_t *min, uint8_t *hour) {
+  *sec = _getSeconds();
+  *min = _getMinutes();
+  *hour = _getHours();
+
+  // nos fijamos si hay que corregir el formato
+  uint8_t format = _getDateTimeFormat();
+  if ((!(format & 0x02)) && (*hour & 0x80)) { // si esta en 12hs, lo pasamos a 24
+    *hour = ((*hour & 0x7F) + 12) % 24;
+  }
+  if (!(format & 0x04)) { // si esta en BCD pasamos a decimal
+    *sec = (*sec & 0xF) + ((*sec / 16) * 10);
+    *min = (*min & 0xF) + ((*min / 16) * 10);
+    *hour = (*hour & 0xF) + ((*hour / 16) * 10);
+  }
+
+  // la hora viene en UTC, por lo que la asignamos en UTC-3 para Argentina
+  // (ignoramos la lógica del caso con daylight savings)
+
+  if (*hour >= 3)
+    *hour -= 3;
+  else {
+    *hour = *hour + 21;
+  }
+}
+
+void printTime(){
+
+    uint8_t sec, min, hour;
+    formatTime(&sec, &min, &hour);
+
+	if(hour<10) printDec(0);
+	printDec(hour);
+	print(":");
+	if(min<10) printDec(0);
+	printDec(min);
+	print(":");
+	if(sec<10) printDec(0);
+	printDec(sec);
+	print("\n");
 }
 

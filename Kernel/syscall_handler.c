@@ -20,6 +20,10 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax) {
   case (0x00):
     sys_read(rdi, rsi, rdx);
     break;
+
+  case (0x23):
+    sys_sleep(rdi, rsi);
+    break;  
   }
 }
 
@@ -58,4 +62,8 @@ int read_chars(char *buffer, int length) {
     }
   }
   return chars_read;
+}
+
+void sys_sleep(){
+
 }

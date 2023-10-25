@@ -9,11 +9,14 @@ int main(){
     char buffer_space[1];
 
     print(test);
+    printTime();
+    sleep(3);
+    printTime();
 
     while(1){
         if (read(buffer_space, 1) == 1){
             if (buffer_space[0] == 0x1E)
-                print("a pressed ");
+                print("Boca ");
         }
     }
     return 0;
