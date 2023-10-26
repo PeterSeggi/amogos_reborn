@@ -124,6 +124,16 @@ void putDibujitoMain(uint8_t character, uint32_t colorFont, uint32_t colorBg, ui
 	}
 }
 
+void putDibujitoMainOnly(uint8_t character, uint32_t colorFont, uint64_t init_x, uint64_t init_y){
+	for(uint64_t i=0; i<(charHeight*SCALE_MAIN); i++){
+		for(uint64_t j=0; j<(charWidth*SCALE_MAIN); j++){
+			if( ((dibujitos[character][(i/SCALE_MAIN)]<<(j/SCALE_MAIN)) & (1<<(charWidth-1))) ){// 1<<charWidth permite leer de a un bit de izq a der del row de la font
+				putPixel(colorFont,init_x+j,init_y+i);
+			}			
+		}
+	}
+}
+
 void putDibujitoReal(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t init_x, uint64_t init_y){
 	for(uint64_t i=0; i<(charHeight*SCALE_REAL); i++){
 		for(uint64_t j=0; j<(charWidth*SCALE_REAL); j++){
@@ -147,8 +157,46 @@ void writeStar(){
 
 	//putDibujito(7,0x00FAEF02,0x00010053,middleStartX,middleStartY+(charHeight*SCALE_MAIN));
 
+	#define YELLOW 0x00FAE425
+	#define LIGHTGRAY 0x00B8B8B8
+	#define WHITELINE 0x00FBFBFB
+	#define WHITE 0x00F6F6F6
+	#define BLACK 0x00000000
+	#define DARKGRAY 0x00414141
+	#define DARKERGRAY 0x00343434
+	#define RED 0x00FF290E
+
 	int start_time=ticks_elapsed();
 	putDibujitoMain(0,0x00FAEF02,0x00010053,middleStartX,middleStartY);
+	putDibujitoMainOnly(12,YELLOW,middleStartX-(charWidth*SCALE_MAIN*2),middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(11,DARKGRAY,middleStartX-(charWidth*SCALE_MAIN*2),middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(10,WHITELINE,middleStartX-(charWidth*SCALE_MAIN*2),middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(9,WHITE,middleStartX-(charWidth*SCALE_MAIN*2),middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(8,BLACK,middleStartX-(charWidth*SCALE_MAIN*2),middleStartY+(charHeight*SCALE_MAIN));
+
+	putDibujitoMainOnly(21,YELLOW,middleStartX-(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(22,LIGHTGRAY,middleStartX-(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(20,DARKGRAY,middleStartX-(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(19,WHITELINE,middleStartX-(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(18,BLACK,middleStartX-(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
+
+	putDibujitoMainOnly(26,LIGHTGRAY,middleStartX,middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(25,DARKGRAY,middleStartX,middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(24,WHITELINE,middleStartX,middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(23,BLACK,middleStartX,middleStartY+(charHeight*SCALE_MAIN));
+
+	putDibujitoMainOnly(21,YELLOW,middleStartX+(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(22,LIGHTGRAY,middleStartX+(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(20,DARKGRAY,middleStartX+(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(19,WHITELINE,middleStartX+(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(18,BLACK,middleStartX+(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
+
+	putDibujitoMainOnly(17,YELLOW,middleStartX+(charWidth*SCALE_MAIN*2),middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(16,LIGHTGRAY,middleStartX+(charWidth*SCALE_MAIN*2),middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(15,DARKGRAY,middleStartX+(charWidth*SCALE_MAIN*2),middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(14,RED,middleStartX+(charWidth*SCALE_MAIN*2),middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(13,BLACK,middleStartX+(charWidth*SCALE_MAIN*2),middleStartY+(charHeight*SCALE_MAIN));
+	
 	uint8_t starFlag=1;
 	putChar('A',0x00FAEF02,0x00010053,titleStartX,titleStartY);
 	putChar('M',0x00FAEF02,0x00010053,titleStartX+(charWidth*SCALE_MAIN),titleStartY);
@@ -179,8 +227,6 @@ void writeSky(){
 			putPixel(0x00010053,j,i);
 		}
 	}
-	
-	beep();
 }
 
 //================================================================================================================================
