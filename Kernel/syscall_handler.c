@@ -11,7 +11,7 @@
 #define ERRCOLORFONT 0xFF0000 // texto rojo, bg gris;
 #define ERRCOLORBACK 0xDADADA // texto rojo, bg gris;
 
-void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax, uint64_t r10, uint64_t r8) {
+void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t rax) {
   switch (rax) {
   case (0x01):
     sys_write(rdi, rsi, rdx);
@@ -22,7 +22,7 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax, uin
     break;
 
   case (0x77):
-    sys_draw(rdi, rsi, rdx, r10, r8);
+    sys_draw(rdi, rsi, rdx, rcx, r8);
     break;
   }
 }
@@ -65,6 +65,6 @@ int read_chars(char *buffer, int length) {
 }
 
 void sys_draw(uint64_t bitmap, uint64_t hexColor, uint64_t height, uint16_t init_x, uint64_t init_y){
-  print("sYs_DRAW !!1");
-  
+  changeDrawSize(15);
+  printBitmap(bitmap, hexColor, height, init_x, init_y);
 }

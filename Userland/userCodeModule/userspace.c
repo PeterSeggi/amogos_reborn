@@ -1,19 +1,15 @@
 #include "include/userlib.h"
 #include "include/userlibasm.h"
+#include "include/drawings.h"
 
 
 int main(){
     // esto se core
 
-    char* test = "Hello amogOS!\n";
-    print(test);
+    char* test1 = "Hello amogOS!\n";
+    print(test1);
 
-    draw();
+    draw(test[0],0x008E85FF,charHeight,0,0);
 
     return 0;
-}
-
-
-int returns_48(){
-    return 48;
 }

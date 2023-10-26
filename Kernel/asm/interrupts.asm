@@ -142,7 +142,7 @@ _irq05Handler:
 
 ;syscall
 _irq128Handler:
-    mov rcx, rax
+    mov r9, rax
     call syscall_handler
 	; irqHandlerMaster 128
 
