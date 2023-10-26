@@ -51,7 +51,6 @@ readKey:
     push rbp
     mov rbp, rsp
 
-    cli
 
 .wait:
     in al, 64h        ; Traemos el input

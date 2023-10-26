@@ -16,6 +16,7 @@ void printTime();
 void printDate();
 
 void sleep(int sec);
+void tickscounter(int tickss);
 void my_ints();
 
 

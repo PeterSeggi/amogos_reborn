@@ -14,17 +14,18 @@
 
 void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax) {
   switch (rax) {
-  case (0x01):
-    sys_write(rdi, rsi, rdx);
-    break;
+    
+    case (0x00):
+      sys_read(rdi, rsi, rdx);
+      break;
 
-  case (0x00):
-    sys_read(rdi, rsi, rdx);
-    break;
+    case (0x01):
+      sys_write(rdi, rsi, rdx);
+      break;
 
-  case (0x23):
-    sys_nanosleep(rdi, rsi);
-    break;  
+    case (0x23):
+      sys_sleep(rdi, rsi);
+      break;  
   /*
   case (0x4e):
    sys_gettimeofday(rdi, rsi);
@@ -69,10 +70,11 @@ int read_chars(char *buffer, int length) {
   return chars_read;
 }
 
-void sys_nanosleep(uint64_t  cant,uint64_t  unidad){
-  //hacemos de cuenta q esto es nano
-  timer_handler();
-  sleep(cant); 
+void sys_sleep(uint32_t  cant,uint32_t  unidad){
+  print("hola");
+  //sleep(cant);
+  tickscounter(unidad); 
+  print("adios");
 }
 
 /*

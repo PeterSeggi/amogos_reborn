@@ -7,12 +7,12 @@ int main(){
 
     char* test = "Hello amogOS!\n";
     char buffer_space[1];
-
+    int cant=2;
+    int uni=4;
     print(test);
     printTime();
-    nanosleep(3, 1);
-    printTime();
-
+    sleep(cant, uni);
+    print("prueba");
     while(1){
         if (read(buffer_space, 1) == 1){
             if (buffer_space[0] == 0x1E)
@@ -21,7 +21,6 @@ int main(){
     }
     return 0;
 }
-
 
 int returns_48(){
     return 48;
