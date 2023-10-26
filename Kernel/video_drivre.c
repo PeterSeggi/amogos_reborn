@@ -77,11 +77,13 @@ uint16_t getScreenWidth(){
 
 
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y){
-	uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
-	uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch); //3 ya que son RGB(3) (24bits)
-	framebuffer[offset]=(hexColor) & 0x000000FF;	//agarro la parte baja del hexColor que es el azul
-	framebuffer[offset+1]=(hexColor >> 8) & 0x0000FF;
-	framebuffer[offset+2]=(hexColor >> 16) & 0x00FF;
+	if( (x < getScreenWidth()) && (y < getScreenHeight())){
+		uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
+		uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch); //3 ya que son RGB(3) (24bits)
+		framebuffer[offset]=(hexColor) & 0x000000FF;	//agarro la parte baja del hexColor que es el azul
+		framebuffer[offset+1]=(hexColor >> 8) & 0x0000FF;
+		framebuffer[offset+2]=(hexColor >> 16) & 0x00FF;
+	}
 }
 
 void draw_rectangle(uint64_t ancho, uint64_t alto, uint32_t color, uint64_t init_x, uint64_t init_y){
@@ -99,7 +101,11 @@ void draw_rectangle(uint64_t ancho, uint64_t alto, uint32_t color, uint64_t init
 //================================================================================================================================
 //================================================================================================================================
 
-#define SCALE 1
+uint8_t SCALE = 1;	//size variable
+
+void changeFontSize(uint8_t size){
+	SCALE = size;
+}
 
 void putChar(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t init_x, uint64_t init_y){
 	for(uint64_t i=0; i<(charHeight*SCALE); i++){

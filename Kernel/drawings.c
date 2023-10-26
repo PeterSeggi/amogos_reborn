@@ -4,7 +4,9 @@
 
 void loadKernelScreen(){
     draw_rectangle(getScreenWidth(),getScreenHeight(),SKYBLUE,0,0);
-    clear();
+    print("hola ");
+    changeFontSize(5);
+    print("abcdefghijklmnopqrstuvwxyz");
     while(1);
     /*
     int middleStartX= (getScreenWidth)/2 - ((charWidth*SCALE_MAIN)/2);
