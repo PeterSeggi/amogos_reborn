@@ -77,6 +77,7 @@ readKey:
 
     in al, 60h        ; leemos el buffer
 
+    sti
     mov rsp, rbp
     pop rbp
     ret
