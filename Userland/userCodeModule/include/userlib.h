@@ -9,6 +9,9 @@ void printError(char * string);
 void printBase(uint64_t value, uint32_t base);
 void printDec(uint64_t value);
 
+//dibujo
+void draw();
+
 // lectura
 int read(char* buffer, int length);
 

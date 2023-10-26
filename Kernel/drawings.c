@@ -37,7 +37,7 @@ void loadKernelScreen(){
 
     changeDrawSize(10);
 
-    for(int i=0; i<5; i++){
+    for(int i=0; i<4; i++){
         printBitmap(dibujitos[9], SKYBLUE, charHeight, middleStartX, middleStartY);
         printBitmap(dibujitos[0], TITLEGOLD, charHeight, middleStartX, middleStartY);
         sleep(1);
