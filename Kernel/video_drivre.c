@@ -1,5 +1,4 @@
 #include <videoDriver.h>
-#include <stdint.h>
 #include <fonts.h>
 #include <lib.h>
 
@@ -74,7 +73,15 @@ uint16_t getScreenWidth(){
 // Draw for videoMode
 //================================================================================================================================
 //================================================================================================================================
+uint8_t DRAW_SIZE = 1; //size for bitmaps
 
+void changeDrawSize(uint8_t size){
+	DRAW_SIZE = size;
+}
+
+uint8_t getDrawSize(){
+	return DRAW_SIZE;
+}
 
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y){
 	if( (x < getScreenWidth()) && (y < getScreenHeight())){
@@ -94,6 +101,15 @@ void draw_rectangle(uint64_t ancho, uint64_t alto, uint32_t color, uint64_t init
 	}
 }
 
+void printBitmap(uint16_t * bitmap, uint32_t color, uint16_t alto ,uint64_t x, uint64_t y){
+	for(uint64_t i=0; i<(alto*DRAW_SIZE); i++){
+		for(uint64_t j=0; j<(16*DRAW_SIZE); j++){//16 is because of the bitmap datasize (uint16_t)
+			if( ((bitmap[(i/DRAW_SIZE)]<<(j/DRAW_SIZE)) & (1<<(15))) ){// 1<<charWidth permite leer de a un bit de izq a der del row de la font (fixed in 15 in this implementation)
+				putPixel(color,x+j,y+i);
+			}
+		}
+	}
+}
 
 
 //================================================================================================================================
@@ -105,6 +121,10 @@ uint8_t SCALE = 1;	//size variable
 
 void changeFontSize(uint8_t size){
 	SCALE = size;
+}
+
+uint8_t getFontSize(){
+	return SCALE;
 }
 
 void putChar(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t init_x, uint64_t init_y){

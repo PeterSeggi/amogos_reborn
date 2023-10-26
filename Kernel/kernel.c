@@ -79,8 +79,11 @@ int main()
 
     //printColorCant("bokesooooooo",5,0x07B0CA,0xB0CA07);
 	//printColor("holiwiws",0x07B0CA,0xB0CA07);
-    clear();
+    
 	loadKernelScreen();
+
+	clear();
+
     ((EntryPoint) userspaceAddress)();
     
     /*
