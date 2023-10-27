@@ -20,6 +20,6 @@ uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 void sleep(uint32_t cant, uint32_t unidad);
   
 //clock
-void getClock(uint32_t *hrs, uint32_t *min, uint32_t *seg);
+void getClock(int *hrs, int *min, int *seg);
 
 #endif

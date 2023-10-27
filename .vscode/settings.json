@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "file_descriptors.h": "c"
+        "file_descriptors.h": "c",
+        "userlibasm.h": "c"
     }
 }

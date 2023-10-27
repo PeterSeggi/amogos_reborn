@@ -105,15 +105,14 @@ uint8_t calculateMonthLastDay(uint8_t month, uint16_t year) {
 }
 
 
-void printTime(uint32_t *hrs, uint32_t *mins, uint32_t *segs){
+void printTime(int *hrs, int *mins, int *segs){
     newLine();
-    print("en printTime");
     uint8_t sec, min, hour;
     formatTime(&sec, &min, &hour);
     
-    hrs=hour;
-    mins=min;
-    segs=sec;
+    *hrs=hour;
+    *mins=min;
+    *segs=sec;
     /*
     if(hour<10) ncPrintDec(0);
       printDec(hour);
@@ -167,7 +166,6 @@ int ticks_elapsed() {
 void sleep(int sec){
 	unsigned long t0 = ticks_elapsed();
 	while( (ticks_elapsed()-t0)/18 < sec );
-  printDec(ticks);
 }
 
 void my_ints(){

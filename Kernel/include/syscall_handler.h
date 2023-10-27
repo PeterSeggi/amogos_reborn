@@ -8,5 +8,4 @@ int read_chars(char* buffer, int length);
 
 void sys_sleep(uint32_t cant, uint32_t unidad);
 
-void sys_gettimeofday(uint32_t *hrs, uint32_t *min, uint32_t *seg);
-
+void sys_gettimeofday(int *hrs, int *min, int *seg);
