@@ -102,6 +102,10 @@ void printChar(uint8_t character){
         newLine();
     }
 
+    else if (character == '\b'){
+        delChar();
+    }
+
     else{
         putChar(character, DEFAULT_FONT, DEFAULT_BACK, cursor_location_x, cursor_location_y);
         cursor_location_x += (charWidth * SCALE);
@@ -162,6 +166,22 @@ void printHex(uint64_t value){
 void newLine(){
     cursor_location_y += charHeight * SCALE;
     cursor_location_x = 0;
+}
+
+void delChar(){
+    repoCursor();
+    printChar(' ');
+    repoCursor();
+}
+
+
+void repoCursor(){
+    if (!cursor_location_x){
+        cursor_location_y -= charHeight * SCALE;
+        cursor_location_x = VBE_mode_info->width - charWidth * SCALE;
+    }
+    else
+        cursor_location_x -= charWidth * SCALE;
 }
 
 void clear(){

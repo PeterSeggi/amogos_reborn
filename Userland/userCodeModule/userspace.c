@@ -6,14 +6,13 @@ int main(){
     // esto se core
 
     char* test = "Hello amogOS!\n";
-    char buffer_space[1];
+    int buffer_space[1];
 
     print(test);
 
     while(1){
         if (read(buffer_space, 1) == 1){
-            if (buffer_space[0] == 0x1E)
-                print("a pressed ");
+            print(buffer_space);
         }
     }
     return 0;

@@ -1,6 +1,5 @@
 GLOBAL cpuVendor
 GLOBAL rtcInfo
-GLOBAL readKey
 
 ;time functions
 GLOBAL _getDateTimeFormat
@@ -64,22 +63,6 @@ rtcInfo:
     pop rbp
     ret
 
-readKey:
-    push rbp
-    mov rbp, rsp
-
-    cli
-
-.wait:
-    in al, 64h        ; Traemos el input
-    cmp al, 0x01      ; Si 64h esta en 1 es que no puedo leer todavia
-    je .wait         
-
-    in al, 60h        ; leemos el buffer
-
-    mov rsp, rbp
-    pop rbp
-    ret
 
 ;================================================================================================================================
 ;_getDateTimeFormat devuelve el formato del RTC

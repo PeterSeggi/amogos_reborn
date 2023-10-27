@@ -8,9 +8,11 @@ void print(char * string);
 void printError(char * string);
 void printBase(uint64_t value, uint32_t base);
 void printDec(uint64_t value);
+void printHex(uint64_t value);
 
 // lectura
 int read(char* buffer, int length);
+int readRaw(char* buffer, int length);
 
 // general purpose
 int strlen(char * string);
