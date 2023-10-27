@@ -1,8 +1,8 @@
-#include "include/videoDriver.h"
 #include <lib.h>
 #include <naiveConsole.h>
 #include <stdint.h>
 #include <videoDriver.h>
+#include <keyboard.h>
 
 #define KEY_BUF_SIZE 16
 #define STDIN 0

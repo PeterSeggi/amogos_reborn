@@ -8,7 +8,7 @@ int main(){
 
     char* greeting = "Hello amogOS!\n";
     print(greeting);
-    int buffer_space[1];
+    char buffer_space[1];
 
     draw(test[0],0x008E85FF,charHeight,0,0);
 
