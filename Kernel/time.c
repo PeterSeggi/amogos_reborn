@@ -165,7 +165,7 @@ int ticks_elapsed() {
 
 void sleep(int sec, int uni){
 	unsigned long t0 = ticks_elapsed();
-  while(((ticks_elapsed()-t0)*pow(1000, uni))/18 < sec ); 
+  while(((ticks_elapsed()-t0)*pow(1000, uni))/18 < sec ) _hlt(); 
 }
 
 void my_ints(){

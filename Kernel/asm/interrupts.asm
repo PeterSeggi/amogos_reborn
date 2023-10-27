@@ -144,6 +144,7 @@ _irq05Handler:
 _irq128Handler:
     mov rcx, rax
     call syscall_handler
+	iretq
 	; irqHandlerMaster 128
 
 

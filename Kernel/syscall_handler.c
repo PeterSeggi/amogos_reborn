@@ -71,7 +71,6 @@ int read_chars(char *buffer, int length) {
 }
 
 void sys_sleep(uint32_t  cant,uint32_t  unidad){
-  _sti();
   newLine();
   print("antes de sleep");
   newLine();
