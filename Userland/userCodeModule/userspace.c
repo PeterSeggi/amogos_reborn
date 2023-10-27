@@ -6,7 +6,7 @@ int main(){
     // esto se core
 
     char* test = "Hello amogOS!\n";
-    int buffer_space[1];
+    char buffer_space[1];
 
     print(test);
 
