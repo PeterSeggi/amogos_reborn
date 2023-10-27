@@ -1,4 +1,5 @@
 #include "include/userlib.h"
+#include "include/shell.h"
 #include "include/userlibasm.h"
 
 
@@ -10,11 +11,8 @@ int main(){
 
     print(test);
 
-    while(1){
-        if (read(buffer_space, 1) == 1){
-            print(buffer_space);
-        }
-    }
+    shell();
+
     return 0;
 }
 

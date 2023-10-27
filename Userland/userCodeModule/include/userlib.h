@@ -9,6 +9,7 @@ void printError(char * string);
 void printBase(uint64_t value, uint32_t base);
 void printDec(uint64_t value);
 void printHex(uint64_t value);
+void clearScreen();
 
 // lectura
 int read(char* buffer, int length);

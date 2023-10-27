@@ -27,12 +27,10 @@ void sys_write(uint64_t fd, uint64_t message, uint64_t length) {
   switch (fd) {
   case (STDOUT):
     printCant((uint8_t *)message, length);
-    ncNewline();
     break;
 
   case (STDERR):
     printColorCant((uint8_t *)message, length, ERRCOLORFONT, ERRCOLORBACK);
-    ncNewline();
     break;
   }
 }

@@ -17,6 +17,10 @@ void printError(char * string){
     _print(STDERROR, string, strlen(string));
 }
 
+void clearScreen(){
+    _print(STDOUT, "\033[J", 3);
+}
+
 int read(char* buffer, int length){
     return _read(STDIN, buffer, length);
 }
