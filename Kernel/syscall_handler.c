@@ -39,19 +39,15 @@ void sys_write(uint64_t fd, uint64_t message, uint64_t length) {
 
 int sys_read(uint64_t fd, uint64_t buffer, uint64_t length) {
   int retVal = 0;
-  switch (fd) {
-  case (STDIN):
-    retVal = read_chars(fd, (char *)buffer, length);
-    break;
-  }
+  retVal = read_chars(fd, (char *)buffer, length);
   return retVal;
 }
 
-int read_chars(char *buffer, int length) {
+int read_chars(int fd, char *buffer, int length) {
   int chars_read = 0;
   for (int i = 0; i < length; i++) {
     chars_read++;
-    buffer[i] = read_key();
+    buffer[i] = read_key(fd);
     if (buffer[i] == 0) {
       i = length; // si llego a un null dejo de leer
       chars_read--;

@@ -12,6 +12,7 @@ void printHex(uint64_t value);
 
 // lectura
 int read(char* buffer, int length);
+int readRaw(char* buffer, int length);
 
 // general purpose
 int strlen(char * string);
