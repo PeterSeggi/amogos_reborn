@@ -45,7 +45,19 @@ int ascii_read_index = 0;
 int ascii_to_read = 0;
 
 
-void key_handler() { insert_key(_getKey()); }
+void key_handler() {
+  int key = _getKey();
+  insert_key(key);
+  switch(key){
+    case(0x9A):
+      changeFontSize(getFontSize()+1);
+      break;
+    case(0x9B):
+      if(getFontSize()>1)
+        changeFontSize(getFontSize()-1);
+      break;
+  }
+}
 
 void insert_key(int key) {
 
