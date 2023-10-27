@@ -26,18 +26,7 @@ int main(){
     int cant=10;
     int uni=0;
     sleep(cant, uni);
-    print("\n");
-    getClock(&hrs, &min, &seg);
-    print("La hora es...");
-    if(hrs<10) print("0");
-    printDec(hrs);
-    print(":");
-    if(min<10) print("0");
-    printDec(min);
-    print(":");
-    if(seg<10) print("0");
-    printDec(seg);
-    print("\n");
+    printClock();
 
     while(1){
         if (read(buffer_space, 1) == 1){

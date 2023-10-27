@@ -21,5 +21,6 @@ void sleep(uint32_t cant, uint32_t unidad);
   
 //clock
 void getClock(int *hrs, int *min, int *seg);
+void printClock();
 
 #endif

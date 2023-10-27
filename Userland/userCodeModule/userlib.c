@@ -89,3 +89,21 @@ void sleep(uint32_t cant, uint32_t unidad){
 void getClock(int *hrs, int *min, int *seg){
 	_getClock(hrs, min, seg);
 }
+
+void printClock(){
+	int hrs;
+    int min;
+    int seg;
+    print("\n");
+    getClock(&hrs, &min, &seg);
+    print("La hora es...");
+    if(hrs<10) print("0");
+    printDec(hrs);
+    print(":");
+    if(min<10) print("0");
+    printDec(min);
+    print(":");
+    if(seg<10) print("0");
+    printDec(seg);
+    print("\n");
+}
