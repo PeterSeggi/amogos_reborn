@@ -9,6 +9,9 @@ GLOBAL _getSeconds
 GLOBAL _getMinutes
 GLOBAL _getHours
 
+GLOBAL _getRax
+GLOBAL _getRbx
+
 section .text
 
 ;screen functions
@@ -78,7 +81,26 @@ _getClock:
 	pop rbp
 	ret
 
-;================================================================================================================================
+_getRax:
+    push rbp
+	mov rbp, rsp
+
+    mov rax, 0x77
+    int 80h;
+
+	mov rsp, rbp
+	pop rbp
+	ret
+
+_getRbx:
+    push rbp
+	mov rbp, rsp
+
+	mov rax, rbx
+	
+	mov rsp, rbp
+	pop rbp
+	ret
 
 
 section .bss

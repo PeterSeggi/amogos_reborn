@@ -30,6 +30,10 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax) {
     case (0x4e):
       sys_gettimeofday(rdi, rsi, rdx);
       break;
+
+    case (0x4d):
+      sys_getRax(rdi);
+      break;
   }
 }
 
@@ -81,6 +85,10 @@ void sys_sleep(uint32_t  cant,uint32_t  unidad){
 
 
 void sys_gettimeofday(int *hrs, int *min, int *seg){
-    printTime(hrs, min, seg);
+  printTime(hrs, min, seg);
  }
+
+void sys_getRax(int *rax){
+  getRax(rax);
+}
  
