@@ -17,7 +17,7 @@ void update_clock() {
 
     uint8_t *current = getCurrentVideo();
     setCurrentVideo(clockLocation);
-    printTime();
+    //printTime();
     setCurrentVideo(current);
   }
 }
@@ -104,20 +104,33 @@ uint8_t calculateMonthLastDay(uint8_t month, uint16_t year) {
   }
 }
 
-void printTime(){
 
+void printTime(uint32_t *hrs, uint32_t *mins, uint32_t *segs){
+    newLine();
+    print("en printTime");
     uint8_t sec, min, hour;
     formatTime(&sec, &min, &hour);
-
-	if(hour<10) ncPrintDec(0);
-	ncPrintDec(hour);
-	ncPrint(":");
-	if(min<10) ncPrintDec(0);
-	ncPrintDec(min);
-	ncPrint(":");
-	if(sec<10) ncPrintDec(0);
-	ncPrintDec(sec);
-	ncNewline();
+    
+    hrs=hour;
+    mins=min;
+    segs=sec;
+    /*
+    if(hour<10) ncPrintDec(0);
+      printDec(hour);
+      print(":");
+      ncPrintDec(hour);
+      ncPrint(":");
+    if(min<10) ncPrintDec(0);
+      printDec(min);
+      print(":");
+      ncPrintDec(min);
+      ncPrint(":");
+    if(sec<10) ncPrintDec(0);
+      printDec(sec);
+      newLine();
+      ncPrintDec(sec);
+      ncNewline();
+    */
 }
 
 void printDate(){
@@ -138,6 +151,10 @@ void printDate(){
 	ncNewline();
 }
 
+//================================================================================================================================
+// Sleep
+//================================================================================================================================
+
 void timer_handler() {
   ticks++;
   //update_clock();
@@ -148,20 +165,9 @@ int ticks_elapsed() {
 }
 
 void sleep(int sec){
-  newLine();
 	unsigned long t0 = ticks_elapsed();
 	while( (ticks_elapsed()-t0)/18 < sec );
-  newLine();
-}
-
-void tickscounter(int tickss){
-  newLine();
   printDec(ticks);
-  uint64_t t0 = ticks;
-  print("en ticks");
-  while(ticks-t0 < tickss){
-    printDec(ticks);
-  };
 }
 
 void my_ints(){

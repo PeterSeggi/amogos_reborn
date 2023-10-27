@@ -26,11 +26,11 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax) {
     case (0x23):
       sys_sleep(rdi, rsi);
       break;  
-  /*
-  case (0x4e):
-   sys_gettimeofday(rdi, rsi);
-   break;
-  */}
+  
+    case (0x4e):
+      sys_gettimeofday(rdi, rsi, rdx);
+      break;
+  }
 }
 
 void sys_write(uint64_t fd, uint64_t message, uint64_t length) {
@@ -71,24 +71,17 @@ int read_chars(char *buffer, int length) {
 }
 
 void sys_sleep(uint32_t  cant,uint32_t  unidad){
-  print("hola");
-  //sleep(cant);
-  tickscounter(unidad); 
-  print("adios");
+  _sti();
+  print("antes de sleep");
+  newLine();
+  sleep(cant/* *(10^unidad) */); 
+  print("despues de sleep");
+  newLine();
 }
 
-/*
-struct timeval {
-               time_t      tv_sec;     // seconds 
-               suseconds_t tv_usec;    // microseconds 
-           };
 
-struct timezone {
-               int tz_minuteswest;     // minutes west of Greenwich 
-               int tz_dsttime;         // type of DST correction 
-           }
-
-int sys_gettimeofday(timeval *hora, timezone *zona){
-
+void sys_gettimeofday(uint32_t *hrs, uint32_t *min, uint32_t *seg ){
+    print("en sys clock");
+    printTime(hrs, min, seg);
  }
- */
+ 

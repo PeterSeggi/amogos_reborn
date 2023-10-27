@@ -11,12 +11,10 @@ void set_clock_location(uint8_t *location);
 void formatTime(uint8_t *sec, uint8_t *min, uint8_t *hour);
 void formatDate(uint8_t *dayWeek, uint8_t *dayMonth, uint8_t *month, uint16_t *year);
 uint8_t calculateMonthLastDay(uint8_t month, uint16_t year);
-
-void printTime();
+void printTime(uint32_t *hrs, uint32_t *min, uint32_t *seg);
 void printDate();
 
 void sleep(int sec);
-void tickscounter(int tickss);
 void my_ints();
 
 

@@ -86,46 +86,6 @@ void sleep(uint32_t cant, uint32_t unidad){
 //================================================================================================================================
 // Clock
 //================================================================================================================================
-
-void formatTime(uint8_t *sec, uint8_t *min, uint8_t *hour) {
-  *sec = _getSeconds();
-  *min = _getMinutes();
-  *hour = _getHours();
-
-  // nos fijamos si hay que corregir el formato
-  uint8_t format = _getDateTimeFormat();
-  if ((!(format & 0x02)) && (*hour & 0x80)) { // si esta en 12hs, lo pasamos a 24
-    *hour = ((*hour & 0x7F) + 12) % 24;
-  }
-  if (!(format & 0x04)) { // si esta en BCD pasamos a decimal
-    *sec = (*sec & 0xF) + ((*sec / 16) * 10);
-    *min = (*min & 0xF) + ((*min / 16) * 10);
-    *hour = (*hour & 0xF) + ((*hour / 16) * 10);
-  }
-
-  // la hora viene en UTC, por lo que la asignamos en UTC-3 para Argentina
-  // (ignoramos la lógica del caso con daylight savings)
-
-  if (*hour >= 3)
-    *hour -= 3;
-  else {
-    *hour = *hour + 21;
-  }
+void getClock(uint32_t *hrs, uint32_t *min, uint32_t *seg){
+	_getClock(hrs, min, seg);
 }
-
-void printTime(){
-
-    uint8_t sec, min, hour;
-    formatTime(&sec, &min, &hour);
-
-	if(hour<10) printDec(0);
-	printDec(hour);
-	print(":");
-	if(min<10) printDec(0);
-	printDec(min);
-	print(":");
-	if(sec<10) printDec(0);
-	printDec(sec);
-	print("\n");
-}
-

@@ -18,9 +18,8 @@ uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
 //sleep
 void sleep(uint32_t cant, uint32_t unidad);
-
+  
 //clock
-void formatTime(uint8_t *sec, uint8_t *min, uint8_t *hour);
-void printTime();
+void getClock(uint32_t *hrs, uint32_t *min, uint32_t *seg);
 
 #endif

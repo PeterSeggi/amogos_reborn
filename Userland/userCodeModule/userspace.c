@@ -7,16 +7,36 @@ int main(){
 
     char* test = "Hello amogOS!\n";
     char buffer_space[1];
-    int cant=2;
-    int uni=4;
+    uint32_t hrs;
+    uint32_t min;
+    uint32_t seg;
     print(test);
-    printTime();
+    print("\n");
+    getClock(&hrs, &min, &seg);
+    print("La hora es...");
+    printDec(hrs);
+    print(":");
+    printDec(min);
+    print(":");
+    printDec(seg);
+    print("\n");
+    int cant=3;
+    int uni=0;
     sleep(cant, uni);
-    print("prueba");
+    print("\n");
+    getClock(&hrs, &min, &seg);
+    print("La hora es...");
+    printDec(hrs);
+    print(":");
+    printDec(min);
+    print(":");
+    printDec(seg);
+    print("\n");
+
     while(1){
         if (read(buffer_space, 1) == 1){
             if (buffer_space[0] == 0x1E)
-                print("Boca ");
+                print("a");  
         }
     }
     return 0;
