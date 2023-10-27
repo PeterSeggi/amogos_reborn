@@ -27,6 +27,7 @@ void printColor(const uint8_t * string, uint32_t fontColor, uint32_t bgColor);
 void printColorCant(const uint8_t * string, uint64_t cant, uint32_t fontColor, uint32_t bgColor);
 
 void newLine();
+void delChar();
 void clear();
 
 void printBase(uint64_t value, uint32_t base);

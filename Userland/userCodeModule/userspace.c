@@ -6,10 +6,16 @@
 int main(){
     // esto se core
 
-    char* test1 = "Hello amogOS!\n";
-    print(test1);
+    char* greeting = "Hello amogOS!\n";
+    print(greeting);
+    int buffer_space[1];
 
     draw(test[0],0x008E85FF,charHeight,0,0);
 
+    while(1){
+        if (read(buffer_space, 1) == 1){
+            print(buffer_space);
+        }
+    }
     return 0;
 }
