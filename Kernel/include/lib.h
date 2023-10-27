@@ -14,5 +14,6 @@ int readKey();
 // base changing
 uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
+int pow(int base, int exp);
 
 #endif

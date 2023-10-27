@@ -88,3 +88,19 @@ uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 
 	return digits;
 }
+
+int pow(int base, int exponent) {
+    double result = 1.0;
+
+    if (exponent > 0) {
+        for (int i = 0; i < exponent; i++) {
+            result *= base;
+        }
+    } else if (exponent < 0) {
+        for (int i = 0; i < -exponent; i++) {
+            result /= base;
+        }
+    }
+
+    return result;
+}

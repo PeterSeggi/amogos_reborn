@@ -75,7 +75,7 @@ void sys_sleep(uint32_t  cant,uint32_t  unidad){
   newLine();
   print("antes de sleep");
   newLine();
-  sleep(cant/* *(10^unidad) */); 
+  sleep(cant, unidad); 
   print("despues de sleep");
   newLine();
 }

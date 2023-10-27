@@ -14,7 +14,7 @@ uint8_t calculateMonthLastDay(uint8_t month, uint16_t year);
 void printTime(int *hrs, int *min, int *seg);
 void printDate();
 
-void sleep(int sec);
+void sleep(int sec, int uni);
 void my_ints();
 
 
