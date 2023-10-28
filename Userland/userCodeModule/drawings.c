@@ -1,7 +1,7 @@
 #include "include/drawings.h"
 #include "include/userlib.h"
 
-uint16_t test[][dibHeight]={
+uint16_t square[][dibHeight]={
     {0b1111111111111111,
      0b1111111111111111,
      0b1111111111111111,
@@ -19,7 +19,27 @@ uint16_t test[][dibHeight]={
      0b1111111111111111,
      0b1111111111111111}
 };
-uint16_t snakehead_left_layers=4;
+
+uint16_t apple[][dibHeight]={
+    {0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111}
+};
+
+#define SNAKEHEAD_LEFT_LAYERS 4
 uint16_t snakehead_left[][dibHeight]={
 
      //traincolor
@@ -96,9 +116,20 @@ uint16_t snakehead_left[][dibHeight]={
      0b0000000000000000},
 };
 
+#define SNAKEHEAD_RIGHT_LAYERS 4
+uint16_t snakehead_right[][dibHeight]={
+
+};
+
 void draw_snakehead_left(uint32_t colors[], uint64_t init_x, uint64_t init_y){
-    print("hey");
-    for(int i=0; i<snakehead_left_layers; i++){
-        draw(snakehead_left[i],colors[i],dibHeight,init_x,init_y);
+    draw_snake(snakehead_left, SNAKEHEAD_LEFT_LAYERS,colors, init_x, init_y);
+}
+
+void draw_snake(uint16_t bitmap[][dibHeight], uint16_t layers, uint32_t colors[], uint64_t init_x, uint64_t init_y){
+    for(int i=0; i<layers; i++){
+        draw(bitmap[i], colors[i], dibHeight, init_x, init_y);
     }
+}
+void draw_manzana(uint64_t init_x, uint64_t init_y){
+    draw(apple[0],0x00FF0000,dibHeight,init_x,init_y);
 }
