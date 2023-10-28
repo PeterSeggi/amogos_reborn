@@ -40,6 +40,7 @@ int to_read = 0;
 int ascii_buf[KEY_BUF_SIZE];
 int shifted = 0;
 int caps = 0;
+int control = 0;
 int ascii_insert_index = 0;
 int ascii_read_index = 0;
 int ascii_to_read = 0;
@@ -50,10 +51,10 @@ void key_handler() {
   insert_key(key);
   switch(key){
     case(0x9A):
-      changeFontSize(getFontSize()+1);
+      if(control) changeFontSize(getFontSize()+1);
       break;
     case(0x9B):
-      if(getFontSize()>1)
+      if(control && getFontSize()>1)
         changeFontSize(getFontSize()-1);
       break;
   }
@@ -126,4 +127,8 @@ void checkShift(int key) {
     shifted = 0;
   if (key == 0x3A)
     caps = !caps;
+  if(key == 0x1D)
+    control = 1;
+  if(key == 0x9D)
+    control = 0;
 }
