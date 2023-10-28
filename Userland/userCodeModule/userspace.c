@@ -6,12 +6,14 @@
 int main(){
     // esto se core
 
-    char* test = "Hello amogOS!\n";
+    char* greeting = "Hello amogOS!\n";
     char buffer_space[1];
 
-    print(test);
+    print(greeting);
 
     shell();
+
+    print("Bye now!");
 
     return 0;
 }

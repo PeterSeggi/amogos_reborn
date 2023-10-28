@@ -206,7 +206,7 @@ int process_input(char* string, int index, uint32_t fontColor, uint32_t bgColor)
         return index + 1;
     }
 
-    else if (to_process == 27){
+    else if (to_process == '\033'){
         if (string[index + 1] != '[')
             return index + 1;
 

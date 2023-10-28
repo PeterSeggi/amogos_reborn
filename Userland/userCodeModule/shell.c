@@ -55,7 +55,6 @@ void process_key(char key){
         cursor_y++;
         cursor_x = 0;
         return;
-        // here be dragons (and command process lol)
     }
 
     if (key == '\b'){
@@ -79,6 +78,8 @@ void process_key(char key){
 
 
 void process_command(){
+   if (command_buffer[cursor_y][0] == '\0')
+        return;
    for(int i = 0; i < COMMANDS; i++){
         if (!strcmp(command_buffer[cursor_y], commands[i])){
             switch (i) {
