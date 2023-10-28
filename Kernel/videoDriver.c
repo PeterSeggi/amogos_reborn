@@ -167,26 +167,44 @@ void writeStar(){
 	#define RED 0x00FF290E
 
 	int start_time=ticks_elapsed();
-	putDibujitoMain(0,0x00FAEF02,0x00010053,middleStartX,middleStartY);
+	//putDibujitoMain(0,0x00FAEF02,0x00010053,middleStartX,middleStartY);
+
+	putDibujitoMainOnly(41,LIGHTGRAY,middleStartX-(charWidth*SCALE_MAIN*2),middleStartY);
+	putDibujitoMainOnly(40,YELLOW,middleStartX-(charWidth*SCALE_MAIN*2),middleStartY);
+	putDibujitoMainOnly(39,DARKGRAY,middleStartX-(charWidth*SCALE_MAIN*2),middleStartY);
+	putDibujitoMainOnly(38,BLACK,middleStartX-(charWidth*SCALE_MAIN*2),middleStartY);
+
+	putDibujitoMainOnly(22,LIGHTGRAY,middleStartX-(charWidth*SCALE_MAIN),middleStartY);
+	putDibujitoMainOnly(21,YELLOW,middleStartX-(charWidth*SCALE_MAIN),middleStartY);
+	putDibujitoMainOnly(20,DARKGRAY,middleStartX-(charWidth*SCALE_MAIN),middleStartY);
+	putDibujitoMainOnly(19,WHITELINE,middleStartX-(charWidth*SCALE_MAIN),middleStartY);
+	putDibujitoMainOnly(18,BLACK,middleStartX-(charWidth*SCALE_MAIN),middleStartY);
+
+	putDibujitoMainOnly(37,LIGHTGRAY,middleStartX,middleStartY);
+	putDibujitoMainOnly(36,YELLOW,middleStartX,middleStartY);
+	putDibujitoMainOnly(35,DARKGRAY,middleStartX,middleStartY);
+	putDibujitoMainOnly(34,BLACK,middleStartX,middleStartY);
+
 	putDibujitoMainOnly(12,YELLOW,middleStartX-(charWidth*SCALE_MAIN*2),middleStartY+(charHeight*SCALE_MAIN));
 	putDibujitoMainOnly(11,DARKGRAY,middleStartX-(charWidth*SCALE_MAIN*2),middleStartY+(charHeight*SCALE_MAIN));
 	putDibujitoMainOnly(10,WHITELINE,middleStartX-(charWidth*SCALE_MAIN*2),middleStartY+(charHeight*SCALE_MAIN));
 	putDibujitoMainOnly(9,WHITE,middleStartX-(charWidth*SCALE_MAIN*2),middleStartY+(charHeight*SCALE_MAIN));
 	putDibujitoMainOnly(8,BLACK,middleStartX-(charWidth*SCALE_MAIN*2),middleStartY+(charHeight*SCALE_MAIN));
 
-	putDibujitoMainOnly(21,YELLOW,middleStartX-(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
 	putDibujitoMainOnly(22,LIGHTGRAY,middleStartX-(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(21,YELLOW,middleStartX-(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
 	putDibujitoMainOnly(20,DARKGRAY,middleStartX-(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
 	putDibujitoMainOnly(19,WHITELINE,middleStartX-(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
 	putDibujitoMainOnly(18,BLACK,middleStartX-(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
 
+	putDibujitoMainOnly(27,YELLOW,middleStartX,middleStartY+(charHeight*SCALE_MAIN));
 	putDibujitoMainOnly(26,LIGHTGRAY,middleStartX,middleStartY+(charHeight*SCALE_MAIN));
 	putDibujitoMainOnly(25,DARKGRAY,middleStartX,middleStartY+(charHeight*SCALE_MAIN));
 	putDibujitoMainOnly(24,WHITELINE,middleStartX,middleStartY+(charHeight*SCALE_MAIN));
 	putDibujitoMainOnly(23,BLACK,middleStartX,middleStartY+(charHeight*SCALE_MAIN));
 
-	putDibujitoMainOnly(21,YELLOW,middleStartX+(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
 	putDibujitoMainOnly(22,LIGHTGRAY,middleStartX+(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
+	putDibujitoMainOnly(21,YELLOW,middleStartX+(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
 	putDibujitoMainOnly(20,DARKGRAY,middleStartX+(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
 	putDibujitoMainOnly(19,WHITELINE,middleStartX+(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
 	putDibujitoMainOnly(18,BLACK,middleStartX+(charWidth*SCALE_MAIN),middleStartY+(charHeight*SCALE_MAIN));
@@ -198,19 +216,19 @@ void writeStar(){
 	putDibujitoMainOnly(13,BLACK,middleStartX+(charWidth*SCALE_MAIN*2),middleStartY+(charHeight*SCALE_MAIN));
 	
 	uint8_t starFlag=1;
-	putChar('A',0x00FAEF02,0x00010053,titleStartX,titleStartY);
-	putChar('M',0x00FAEF02,0x00010053,titleStartX+(charWidth*SCALE_MAIN),titleStartY);
-	putChar('O',0x00FAEF02,0x00010053,titleStartX+(charWidth*SCALE_MAIN*2),titleStartY);
-	putChar('G',0x00FAEF02,0x00010053,titleStartX+(charWidth*SCALE_MAIN*3),titleStartY);
-	putChar('O',0x00FAEF02,0x00010053,titleStartX+(charWidth*SCALE_MAIN*4)+4,titleStartY);
-	putChar('S',0x00FAEF02,0x00010053,titleStartX+(charWidth*SCALE_MAIN*5)+4,titleStartY);
+	//putChar('A',0x00FAEF02,0x00010053,titleStartX,titleStartY);
+	//putChar('M',0x00FAEF02,0x00010053,titleStartX+(charWidth*SCALE_MAIN),titleStartY);
+	//putChar('O',0x00FAEF02,0x00010053,titleStartX+(charWidth*SCALE_MAIN*2),titleStartY);
+	//putChar('G',0x00FAEF02,0x00010053,titleStartX+(charWidth*SCALE_MAIN*3),titleStartY);
+	//putChar('O',0x00FAEF02,0x00010053,titleStartX+(charWidth*SCALE_MAIN*4)+4,titleStartY);
+	//putChar('S',0x00FAEF02,0x00010053,titleStartX+(charWidth*SCALE_MAIN*5)+4,titleStartY);
 	while(1){
-		if(ticks_elapsed()-start_time>18){
-			if(starFlag) putDibujitoMain(0,0x00FAEF02,0x00010053,middleStartX,middleStartY);
-			else putDibujitoMain(1,0x00FAEF02,0x00010053,middleStartX,middleStartY);
-			starFlag=!starFlag;
-			start_time=ticks_elapsed();
-		}
+		//if(ticks_elapsed()-start_time>18){
+			//if(starFlag) putDibujitoMain(0,0x00FAEF02,0x00010053,middleStartX,middleStartY);
+			//else putDibujitoMain(1,0x00FAEF02,0x00010053,middleStartX,middleStartY);
+			//starFlag=!starFlag;
+			//start_time=ticks_elapsed();
+		//}
 	}
 }
 
