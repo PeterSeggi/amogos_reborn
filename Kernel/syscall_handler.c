@@ -61,6 +61,6 @@ int read_chars(int fd, char *buffer, int length) {
 }
 
 void sys_draw(uint64_t bitmap, uint64_t hexColor, uint64_t height, uint16_t init_x, uint64_t init_y){
-  changeDrawSize(15);
+  changeDrawSize(3);
   printBitmap(bitmap, hexColor, height, init_x, init_y);
 }

@@ -9,8 +9,9 @@ int main(){
     char* greeting = "Hello amogOS!\n";
     print(greeting);
     char buffer_space[1];
-
-    draw(test[0],0x008E85FF,charHeight,0,0);
+    
+    uint32_t colors[]={0x00FAE425,0x00414141,0x00FBFBFB,0x000000};
+    draw_snakehead_left(colors,200,0);
 
     while(1){
         if (read(buffer_space, 1) == 1){
