@@ -3,11 +3,16 @@
 #include "include/file_descriptors.h"
 
 static char buffer[64] = {'0'};
+static char* char_buffer = " ";
 
 //================================================================================================================================
 // Writting
 //================================================================================================================================
 //================================================================================================================================
+void printChar(char charToPrint){
+    buffer[0] = charToPrint;
+    print(buffer);
+}
 
 void print(char * string){
     _print(STDOUT, string, strlen(string));
@@ -29,12 +34,6 @@ int readRaw(char* buffer, int length){
     return _read(STDKEYS, buffer, length);
 }
 
-int strlen(char * string){
-    int i=0;
-    while(string[i++]!=0);
-    return i;
-}
-
 void printBase(uint64_t value, uint32_t base){
     uintToBase(value, buffer, base);
     print(buffer);
@@ -52,7 +51,7 @@ void printHex(uint64_t value){
 
 
 //================================================================================================================================
-// Number handling
+// General use
 //================================================================================================================================
 //================================================================================================================================
 uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
@@ -88,3 +87,17 @@ uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 	return digits;
 }
 
+int strcmp(const char *str1, const char *str2){
+    while (*str1 && (*str1 == *str2)){
+        str1++;
+        str2++;
+    }
+
+    return *(unsigned char *)str1 - *(unsigned char *)str2;
+}
+
+int strlen(char * string){
+    int i=0;
+    while(string[i++]!=0);
+    return i;
+}
