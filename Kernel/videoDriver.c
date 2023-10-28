@@ -66,7 +66,7 @@ void draw_rectangle(uint64_t ancho, uint64_t alto, uint32_t color, uint64_t init
 //================================================================================================================================
 #define SCALE_REAL 1
 #define SCALE 10
-#define SCALE_MAIN 10
+#define SCALE_MAIN 5
 
 void putChar(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t init_x, uint64_t init_y){
 	for(uint64_t i=0; i<(charHeight*SCALE); i++){
@@ -173,6 +173,10 @@ void writeStar(){
 	putDibujitoMainOnly(40,YELLOW,middleStartX-(charWidth*SCALE_MAIN*2),middleStartY);
 	putDibujitoMainOnly(39,DARKGRAY,middleStartX-(charWidth*SCALE_MAIN*2),middleStartY);
 	putDibujitoMainOnly(38,BLACK,middleStartX-(charWidth*SCALE_MAIN*2),middleStartY);
+
+	putDibujitoMainOnly(44,YELLOW,middleStartX,middleStartY-(charWidth*SCALE_MAIN));
+	putDibujitoMainOnly(43,DARKGRAY,middleStartX,middleStartY-(charWidth*SCALE_MAIN));
+	putDibujitoMainOnly(42,BLACK,middleStartX,middleStartY-(charWidth*SCALE_MAIN));
 
 	putDibujitoMainOnly(22,LIGHTGRAY,middleStartX-(charWidth*SCALE_MAIN),middleStartY);
 	putDibujitoMainOnly(21,YELLOW,middleStartX-(charWidth*SCALE_MAIN),middleStartY);
