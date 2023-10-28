@@ -21,8 +21,8 @@ uint8_t board[BOARD_H][BOARD_W]={0};
 void tablero(){
     //uint8_t size=_getDrawSize();
     uint8_t size=3;
-    for(int i=0; i<BOARD_W; i++){
-        for(int j=0; j<BOARD_H;j++){
+    for(uint8_t i=0; i<BOARD_W; i++){
+        for(uint8_t j=0; j<BOARD_H;j++){
             //dibujo la casilla
             uint32_t color= 
                 (( ((i%(2)==0) && (j%(2))) ||  ((i%(2)) && (j%(2)==0))))? BOARDCOLOR1:BOARDCOLOR2;
@@ -56,11 +56,11 @@ void addApple(uint8_t row, uint8_t column){
 }
 
 void putSnake(uint8_t row, uint8_t column, uint8_t snake){//contemplamos casos de que parte de la serpiente imprimir
-    uint8_t case = checkRight(row,column,snake);
-    case += checkLeft()<<1;
-    case += checkDown()<<2;
-    case += checkUp()<<3;
-    switch(case){
+    uint8_t caso = checkRight(row,column,snake);
+    caso += checkLeft(row,column,snake)<<1;
+    caso += checkDown(row,column,snake)<<2;
+    caso += checkUp(row,column,snake)<<3;
+    switch(caso){
         case(1):
             //draw head left
             break;
