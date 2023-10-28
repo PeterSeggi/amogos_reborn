@@ -18,6 +18,10 @@ void print(char * string){
     _print(STDOUT, string, strlen(string));
 }
 
+void printCant(char* string, int cant){
+    _print(STDOUT, string, cant);
+}
+
 void printError(char * string){
     _print(STDERROR, string, strlen(string));
 }
@@ -101,3 +105,11 @@ int strlen(char * string){
     while(string[i++]!=0);
     return i;
 }
+
+void strcpy(char *destination, const char *source) {
+    while (*source != '\0') {
+        *destination++ = *source++;
+    }
+    *destination = '\0';
+}
+

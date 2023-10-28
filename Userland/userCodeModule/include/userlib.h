@@ -6,6 +6,7 @@
 //escritura
 void print(char * string);
 void printChar(char charToPrint);
+void printCant(char* string, int cant);
 void printError(char * string);
 void printBase(uint64_t value, uint32_t base);
 void printDec(uint64_t value);
@@ -18,6 +19,7 @@ int readRaw(char* buffer, int length);
 
 // general purpose
 int strlen(char * string);
+void strcpy(char *destination, const char *source);
 int strcmp(const char *str1, const char *str2);
 uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
