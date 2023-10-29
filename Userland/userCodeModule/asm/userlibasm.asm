@@ -1,6 +1,7 @@
 GLOBAL int_test
 GLOBAL _print
 GLOBAL _read
+GLOBAL _halt
 
 section .text
 
@@ -34,7 +35,9 @@ _read:
 	pop rbp
 	ret
     
-
+_halt:
+    hlt
+    ret
 
 int_test:
     push rbp

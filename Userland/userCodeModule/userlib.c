@@ -113,3 +113,7 @@ void strcpy(char *destination, const char *source) {
     *destination = '\0';
 }
 
+
+void halt(){
+    _halt();
+}
