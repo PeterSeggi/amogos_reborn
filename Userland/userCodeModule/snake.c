@@ -66,37 +66,34 @@ void putSnake(uint8_t row, uint8_t column, uint8_t snake){//contemplamos casos d
     caso += checkUp(row,column,snake)<<3;
     switch(caso){
         case(1):
-            //draw head left
             draw_snakehead_left(column*(dibWidth*size),row*(dibHeight*size));
             break;
         case(2):
-            //draw head right
             draw_snakehead_right(column*(dibWidth*size),row*(dibHeight*size));
             break;
         case(3):
-            //draw body horizontal
             draw_snakebody_horizontal(column*(dibWidth*size),row*(dibHeight*size));
             break;
         case(4):
-            //draw head up
+            draw_snakehead_up(column*(dibWidth*size),row*(dibHeight*size));
             break;
         case(5):
-            //draw curve down-to-right
+            draw_snakecurve_downleft(column*(dibWidth*size),row*(dibHeight*size));
             break;
         case(6):
-            //draw curve left-to-down
+            draw_snakecurve_downright(column*(dibWidth*size),row*(dibHeight*size));
             break;
         case(8):
-            //draw head down
+            draw_snakehead_down(column*(dibWidth*size),row*(dibHeight*size));
             break;
         case(9):
-            //draw curve up-to-rght
+            draw_snakecurve_upleft(column*(dibWidth*size),row*(dibHeight*size));
             break;
         case(10):
-            //draw curve up-to-left
+            draw_snakecurve_upright(column*(dibWidth*size),row*(dibHeight*size));
             break;
         case(12):
-            //draw body vertical
+            draw_snakebody_vertical(column*(dibWidth*size),row*(dibHeight*size));
             break;
         default://casos sin sentido
             break;

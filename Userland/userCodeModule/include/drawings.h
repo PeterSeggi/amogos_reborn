@@ -19,15 +19,36 @@
 #define dibWidth 16
 
 extern uint16_t square[][dibHeight];
+
 extern uint16_t apple[][dibHeight];
+
 extern uint16_t snakehead_left[][dibHeight];
 extern uint16_t snakehead_right[][dibHeight];
+extern uint16_t snakehead_up[][dibHeight];
+extern uint16_t snakehead_down[][dibHeight];
+
+extern uint16_t snakecurve_downright[][dibHeight];
+extern uint16_t snakecurve_downleft[][dibHeight];
+extern uint16_t snakecurve_upright[][dibHeight];
+extern uint16_t snakecurve_upleft[][dibHeight];
+
 extern uint16_t snakebody_horizontal[][dibHeight];
+extern uint16_t snakebody_vertical[][dibHeight];
 
 //functions
 void draw_snakehead_left(uint64_t init_x, uint64_t init_y);
 void draw_snakehead_right(uint64_t init_x, uint64_t init_y);
+void draw_snakehead_up(uint64_t init_x, uint64_t init_y);
+void draw_snakehead_down(uint64_t init_x, uint64_t init_y);
+
+void draw_snakecurve_downright(uint64_t init_x, uint64_t init_y);
+void draw_snakecurve_downleft(uint64_t init_x, uint64_t init_y);
+void draw_snakecurve_upright(uint64_t init_x, uint64_t init_y);
+void draw_snakecurve_upleft(uint64_t init_x, uint64_t init_y);
+
 void draw_snakebody_horizontal(uint64_t init_x, uint64_t init_y);
+void draw_snakebody_vertical(uint64_t init_x, uint64_t init_y);
+
 void draw_snake(uint16_t bitmap[][dibHeight], uint16_t layers, uint32_t colors[], uint64_t init_x, uint64_t init_y);
 
 void draw_manzana(uint64_t init_x, uint64_t init_y);
