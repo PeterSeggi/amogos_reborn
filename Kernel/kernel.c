@@ -83,7 +83,7 @@ int main()
 	loadKernelScreen();
 
 	clear();
-
+	changeDrawSize(3);
     ((EntryPoint) userspaceAddress)();
     
     /*

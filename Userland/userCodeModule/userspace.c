@@ -11,6 +11,8 @@ int main(){
     print(greeting);
     char buffer_space[1];
 
+    initGame();
+
     addSnake(6,1,7);
     addSnake(5,1,7);
     addSnake(5,2,7);

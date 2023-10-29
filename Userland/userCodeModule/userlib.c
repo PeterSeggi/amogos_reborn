@@ -88,6 +88,9 @@ uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 // Drawing
 //================================================================================================================================
 //================================================================================================================================
+void getScreenData(uint16_t * screenHeight, uint16_t * screenWidth, uint8_t * fontSize, uint8_t * drawSize){
+	_screenData(screenHeight,screenWidth,fontSize,drawSize);
+}
 
 void draw(uint16_t * bitmap, uint32_t color, uint16_t height, uint64_t x, uint64_t y){
 	_draw(bitmap, color, height, x, y);

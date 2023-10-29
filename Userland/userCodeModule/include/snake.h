@@ -6,7 +6,10 @@
 #define BOARDCOLOR1 0x00B77460
 #define BOARDCOLOR2 0x00F2997F
 
+void initGame();
+
 void tablero();
+
 void addApple(uint8_t row, uint8_t column);
 void addSnake(uint8_t row, uint8_t column, uint8_t elem);
 void putSnake(uint8_t row, uint8_t column, uint8_t snake);

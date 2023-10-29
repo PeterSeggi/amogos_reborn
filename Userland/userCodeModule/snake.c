@@ -2,15 +2,27 @@
 #include "include/drawings.h"
 #include "include/userlib.h"
 
-#define BOARD_H 6
-#define BOARD_W 6
-
 #define SNAKE1  7
 #define SNAKE2  14
 
-uint8_t board[BOARD_H][BOARD_W]={{0}};
-//uint8_t size=_getDrawSize();
-uint8_t size=3;
+uint8_t BOARD_H;
+uint8_t BOARD_W;
+
+uint8_t board[1000][1000];//valor grande para inicializarla (evitamos tener que usar malloc)
+
+uint8_t fontSize, drawSize;
+uint16_t screenHeight, screenWidth;
+
+void initGame(){
+    getScreenData(&screenHeight,&screenWidth,&fontSize,&drawSize);
+    BOARD_H=screenHeight/dibHeight;
+    BOARD_W=screenWidth/dibWidth;
+    for(int i=0; i<BOARD_W; i++){
+        for(int j=0; j<BOARD_H; j++){
+            board[i][j]=0;
+        }
+    }
+}
 
 //================================================================================================================================
 // Tablero de juego
@@ -21,19 +33,20 @@ uint8_t size=3;
 //identificamos choques entre snakes ya que la suma del casillero va a dar un numero mucho mas alto
 //snake 1= 7;  snake 2= 14;
 void tablero(){
+    
     for(uint8_t i=0; i<BOARD_W; i++){
         for(uint8_t j=0; j<BOARD_H;j++){
             //dibujo la casilla
             uint32_t color= 
                 (( ((i%(2)==0) && (j%(2))) ||  ((i%(2)) && (j%(2)==0))))? BOARDCOLOR1:BOARDCOLOR2;
-            draw(square[0], color, dibHeight, i*(dibWidth*size),j*(dibHeight*size));
+            draw(square[0], color, dibHeight, i*(dibWidth*drawSize),j*(dibHeight*drawSize));
 
             uint8_t casilla = board[i][j];
             switch(casilla){
                 case(0)://no hay nada
                     break;
                 case(1)://manzana
-                    draw_manzana(i*(dibWidth*size),j*(dibHeight*size));
+                    draw_manzana(i*(dibWidth*drawSize),j*(dibHeight*drawSize));
                     break;
                 case(7)://snake1
                     putSnake(j,i,casilla);
@@ -66,34 +79,34 @@ void putSnake(uint8_t row, uint8_t column, uint8_t snake){//contemplamos casos d
     caso += checkUp(row,column,snake)<<3;
     switch(caso){
         case(1):
-            draw_snakehead_left(column*(dibWidth*size),row*(dibHeight*size));
+            draw_snakehead_left(column*(dibWidth*drawSize),row*(dibHeight*drawSize));
             break;
         case(2):
-            draw_snakehead_right(column*(dibWidth*size),row*(dibHeight*size));
+            draw_snakehead_right(column*(dibWidth*drawSize),row*(dibHeight*drawSize));
             break;
         case(3):
-            draw_snakebody_horizontal(column*(dibWidth*size),row*(dibHeight*size));
+            draw_snakebody_horizontal(column*(dibWidth*drawSize),row*(dibHeight*drawSize));
             break;
         case(4):
-            draw_snakehead_up(column*(dibWidth*size),row*(dibHeight*size));
+            draw_snakehead_up(column*(dibWidth*drawSize),row*(dibHeight*drawSize));
             break;
         case(5):
-            draw_snakecurve_downleft(column*(dibWidth*size),row*(dibHeight*size));
+            draw_snakecurve_downleft(column*(dibWidth*drawSize),row*(dibHeight*drawSize));
             break;
         case(6):
-            draw_snakecurve_downright(column*(dibWidth*size),row*(dibHeight*size));
+            draw_snakecurve_downright(column*(dibWidth*drawSize),row*(dibHeight*drawSize));
             break;
         case(8):
-            draw_snakehead_down(column*(dibWidth*size),row*(dibHeight*size));
+            draw_snakehead_down(column*(dibWidth*drawSize),row*(dibHeight*drawSize));
             break;
         case(9):
-            draw_snakecurve_upleft(column*(dibWidth*size),row*(dibHeight*size));
+            draw_snakecurve_upleft(column*(dibWidth*drawSize),row*(dibHeight*drawSize));
             break;
         case(10):
-            draw_snakecurve_upright(column*(dibWidth*size),row*(dibHeight*size));
+            draw_snakecurve_upright(column*(dibWidth*drawSize),row*(dibHeight*drawSize));
             break;
         case(12):
-            draw_snakebody_vertical(column*(dibWidth*size),row*(dibHeight*size));
+            draw_snakebody_vertical(column*(dibWidth*drawSize),row*(dibHeight*drawSize));
             break;
         default://casos sin sentido
             break;

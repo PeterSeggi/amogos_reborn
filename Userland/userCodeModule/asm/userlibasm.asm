@@ -2,6 +2,7 @@ GLOBAL int_test
 GLOBAL _print
 GLOBAL _read
 GLOBAL _draw
+GLOBAL _screenData
 
 section .text
 
@@ -53,9 +54,9 @@ int_test:
     ret
 
 ;================================================================================================================================
-;_draw fibuja en pantalla un bitmap (uint16_t width)
+;_draw dibuja en pantalla un bitmap (uint16_t width)
 ;int 80h para usar la syscall
-;IN: rdi=puntero a str; rsi=strlen; rdx: fd-> 1 STDOUT -> 2 STDERROR
+;IN: rdi=bitmap; rsi=color; rdx: bitmap height; rcx: init_x position; r8: init_y position
 ;================================================================================================================================
 ;================================================================================================================================
 _draw:
@@ -72,6 +73,25 @@ _draw:
     ret
 ;================================================================================================================================
 
+;================================================================================================================================
+;_screenData devuelve informacion del videoDriver
+;int 80h para usar la syscall
+;IN: rdi=screenHeight; rsi=screenWidth; rdx:fontSize; rcx: drawSize;
+;================================================================================================================================
+;================================================================================================================================
+_screenData:
+    push rbp
+    mov rbp, rsp
+
+    mov rax, 0x83   ;sys_draw ID
+
+    int 80h     ;syscall 
+
+.end:
+    mov rsp, rbp
+    pop rbp
+    ret
+;================================================================================================================================
 
 section .bss
     newLineString db "hello" 
