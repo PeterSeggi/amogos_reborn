@@ -8,7 +8,9 @@
 #define SNAKE1  7
 #define SNAKE2  14
 
-uint8_t board[BOARD_H][BOARD_W]={0};
+uint8_t board[BOARD_H][BOARD_W]={{0}};
+//uint8_t size=_getDrawSize();
+uint8_t size=3;
 
 //================================================================================================================================
 // Tablero de juego
@@ -19,8 +21,6 @@ uint8_t board[BOARD_H][BOARD_W]={0};
 //identificamos choques entre snakes ya que la suma del casillero va a dar un numero mucho mas alto
 //snake 1= 7;  snake 2= 14;
 void tablero(){
-    //uint8_t size=_getDrawSize();
-    uint8_t size=3;
     for(uint8_t i=0; i<BOARD_W; i++){
         for(uint8_t j=0; j<BOARD_H;j++){
             //dibujo la casilla
@@ -55,6 +55,10 @@ void addApple(uint8_t row, uint8_t column){
     board[column-1][row-1]=1;//resta menos uno para contemplar que uno no piensa arrancando en cero jajj
 }
 
+void addSnake(uint8_t row, uint8_t column, uint8_t elem){
+    board[column-1][row-1]=elem;
+}
+
 void putSnake(uint8_t row, uint8_t column, uint8_t snake){//contemplamos casos de que parte de la serpiente imprimir
     uint8_t caso = checkRight(row,column,snake);
     caso += checkLeft(row,column,snake)<<1;
@@ -63,12 +67,15 @@ void putSnake(uint8_t row, uint8_t column, uint8_t snake){//contemplamos casos d
     switch(caso){
         case(1):
             //draw head left
+            draw_snakehead_left(column*(dibWidth*size),row*(dibHeight*size));
             break;
         case(2):
             //draw head right
+            draw_snakehead_right(column*(dibWidth*size),row*(dibHeight*size));
             break;
         case(3):
             //draw body horizontal
+            draw_snakebody_horizontal(column*(dibWidth*size),row*(dibHeight*size));
             break;
         case(4):
             //draw head up

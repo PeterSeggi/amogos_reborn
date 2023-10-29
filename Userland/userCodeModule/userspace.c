@@ -11,9 +11,11 @@ int main(){
     print(greeting);
     char buffer_space[1];
 
-    uint32_t colors[]={0x00FAE425,0x00414141,0x00FBFBFB,0x000000};
-    draw_snakehead_left(colors,200,0);
-    addApple(2,1);
+    addSnake(3,1,7);
+    addSnake(3,2,7);
+    addSnake(3,3,7);
+    addSnake(3,4,7);
+    addSnake(3,5,7);
     tablero();
 
     while(1){
