@@ -31,8 +31,12 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax) {
       sys_gettimeofday(rdi, rsi, rdx);
       break;
 
-    case (0x4d):
+    case (0x77):
       sys_getRax(rdi);
+      break;
+
+    case (0x78):
+      sys_getRegisters(rdi);
       break;
   }
 }
@@ -89,6 +93,24 @@ void sys_gettimeofday(int *hrs, int *min, int *seg){
  }
 
 void sys_getRax(int *rax){
-  getRax(rax);
+  *rax = _getAReg();
 }
- 
+
+void sys_getRegisters(struct registers *regsStruct){
+  regsStruct->rax = _getAReg();
+  regsStruct->rbx = _getBReg();
+  regsStruct->rcx = _getCReg();
+  regsStruct->rdx = _getDReg();
+  regsStruct->rbp = _getRbp();
+  regsStruct->rsp = _getRsp();
+  regsStruct->rsi = _getRsi();
+  regsStruct->rdi = _getRdi();
+  regsStruct->r8 = _getR8();
+  regsStruct->r9 = _getR9();
+  regsStruct->r10 = _getR10();
+  regsStruct->r11 = _getR11();
+  regsStruct->r12 = _getR12();
+  regsStruct->r13 = _getR13();
+  regsStruct->r14 = _getR14();
+  regsStruct->r15 = _getR15();
+}

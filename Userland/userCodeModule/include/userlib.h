@@ -25,5 +25,6 @@ void printClock();
 
 //Registers
 void getRax(int *rax);
+void printRegisters();
 
 #endif

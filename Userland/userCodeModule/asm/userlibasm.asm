@@ -11,6 +11,7 @@ GLOBAL _getHours
 
 GLOBAL _getRax
 GLOBAL _getRbx
+GLOBAL _getRegisters
 
 section .text
 
@@ -96,12 +97,22 @@ _getRbx:
     push rbp
 	mov rbp, rsp
 
-	mov rax, rbx
+	mov rax, 2
 	
 	mov rsp, rbp
 	pop rbp
 	ret
 
+_getRegisters:
+ 	push rbp
+	mov rbp, rsp
+
+    mov rax, 0x78
+    int 80h;
+
+	mov rsp, rbp
+	pop rbp
+	ret
 
 section .bss
     newLineString db "hello" 

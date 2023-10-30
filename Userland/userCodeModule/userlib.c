@@ -115,3 +115,22 @@ void printClock(){
 void getRax(int *rax){
 	_getRax(rax);
 }
+
+void printRegisters(){
+	struct registers regsStruct;
+	_getRegisters(&regsStruct);
+	int values[]={regsStruct.rax, regsStruct.rbx, regsStruct.rcx, regsStruct.rdx, regsStruct.rbp, regsStruct.rsp,
+					regsStruct.rsi, regsStruct.rdi, regsStruct.r8, regsStruct.r9, regsStruct.r10, regsStruct.r11, 
+					regsStruct.r12, regsStruct.r13, regsStruct.r14, regsStruct.r15};
+	char* names[]={"rax:", "rbx:", "rcx:", "rdx:", "rbp:", "rsp:", "rsi:", "rdi:",
+				 	"r8:", "r9:", "r10:", "r11:", "r12:", "r13:", "r14:", "r15:"};
+	int cantRegisters=16;
+	for(int i=0; i<cantRegisters; i++){
+		print(names[i]);
+		printDec(values[i]);
+		if(i%5==0){
+			print("\n");
+		}
+		print("   ");
+	}	
+}

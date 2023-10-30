@@ -25,13 +25,14 @@ int main(){
 
     print("\n");
     int rax;
-    print("fwap  ");
+    print("Desde el kernel: ");
     getRax(&rax);
     printDec(rax);
-    print("  fwapn't");
-    print("  fwap  ");
+    print("\n");
+    print("Desde el user: ");
     printDec(_getRbx());
-    print("  fwapn't");
+    print("\n");
+    printRegisters();
 
 
     while(1){

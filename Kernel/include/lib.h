@@ -16,6 +16,4 @@ uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
 int pow(int base, int exp);
 
-void getRax(int *rax);
-
 #endif
