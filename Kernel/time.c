@@ -2,6 +2,7 @@
 #include <naiveConsole.h>
 #include <stdint.h>
 #include <time.h>
+#include <interrupts.h>
 
 #define MILLENIUM 2000 // cambiarlo si llega a ser necesario
 #define CENTURY 0      // lo usamos para calcular la fecha completa
@@ -16,7 +17,17 @@ void timer_handler() {
   update_clock();
 }
 
-int ticks_elapsed() { return ticks; }
+unsigned long ticks_elapsed() { return ticks; }
+
+long long nanos_elapsed(){
+  return ((long long)ticks*1000000000/18);
+}
+
+long long milis_elapsed(){
+  return ((long long)ticks*1000/18);
+}
+
+unsigned long seconds_elapsed() { return ticks / 18; }
 
 void update_clock() {
   if (ticks % 18 == 0) {
@@ -29,8 +40,6 @@ void update_clock() {
 }
 
 void set_clock_location(uint8_t *location) { clockLocation = location; }
-
-int seconds_elapsed() { return ticks / 18; }
 
 void formatTime(uint8_t *sec, uint8_t *min, uint8_t *hour) {
   *sec = _getSeconds();
@@ -144,9 +153,19 @@ void printDate(){
 	ncNewline();
 }
 
-void sleep(int sec){
+void sleep(uint64_t sec){
 	unsigned long t0 = ticks_elapsed();
-	while( (ticks_elapsed()-t0)/18 < sec );
+	while( (ticks_elapsed()-t0)/18 < sec ) _hlt();
+}
+
+void nanosleep(uint64_t nanos){
+  long long t0 = nanos_elapsed();
+  while( (nanos_elapsed()-t0) < nanos ) _hlt();
+}
+
+void milisleep(uint64_t milis){
+  long long t0 = milis_elapsed();
+  while( (milis_elapsed()-t0) < milis ) _hlt();
 }
 
 void my_ints(){

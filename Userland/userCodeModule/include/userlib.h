@@ -10,6 +10,9 @@ void printBase(uint64_t value, uint32_t base);
 void printDec(uint64_t value);
 void printHex(uint64_t value);
 
+//wait
+void miliSleep(uint64_t milis);
+
 //dibujo
 void draw(uint16_t * bitmap, uint32_t color, uint16_t height, uint64_t x, uint64_t y);
 void getScreenData(uint16_t * screenHeight, uint16_t * screenWidth, uint8_t * fontSize, uint8_t * drawSize);

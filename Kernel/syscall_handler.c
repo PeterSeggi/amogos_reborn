@@ -21,6 +21,10 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
     sys_read(rdi, rsi, rdx);
     break;
 
+  case (0x23):
+    sys_nanosleep(rdi);
+    break;
+
   case (0x77):
     sys_draw(rdi, rsi, rdx, rcx, r8);
     break;
@@ -62,6 +66,10 @@ int read_chars(int fd, char *buffer, int length) {
     }
   }
   return chars_read;
+}
+
+void sys_nanosleep(uint64_t nanos){
+  milisleep(nanos);
 }
 
 void sys_draw(uint64_t bitmap, uint64_t hexColor, uint64_t height, uint64_t init_x, uint64_t init_y){
