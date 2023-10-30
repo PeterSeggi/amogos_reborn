@@ -20,6 +20,7 @@ void getScreenData(uint16_t * screenHeight, uint16_t * screenWidth, uint8_t * fo
 // lectura
 int read(char* buffer, int length);
 int readRaw(char* buffer, int length);
+int readLast(char* buffer, int length);
 
 // general purpose
 int strlen(char * string);

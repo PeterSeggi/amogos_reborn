@@ -7,6 +7,7 @@
 #define KEY_BUF_SIZE 16
 #define STDIN 0
 #define STDKEYS 3
+#define STDLAST 4
 
 const unsigned char scan_chars[128] = {
     0,    27,   '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-',  '=',
@@ -108,6 +109,10 @@ int read_key(int fd) {
 
     if (read_index == insert_index)
       to_read = 0;
+  }
+
+  else if (fd == STDLAST) {
+    toRet = key_buf[insert_index - 1];
   }
 
   return toRet;

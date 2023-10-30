@@ -319,7 +319,7 @@ void Snake(){
     snakeSetup(SNAKE1,&snakes);    
 
     while(!exit && !error){
-        if(read(keypressed, 1)>0){
+        if(readLast(keypressed, 1)>0){
             print("\n");
             printHex(keypressed[0]);
             print("\n");

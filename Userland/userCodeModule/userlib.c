@@ -25,6 +25,10 @@ int readRaw(char* buffer, int length){
     return _read(STDKEYS, buffer, length);
 }
 
+int readLast(char* buffer, int length){
+    return _read(STDLAST, buffer, length);
+}
+
 int strlen(char * string){
     int i=0;
     while(string[i++]!=0);
