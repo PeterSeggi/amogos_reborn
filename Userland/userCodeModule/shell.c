@@ -4,24 +4,36 @@
 #define COMMANDS 2
 #define VERT_SIZE 32
 #define LINE_SIZE 63
+#define BUFFER_SIZE 128
 #define FONT_SIZE 1
 
-char command_buffer[VERT_SIZE][LINE_SIZE];
-int cursor_y = 0;
-int cursor_x = 0;
-int start_index = 0;
-int input_index = 0;
+#define PROMPT_START "$ "
+#define ERROR_PROMPT "Unknown command: "
 
-int exit_command = 0;
-
-char* prompt_start = "$ ";
+// Buffers
+char screen_buffer[VERT_SIZE][LINE_SIZE];
+char command_buffer[BUFFER_SIZE];
+static char* commands[COMMANDS] = {"exit", "clear"};
 char char_buffer[1];
 
-static char* commands[COMMANDS] = {"exit", "clear"};
+// Cursors & flags
+int command_cursor = 0;
+int cursor_y = 0;
+int cursor_x = 0;
+int exit_command = 0;
+
+// Important indexes
+int limit_index = 0;
+int rows_to_show = VERT_SIZE / FONT_SIZE;
+
+
+// commands to do: help, resize, time, registers
+// commands to shitpost: cowsay, ls, amogus?
+
 
 int shell(){
     clearScreen();
-    print(prompt_start);
+    print(PROMPT_START);
 
     while(!exit_command){
         if (read(char_buffer, 1) == 1){
@@ -38,44 +50,64 @@ int shell(){
 
 void process_key(char key){
     if (key == '\n'){
-        command_buffer[cursor_y][cursor_x] = '\0';
-        print("\n");
-        process_command();
 
-        cursor_y++;
+        /*
+        En orden quiero:
+        - Agregar \0 a ambos buffers
+        - Shift 
+            + check si esta en el limit
+            + reescribo desde limit - rows_shown y cambio el limite a uno para abajo
+        - cursor_y va para abajo o loopea (es circular) 
+        - Meto un enter
+        - proceso el comando 
+        - copio y printeo el start 
+         */
+
+        screen_buffer[cursor_y][cursor_x] = '\0';
+        command_buffer[command_cursor] = '\0';
         check_shift();
 
-        cursor_x = 2;
-        strcpy(command_buffer[cursor_y], prompt_start);
-        print(prompt_start);
+        process_command(command_buffer);
+
+        command_cursor = 0;
+        cursor_x = 2; // dejo lugar para el prompt start
+        
+        strcpy(screen_buffer[cursor_y], PROMPT_START);
+        print(PROMPT_START);
         return;
     }
 
     if (key == '\b'){
-        if (!cursor_x)
+        if (!command_cursor)
             return;
 
-        cursor_x--; 
+        command_cursor--;
+        cursor_x = mod(cursor_x - 1, LINE_SIZE);
         printChar(key);
         return;
     }
 
-    // a partir de aca si esta lleno la linea nos vamos
-    if (cursor_x == LINE_SIZE - 15)
+    // a partir de aca si esta lleno el buffer nos vamos
+    if (command_cursor == BUFFER_SIZE - 1) 
         return;
 
+    if (cursor_x == LINE_SIZE){
+        in_line_shift();
+        cursor_x = 0;
+    }
     else {
-        command_buffer[cursor_y][cursor_x++] = key;
+        screen_buffer[cursor_y][cursor_x++] = key;
+        command_buffer[command_cursor++] = key;
         printChar(key);
     }
 }
 
-void process_command(){
-   if (command_buffer[cursor_y][2] == '\0'){
+void process_command(char* buffer){
+   if (buffer[0] == '\0'){
         return;
     }
    for(int i = 0; i < COMMANDS; i++){
-        if (!strcmp(command_buffer[cursor_y] + 2, commands[i])){
+        if (!strcmp(buffer, commands[i])){
             switch (i) {
                 case 0:
                     exit_command = 1;
@@ -84,60 +116,70 @@ void process_command(){
                     clearScreen(); 
                     cursor_y = 0;
                     cursor_x = 0;
-                    start_index = 0;
+                    limit_index = 0;
                     break;
             }
             return;
         }
     }
 
-    strcpy(command_buffer[(cursor_y + 1) % VERT_SIZE], "Unkown command: ");
-    strcpy(command_buffer[(cursor_y + 1) % VERT_SIZE] + 15, command_buffer[cursor_y]  + 2); // ese +2 es para que no se guarde el prompt start en unknown command
-    cursor_y++;
-    check_shift();
-    print(command_buffer[cursor_y]);
+    // En caso de no encontrar hacemos esto
+    cursor_x = 0;
 
-    print("\n");
+    strcpy(screen_buffer[(cursor_y) % VERT_SIZE], ERROR_PROMPT);
+    cursor_x += strlen(ERROR_PROMPT) - 1; // ese - 1 saca el \0 del final del ERROR_PROMPT
+
+
+    for (int c = 0; c < strlen(buffer); c++){
+        if (cursor_x == LINE_SIZE - 1){
+            print(screen_buffer[cursor_y]);
+            in_line_shift();
+            cursor_x = 0;
+        }
+        screen_buffer[cursor_y][cursor_x++] = buffer[c];
+    }
+
+    screen_buffer[cursor_y][cursor_x] = '\0';
+    print(screen_buffer[cursor_y]);
+    check_shift();
     return;
 }
 
-
 void shift(){
     clearScreen();
-    int rows_to_print = VERT_SIZE/FONT_SIZE;
-    for (int i = 0; i < rows_to_print - 1; i++){
-        print(command_buffer[(i + start_index + 1) % VERT_SIZE]);
+    for (int i = 1; i < rows_to_show; i++){
+        int line_number = mod(limit_index - rows_to_show + i, VERT_SIZE);
+        print(screen_buffer[line_number]);
         print("\n");
     }
-    
+}
+
+
+void in_line_shift(){
+    cursor_y = (cursor_y + 1) % VERT_SIZE;
+    if (cursor_y == limit_index){
+        clearScreen();
+        int i;
+        for (i = 1; i < rows_to_show - 1; i++){
+            int line_number = mod(limit_index - rows_to_show + i, VERT_SIZE);
+            print(screen_buffer[line_number]);
+            print("\n");
+        }
+        print(screen_buffer[mod(limit_index - rows_to_show + i, VERT_SIZE)]);
+    }
 }
 
 
 
-void check_shift(){
-    if (cursor_y == VERT_SIZE) cursor_y = 0;
-    if (cursor_y == start_index){
+int check_shift(){
+    int flagged = 0;
+    cursor_y = (cursor_y + 1) % VERT_SIZE;
+    if (cursor_y == limit_index){
         shift();
-        start_index++;
-        if (start_index == VERT_SIZE) start_index = 0;
+        flagged = 1;
+        limit_index = (limit_index + 1) % VERT_SIZE;
     }
-}
-
-
-
-
-
-// hay que implementar esto 
-int compare_command(int start_index, const char* command){
-    int i = 0;
-    int offset_com = 0;
-    int offset = 0;
-    while ((*command_buffer[start_index] + offset_com) && *command_buffer[start_index] + offset_com == command[offset]){
-        if (offset_com == LINE_SIZE){
-            offset_com = 0;
-            start_index++;    
-        } 
-    }
-
-    return *command_buffer[start_index] + offset_com - command[offset];
+    else
+        print("\n");
+    return flagged;
 }

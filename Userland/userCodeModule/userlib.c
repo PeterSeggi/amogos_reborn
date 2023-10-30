@@ -117,3 +117,8 @@ void strcpy(char *destination, const char *source) {
 void halt(){
     _halt();
 }
+
+int mod(int val, int base){
+    if (val < 0) return (val + base) % base;
+    return val % base;
+}

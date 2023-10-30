@@ -22,5 +22,6 @@ int strlen(char * string);
 void strcpy(char *destination, const char *source);
 int strcmp(const char *str1, const char *str2);
 uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
+int mod(int val, int base);
 
 #endif
