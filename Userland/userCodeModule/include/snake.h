@@ -8,7 +8,7 @@
 
 void Snake();
 
-void initGame();
+uint8_t initGame();
 void tablero();
 
 void addApple(uint8_t row, uint8_t column);

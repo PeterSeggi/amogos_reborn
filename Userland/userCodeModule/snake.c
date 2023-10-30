@@ -10,6 +10,8 @@
 // Board Stuff
 //================================================================================================================================
 //================================================================================================================================
+#define MIN_DIM 5//contempla dim_snake_start=3 con 2 de margen
+#define START_MARGIN 2
 
 uint8_t BOARD_H=20; //basandonos en las dimensiones del de maps
 uint8_t BOARD_W=20;
@@ -23,13 +25,16 @@ uint8_t dibSpaceHeight, dibSpaceWidth;//el valor que realmente toma luego del si
 
 uint8_t board_start_x, board_start_y;
 
-void initGame(){
+uint8_t middleBoard_y;
+
+uint8_t initGame(){
     getScreenData(&screenHeight,&screenWidth,&fontSize,&drawSize);
     dibSpaceHeight=(dibHeight*drawSize);
     dibSpaceWidth=(dibWidth*drawSize);
     BOARD_H= BOARD_H>(screenHeight/dibSpaceHeight)?  (screenHeight/dibSpaceHeight) : BOARD_H;    //buscamos la menor dimension
     BOARD_W= BOARD_W>(screenWidth/dibSpaceWidth)?  (screenWidth/dibSpaceWidth) : BOARD_W;
     BOARD_H>BOARD_W? (BOARD_H=BOARD_W) : (BOARD_W=BOARD_H);//nos aseguramos de que el tablero sea cuadrado
+    if(BOARD_H<MIN_DIM) return 1;
     for(int i=0; i<BOARD_W; i++){
         for(int j=0; j<BOARD_H; j++){
             board[i][j]=0;
@@ -37,6 +42,8 @@ void initGame(){
     }
     board_start_x=(screenWidth-(BOARD_W*dibSpaceWidth))/2;
     board_start_y=(screenHeight-(BOARD_H*dibSpaceHeight))/2;
+    middleBoard_y=BOARD_H/2;
+    return 0;
 }
 
 void tablero(){
@@ -56,11 +63,11 @@ void tablero(){
 }
 
 void addApple(uint8_t row, uint8_t column){
-    board[column-1][row-1]=1;//resta menos uno para contemplar que uno no piensa arrancando en cero jajj
+    board[column][row]=1;
 }
 
 void addSnake(uint8_t row, uint8_t column, uint8_t elem){
-    board[column-1][row-1]=elem;
+    board[column][row]=elem;
 }
 
 void putSnake(uint8_t row, uint8_t column, uint8_t snake){//contemplamos casos de que parte de la serpiente imprimir
@@ -129,42 +136,82 @@ uint8_t checkRight(uint8_t row, uint8_t column, uint8_t value){
 uint16_t player1Points=0;
 uint16_t player2Points=0;
 
+//snake stuff
+//head extremo izq, tail extremo der
+/*uint8_t snake1_head_row=0;
+uint8_t snake1_head_column=middleBoard_y;
+uint8_t snake1_tail_row=0;
+uint8_t snake1_tail_column=middleBoard_y;
+
+uint8_t snake2_head_row=0;
+uint8_t snake2_head_column=middleBoard_y;
+uint8_t snake2_tail_row=0;
+uint8_t snake2_tail_column=middleBoard_y;*/
+
 //================================================================================================================================
 // Main Stuff
 //================================================================================================================================
 //================================================================================================================================
 #define EXIT_KEY 'q'
 
-char exit=0;//only changes when exit key is pressed to exit the game
-#define buffer_dim 18
-char keypressed[buffer_dim];
+uint8_t exit=0;//only changes when exit key is pressed to exit the game
+uint8_t snakes=0;//quantity of players
+#define buffer_dim 1
+char keypressed[buffer_dim]={0};
 
 
 void Snake(){
-    initGame();
+    if(initGame()){
+        print("size to small!");
+        return;
+    }
 
-    addSnake(6,1,7);
-    addSnake(5,1,7);
-    addSnake(5,2,7);
-    addSnake(4,2,7);
-
-    addSnake(2,3,7);
-    addSnake(2,4,7);
-    addSnake(3,4,7);
-    addSnake(3,5,7);
+    snakeSetup(SNAKE1);    
 
     while(!exit){
-        if(read(keypressed, 1) == 1){
-            for(int i=0; !exit && i<buffer_dim; i++){
-                if(keypressed[i]==EXIT_KEY) exit=1;
-                keypressed[i]=0;
+        if(read(keypressed, 1)>0){
+            switch(keypressed[0]){
+                case ('q'):
+                    exit=1;
+                    keypressed[0]=0;
+                    tablero();
+                    break;
+                
+                case ('a'):
+                    break;
+
+                case ('s'):
+                    break;
+
+                case ('d'):
+                    break;
+
+                case ('w'):
+                    break;
+
+                default:
+                    break;
             }
         }
-        tablero();
-        miliSleep(50);
+        miliSleep(100);
     }
 
     print("BYE!");
 
     return;
+}
+
+//setup
+
+void snakeSetup(uint8_t snake){
+    uint8_t snake_column_start=START_MARGIN;
+    if(snakes) snake_column_start=BOARD_W - (MIN_DIM*dibSpaceWidth);
+
+    addSnake(middleBoard_y,snake_column_start,snake);//head
+    addSnake(middleBoard_y,snake_column_start+1,snake);//midle
+    addSnake(middleBoard_y,snake_column_start+2,snake);//tail
+
+    snakes++;
+
+    tablero();//print the starting board
 }
