@@ -23,7 +23,7 @@ int cursor_x = 0;
 int exit_command = 0;
 
 // Important indexes
-int limit_index = 0;
+int limit_index = VERT_SIZE - 1;
 int rows_to_show = VERT_SIZE / FONT_SIZE;
 
 
@@ -92,7 +92,7 @@ void process_key(char key){
         return;
 
     if (cursor_x == LINE_SIZE){
-        in_line_shift();
+        check_shift();
         cursor_x = 0;
     }
     else {
@@ -116,7 +116,7 @@ void process_command(char* buffer){
                     clearScreen(); 
                     cursor_y = 0;
                     cursor_x = 0;
-                    limit_index = 0;
+                    limit_index = VERT_SIZE/FONT_SIZE - 1;
                     break;
             }
             return;
@@ -133,7 +133,7 @@ void process_command(char* buffer){
     for (int c = 0; c < strlen(buffer); c++){
         if (cursor_x == LINE_SIZE - 1){
             print(screen_buffer[cursor_y]);
-            in_line_shift();
+            check_shift();
             cursor_x = 0;
         }
         screen_buffer[cursor_y][cursor_x++] = buffer[c];
@@ -154,32 +154,16 @@ void shift(){
     }
 }
 
-
-void in_line_shift(){
-    cursor_y = (cursor_y + 1) % VERT_SIZE;
-    if (cursor_y == limit_index){
-        clearScreen();
-        int i;
-        for (i = 1; i < rows_to_show - 1; i++){
-            int line_number = mod(limit_index - rows_to_show + i, VERT_SIZE);
-            print(screen_buffer[line_number]);
-            print("\n");
-        }
-        print(screen_buffer[mod(limit_index - rows_to_show + i, VERT_SIZE)]);
-    }
-}
-
-
-
 int check_shift(){
-    int flagged = 0;
-    cursor_y = (cursor_y + 1) % VERT_SIZE;
+    int shifted = 0;
     if (cursor_y == limit_index){
         shift();
-        flagged = 1;
+        shifted = 1;
         limit_index = (limit_index + 1) % VERT_SIZE;
     }
-    else
+    else {
         print("\n");
-    return flagged;
+    }
+    cursor_y = (cursor_y + 1) % VERT_SIZE;
+    return shifted;
 }
