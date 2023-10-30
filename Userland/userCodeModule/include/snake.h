@@ -22,15 +22,19 @@ void addSnake(uint8_t row, uint8_t column, uint8_t elem, enum Direction dir);
 void putSnake(uint8_t row, uint8_t column, uint8_t snake);
 
 //directions
-void mov_snake_down(uint8_t snake);
-void mov_snake_up(uint8_t snake);
-void mov_snake_left(uint8_t snake);
-void mov_snake_right(uint8_t snake);
+uint8_t slither(uint8_t column, uint8_t row, enum Direction dir, uint8_t snake);
 
 void checkWithOthersDir( enum Direction currenDir, uint8_t currentRow, uint8_t currentCol, uint8_t othersInfo);
 enum Direction getDirection(uint8_t row, uint8_t column);
-
+uint8_t changePosition(uint8_t column, uint8_t row, enum Direction dir, uint8_t snake);
+void saveTailPosition(uint8_t snake, uint8_t column, uint8_t row);
 void saveHeadPosition(uint8_t snake, uint8_t column, uint8_t row);
+
+//getters
+uint8_t getSnakeTailCol(uint8_t snake);
+uint8_t getSnakeTailRow(uint8_t snake);
+uint8_t getSnakeHeadCol(uint8_t snake);
+uint8_t getSnakeHeadRow(uint8_t snake);
 
 //checks
 uint8_t checkUp(uint8_t row, uint8_t column, uint8_t value);

@@ -69,11 +69,7 @@ void addApple(uint8_t row, uint8_t column){
 }
 
 void addSnake(uint8_t row, uint8_t column, uint8_t elem, enum Direction dir){
-    print("adding");
     board[column][row]=elem + dir;
-    printHex(column);
-    printHex(row);
-    print("\n");
 }
 
 
@@ -90,87 +86,82 @@ uint16_t player2Points=0;
 
 uint8_t snake1_head_row=0, snake1_head_column=0;
 uint8_t snake2_head_row=0, snake2_head_column=0;
+uint8_t snake1_tail_row=0, snake1_tail_column=0;
+uint8_t snake2_tail_row=0, snake2_tail_column=0;
 
-void mov_snake_down(uint8_t snake){
-    print("DOWN");
-}
-
-void mov_snake_up(uint8_t snake){
-    print("UP");
-}
-
-void mov_snake_left(uint8_t snake){
-    print("LEFT");
-}
-
-void mov_snake_right(uint8_t snake){
-    print("RIGHT");
-}
-
-
-
-void test(uint8_t snake, uint8_t column, uint8_t row, enum Direction dir){
-    //checkeamos cual es la siguiente a mover
-    uint8_t caso = checkRight(row,column,snake);
-    caso += checkLeft(row,column,snake)<<1;
-    caso += checkDown(row,column,snake)<<2;
-    caso += checkUp(row,column,snake)<<3;
-    switch(caso){
-        case(1):
-            break;
-        case(2):
-            break;
-        case(3):
-            break;
-        case(4):
-            break;
-        case(5):
-            break;
-        case(6):
-            break;
-        case(8):
-            break;
-        case(9):
-            break;
-        case(10):
-            break;
-        case(12):
-            break;
-        default:
-            break;
-    }
-
-    //movemos la seccion del snake
+uint8_t slither(uint8_t column, uint8_t row, enum Direction dir, uint8_t snake){
+    uint8_t newHeadCol=column, newHeadRow=row;
     switch(dir){
-        case(UP):
-            board[column][row+1]=snake;
-            board[column][row]=0;
+        case (UP):
+            if(row<=0) return 1;//border colision
+            newHeadRow--;
             break;
 
-        case(DOWN):
-            board[column][row-1]=snake;
-            board[column][row]=0;
+        case (DOWN):
+            if(row>=BOARD_H-1) return 1;//border colision
+            newHeadRow++;
             break;
 
-        case(LEFT):
-            board[column-1][row]=snake;
-            board[column][row]=0;
+        case (RIGHT):
+            if(column>=BOARD_W-1) return 1;//border colision
+            newHeadCol++;
             break;
 
-        case(RIGHT):
-            board[column+1][row]=snake;
-            board[column][row]=0;
+        case (LEFT):
+            if(column<=0) return 1;//border colision
+            newHeadCol--;
             break;
 
         default:
             break;
     }
-
-    //test(,)
+    if((board[newHeadCol][newHeadRow] & 0x0F)==((snake==SNAKE1)? SNAKE2:SNAKE1)) return 2;//snakes colision
+    if((board[newHeadCol][newHeadRow] & 0x0F)==1){//apple
+        //puntaje++;
+    }
+    board[newHeadCol][newHeadRow]=snake + dir;
+    saveHeadPosition(snake,newHeadCol,newHeadRow);
+    changePosition(column,row,dir,snake);
+    return 0;
 }
+
+uint8_t changePosition(uint8_t column, uint8_t row, enum Direction dir, uint8_t snake){
+    if(column==getSnakeTailCol(snake) && row==getSnakeTailRow(snake)){//caso base
+        board[column][row]=0;
+        return 1;//aviso que debe establecerse nuevas posiciones de tail
+    }
+
+    uint8_t prevCol=column, prevRow=row;
+    enum Direction currentDir = board[column][row] & 0xF0;
+    switch(currentDir){
+        case (UP):
+            prevRow++;
+            break;
+
+        case (DOWN):
+            prevRow--;
+            break;
+
+        case (RIGHT):
+            prevCol--;
+            break;
+
+        case (LEFT):
+            prevCol++;
+            break;
+
+        default:
+            break;
+    }
+    if(changePosition(prevCol,prevRow,currentDir,snake)){
+        saveTailPosition(snake,column,row);
+        board[column][row]=snake+dir;
+    }
+    return 0;
+}
+
 
 void putSnake(uint8_t row, uint8_t column, uint8_t snake){//contemplamos casos de que parte de la serpiente imprimir
-    enum Direction currentDir = getDirection(row,column);
     uint8_t caso = checkRight(row,column,snake);
     caso += checkLeft(row,column,snake)<<1;
     caso += checkDown(row,column,snake)<<2;
@@ -211,9 +202,6 @@ void putSnake(uint8_t row, uint8_t column, uint8_t snake){//contemplamos casos d
         case(13):
         case(14):
         case(15):
-            print("other\n");
-            printHex(caso);
-            print("\n");
             checkWithOthersDir(getDirection(row,column),row,column,caso);
             break;
         default://casos sin sentido
@@ -292,26 +280,21 @@ enum Direction getDirection(uint8_t row, uint8_t column){
     }
 }
 
-//check
-uint8_t checkColision(uint8_t column, uint8_t row){
-    return (board[column][row]==0) || (board[column][row]==APPLE);
-}
-
 //boolean
 uint8_t checkUp(uint8_t row, uint8_t column, uint8_t value){
-    return row==0? 0 : ((board[column][row-1] & 0x0F)==value);
+    return (row==0)? 0 : ((board[column][row-1] & 0x0F)==value);
 }
 
 uint8_t checkDown(uint8_t row, uint8_t column, uint8_t value){
-    return row==BOARD_H-1? 0 : ((board[column][row+1] & 0x0F)==value);
+    return (row==BOARD_H-1)? 0 : ((board[column][row+1] & 0x0F)==value);
 }
 
 uint8_t checkLeft(uint8_t row, uint8_t column, uint8_t value){
-    return column==0? 0 : ((board[column-1][row] & 0x0F)==value);
+    return (column==0)? 0 : ((board[column-1][row] & 0x0F)==value);
 }
 
 uint8_t checkRight(uint8_t row, uint8_t column, uint8_t value){
-    return column==BOARD_W-1? 0 : ((board[column+1][row] & 0x0F)==value);
+    return (column==BOARD_W-1)? 0 : ((board[column+1][row] & 0x0F)==value);
 }
 
 //================================================================================================================================
@@ -321,7 +304,7 @@ uint8_t checkRight(uint8_t row, uint8_t column, uint8_t value){
 #define EXIT_KEY 'q'
 
 void Snake(){
-    uint8_t exit=0;//only changes when exit key is pressed to exit the game
+    uint8_t exit=0,error=0;//only changes when exit key is pressed to exit the game or a colision happens
     uint8_t snakes=0;//quantity of players
 
     char keypressed[1]={0};
@@ -335,8 +318,11 @@ void Snake(){
 
     snakeSetup(SNAKE1,&snakes);    
 
-    while(!exit){
+    while(!exit && !error){
         if(read(keypressed, 1)>0){
+            print("\n");
+            printHex(keypressed[0]);
+            print("\n");
             switch(keypressed[0]){
                 case ('q'):
                     exit=1;
@@ -345,23 +331,35 @@ void Snake(){
                     break;
                 
                 case ('a'):
-                    lastdir==NONE? mov_snake_right(SNAKE1) : mov_snake_left(SNAKE1);//restriction of illegal first move(based off maps)
-                    lastdir= lastdir==NONE? RIGHT : LEFT ;
+                    if(lastdir!=RIGHT){//illegal dir
+                        lastdir= (lastdir==NONE)? RIGHT : LEFT ;
+                    }
+                    error = slither(snake1_head_column,snake1_head_row,lastdir,SNAKE1);
+                    tablero();
                     break;
 
                 case ('s'):
-                    mov_snake_down(SNAKE1);
-                    lastdir=DOWN;
+                    if(lastdir!=UP){//illegal dir
+                        lastdir=DOWN;
+                    }
+                    error = slither(snake1_head_column,snake1_head_row,lastdir,SNAKE1);
+                    tablero();
                     break;
 
                 case ('d'):
-                    mov_snake_right(SNAKE1);
-                    lastdir=RIGHT;
+                    if(lastdir!=LEFT){//illegal dir
+                        lastdir=RIGHT;
+                    }
+                    error = slither(snake1_head_column,snake1_head_row,lastdir,SNAKE1);
+                    tablero();
                     break;
 
                 case ('w'):
-                    mov_snake_up(SNAKE1);
-                    lastdir=UP;
+                    if(lastdir!=DOWN){// illegal dir
+                        lastdir=UP;
+                    }
+                    error = slither(snake1_head_column,snake1_head_row,lastdir,SNAKE1);
+                    tablero();
                     break;
 
                 default:
@@ -371,26 +369,30 @@ void Snake(){
         else{
             switch(lastdir){
                 case(UP):
-                    mov_snake_up(SNAKE1);
+                    error = slither(snake1_head_column,snake1_head_row,lastdir,SNAKE1);
+                    tablero();
                     break;
 
                 case(DOWN):
-                    mov_snake_down(SNAKE1);
+                    error = slither(snake1_head_column,snake1_head_row,lastdir,SNAKE1);
+                    tablero();
                     break;
 
                 case(LEFT):
-                    mov_snake_left(SNAKE1);
+                    error = slither(snake1_head_column,snake1_head_row,lastdir,SNAKE1);
+                    tablero();
                     break;
 
                 case(RIGHT):
-                    mov_snake_right(SNAKE1);
+                    error = slither(snake1_head_column,snake1_head_row,lastdir,SNAKE1);
+                    tablero();
                     break;
 
                 default:
                     break;
             }
         }
-        miliSleep(200);
+        miliSleep(150);
     }
 
     print("BYE!");
@@ -408,15 +410,10 @@ void snakeSetup(uint8_t snake, uint8_t * snakes){
 
     addSnake(middleBoard_y,snake_column_start,snake,RIGHT);//tail
     addSnake(middleBoard_y,snake_column_start+1,snake,RIGHT);//midle
-    addSnake(middleBoard_y,snake_column_start+2,snake,UP);//head
+    addSnake(middleBoard_y,snake_column_start+2,snake,RIGHT);//head
 
-    saveHeadPosition(snake,snake1_head_column+2,middleBoard_y);
-// Esto rompe una falla en mi logica, tengo que ver como resolverlo
-    addSnake(middleBoard_y-1,snake_column_start+2,snake,RIGHT);
-    addSnake(middleBoard_y-1,snake_column_start+3,snake,DOWN);
-    addSnake(middleBoard_y,snake_column_start+3,snake,DOWN);
-    addSnake(middleBoard_y+1,snake_column_start+3,snake,DOWN);
-    
+    saveTailPosition(snake,snake_column_start,middleBoard_y);
+    saveHeadPosition(snake,snake_column_start+2,middleBoard_y);    
 
     *snakes++;
 
@@ -432,4 +429,30 @@ void saveHeadPosition(uint8_t snake, uint8_t column, uint8_t row){
         snake2_head_column=column;
         snake2_head_row=row;
     }
+}
+void saveTailPosition(uint8_t snake, uint8_t column, uint8_t row){
+    if(snake==SNAKE1){
+        snake1_tail_column=column;
+        snake1_tail_row=row;
+    }
+    else{
+        snake2_tail_column=column;
+        snake2_tail_row=row;
+    }
+}
+
+uint8_t getSnakeTailCol(uint8_t snake){
+    return (snake==SNAKE1)? snake1_tail_column:snake2_tail_column;
+}
+
+uint8_t getSnakeTailRow(uint8_t snake){
+    return (snake==SNAKE1)? snake1_tail_row:snake2_tail_row;
+}
+
+uint8_t getSnakeHeadCol(uint8_t snake){
+    return (snake==SNAKE1)? snake1_head_column:snake2_head_column;
+}
+
+uint8_t getSnakeHeadRow(uint8_t snake){
+    return (snake==SNAKE1)? snake1_head_row:snake2_head_row;
 }
