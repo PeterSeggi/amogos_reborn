@@ -74,3 +74,11 @@ ls
 cat Makefile 
 make clean /root/Toolchain/
 exit
+clear
+ls
+make clean all
+make clean
+cd Userland/
+cd userCodeModule/
+ls
+exit

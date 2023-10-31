@@ -95,9 +95,10 @@ int read_key(int fd) {
 
     if (read_index == insert_index)
       to_read = 0;
+
   }
 
-  return toRet;
+  return (int) toRet;
 }
 
 // flush the input buffer
