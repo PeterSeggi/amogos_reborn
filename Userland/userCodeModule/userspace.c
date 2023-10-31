@@ -12,13 +12,6 @@ int main(){
     print(greeting);
     char buffer_space[1];
 
-    //Snake();
-    while(1){
-        if (readLast(buffer_space, 1) == 1){
-            printDec(buffer_space[0]);
-            print("-");
-        }
-        miliSleep(500);
-    }
+    Snake();
     return 0;
 }

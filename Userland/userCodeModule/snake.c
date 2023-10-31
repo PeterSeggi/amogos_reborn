@@ -320,9 +320,6 @@ void Snake(){
 
     while(!exit && !error){
         if(readLast(keypressed, 1)>0){
-            print("\n");
-            printHex(keypressed[0]);
-            print("\n");
             switch(keypressed[0]){
                 case ('q'):
                     exit=1;
@@ -392,10 +389,10 @@ void Snake(){
                     break;
             }
         }
-        miliSleep(150);
+        miliSleep(15);
     }
 
-    print("BYE!");
+    print("Lmao you are trash kiddo!");
 
     return;
 }

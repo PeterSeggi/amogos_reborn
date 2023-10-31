@@ -112,7 +112,7 @@ int read_key(int fd) {
   }
 
   else if (fd == STDLAST) {
-    toRet = key_buf[insert_index - 1];
+    toRet = ascii_buf[ascii_insert_index - 1];
   }
 
   return toRet;
