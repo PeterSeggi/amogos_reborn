@@ -9,12 +9,12 @@
 enum Direction {NONE=(0x00), UP=(0x80), DOWN=(0x40), RIGHT=(0x10), LEFT=(0x20)};
 
 //main function
-void Snake();
+void Snake(uint8_t players, uint32_t color1, uint32_t color2);
 
 //setup
 uint8_t initGame();
 void tablero();
-void snakeSetup(uint8_t snake, uint8_t * snakes);
+void snakeSetup(uint8_t snake);
 
 //logic
 void addApple(uint8_t row, uint8_t column);

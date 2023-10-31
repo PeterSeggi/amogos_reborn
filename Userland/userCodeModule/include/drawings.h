@@ -31,7 +31,8 @@ extern uint16_t snakecurve_downleft[][dibHeight];
 extern uint16_t snakecurve_upright[][dibHeight];
 extern uint16_t snakecurve_upleft[][dibHeight];
 
-extern uint16_t snakebody_horizontal[][dibHeight];
+extern uint16_t snakebody_horizontal1[][dibHeight];
+extern uint16_t snakebody_horizontal2[][dibHeight];
 extern uint16_t snakebody_vertical[][dibHeight];
 
 //functions
@@ -45,7 +46,8 @@ void draw_snakecurve_downleft(uint64_t init_x, uint64_t init_y, uint32_t trainco
 void draw_snakecurve_upright(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
 void draw_snakecurve_upleft(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
 
-void draw_snakebody_horizontal(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
+void draw_snakebody_horizontal1(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
+void draw_snakebody_horizontal2(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
 void draw_snakebody_vertical(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
 
 void draw_snake(uint16_t bitmap[][dibHeight], uint16_t layers, uint32_t colors[], uint64_t init_x, uint64_t init_y, uint32_t traincolor);

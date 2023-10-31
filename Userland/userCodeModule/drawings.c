@@ -447,9 +447,9 @@ uint16_t snakehead_down[][dibHeight]={
      0b0000000000000000}
 };
 
-#define SNAKEBODY_HORIZONTAL_LAYERS 4
-uint32_t snakebody_horizontal_colors[SNAKEBODY_HORIZONTAL_LAYERS]={LIGHTGRAY,DARKGRAY,WHITELINE,BLACK};
-uint16_t snakebody_horizontal[][dibHeight]={
+#define SNAKEBODY_HORIZONTAL1_LAYERS 4
+uint32_t snakebody_horizontal1_colors[SNAKEBODY_HORIZONTAL1_LAYERS]={LIGHTGRAY,DARKGRAY,WHITELINE,BLACK};
+uint16_t snakebody_horizontal1[][dibHeight]={
 
     //traincolor
     {0b1111111111111111,
@@ -467,14 +467,6 @@ uint16_t snakebody_horizontal[][dibHeight]={
      0b0000000000000000,
      0b0000000000000000,
      0b1111111111111111,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
      0b0000000000000000},
 
     //lightgraylines
@@ -493,14 +485,6 @@ uint16_t snakebody_horizontal[][dibHeight]={
      0b1111111111111111,
      0b1111111111111111,
      0b1111111111111111,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
      0b0000000000000000},
 
     //darkgraylines
@@ -519,14 +503,6 @@ uint16_t snakebody_horizontal[][dibHeight]={
      0b1111111111111111,
      0b0000000000000000,
      0b1111111111111111,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
      0b0000000000000000},
 
     //whitelines
@@ -545,14 +521,6 @@ uint16_t snakebody_horizontal[][dibHeight]={
      0b0000000000000000,
      0b0000000000000000,
      0b1111111111111111,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
      0b0000000000000000},
 
     //blacklines
@@ -571,14 +539,101 @@ uint16_t snakebody_horizontal[][dibHeight]={
      0b1000000000000001,
      0b1000000000000001,
      0b1111111111111111,
+     0b0000000000000000}
+};
+
+#define SNAKEBODY_HORIZONTAL2_LAYERS 4
+uint32_t snakebody_horizontal2_colors[SNAKEBODY_HORIZONTAL2_LAYERS]={LIGHTGRAY,DARKGRAY,WHITELINE,BLACK};
+uint16_t snakebody_horizontal2[][dibHeight]={
+
+    //traincolor
+    {0b1111111111111111,
+     0b0000000000000000,
+     0b0000000000000000,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1000000000000001,
+     0b1000011111110001,
+     0b1000111111111001,
+     0b1001111111111101,
+     0b1001100111001101,
+     0b1001111111111101,
+     0b1001111111111101,
+     0b1001111111111101,
+     0b1000111111111001,
+     0b1111111111111111,
+     0b0000000000000000},
+
+    //lightgraylines
+    {0b1111111111111111,
+     0b0000000000000000,
+     0b1111111111111111,
+     0b0000000000000000,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111100010001111,
+     0b1111011010110111,
+     0b1111100111001111,
+     0b1111011010110111,
+     0b1111000010000111,
+     0b1111000010000111,
+     0b1111100010001111,
+     0b1111111111111111,
+     0b0000000000000000},
+
+     //drakgraylines
+     {0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b0000000000000000,
+     0b1111111111111111,
+     0b1000000000000001,
+     0b1000000000000001,
+     0b1000000000000001,
+     0b1000000000000001,
+     0b1000000000000001,
+     0b1000000000000001,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1000000000000001,
+     0b1111111111111111,
+     0b0000000000000000},
+
+     //whitelines
+     {0b1111111111111111,
      0b0000000000000000,
      0b0000000000000000,
      0b0000000000000000,
+     0b1111111111111111,
+     0b1000000000000001,
+     0b1000000000000001,
+     0b1000000000000001,
+     0b1000000000000001,
+     0b1000011000110001,
+     0b1000000000000001,
+     0b1000000000000001,
+     0b1000000000000001,
+     0b1000000000000001,
+     0b1111111111111111,
+     0b0000000000000000},
+
+     //blacklines
+     {0b1111111111111111,
      0b0000000000000000,
+     0b1111111111111111,
      0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
+     0b1111111111111111,
+     0b1000000000000001,
+     0b1000011111110001,
+     0b1000100010001001,
+     0b1001011010110101,
+     0b1001100111001101,
+     0b1001011010110101,
+     0b1001000010000101,
+     0b1001000010000101,
+     0b1000100010001001,
+     0b1111111111111111,
      0b0000000000000000}
 };
 
@@ -1065,8 +1120,12 @@ void draw_snakehead_down(uint64_t init_x, uint64_t init_y, uint32_t traincolor){
     draw_snake(snakehead_down, SNAKEHEAD_DOWN_LAYERS,snakehead_down_colors, init_x, init_y, traincolor);
 }
 
-void draw_snakebody_horizontal(uint64_t init_x, uint64_t init_y, uint32_t traincolor){
-    draw_snake(snakebody_horizontal, SNAKEBODY_HORIZONTAL_LAYERS,snakebody_horizontal_colors, init_x, init_y, traincolor);
+void draw_snakebody_horizontal1(uint64_t init_x, uint64_t init_y, uint32_t traincolor){
+    draw_snake(snakebody_horizontal1, SNAKEBODY_HORIZONTAL1_LAYERS,snakebody_horizontal1_colors, init_x, init_y, traincolor);
+}
+
+void draw_snakebody_horizontal2(uint64_t init_x, uint64_t init_y, uint32_t traincolor){
+    draw_snake(snakebody_horizontal2, SNAKEBODY_HORIZONTAL2_LAYERS,snakebody_horizontal2_colors, init_x, init_y, traincolor);
 }
 
 void draw_snakebody_vertical(uint64_t init_x, uint64_t init_y, uint32_t traincolor){

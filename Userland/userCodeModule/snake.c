@@ -248,7 +248,9 @@ void putSnake(uint8_t row, uint8_t column, uint8_t snake){
 
         case (LEFT):
             if(((caso&0x3)==0x3) && getDirection(row,column-1)==LEFT){//theres snake left and right
-                draw_snakebody_horizontal(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
+                //if(column%2==0) draw_snakebody_horizontal2(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
+                //else 
+                draw_snakebody_horizontal1(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
             }
             else{
                 if((caso & 0x08) && getDirection(row-1,column)==UP){//theres snake up with correct direction
@@ -264,7 +266,9 @@ void putSnake(uint8_t row, uint8_t column, uint8_t snake){
 
         case (RIGHT):
             if(((caso&0x3)==0x3) && getDirection(row,column+1)==RIGHT){//theres snake left and right
-                draw_snakebody_horizontal(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
+                //if(column%2==0) draw_snakebody_horizontal2(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
+                //else 
+                draw_snakebody_horizontal1(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
             }
             else{
                 if((caso & 0x08) && getDirection(row-1,column)==UP){//theres snake up with correct direction
@@ -329,27 +333,26 @@ uint8_t checkRight(uint8_t row, uint8_t column, uint8_t value){
 //================================================================================================================================
 #define EXIT_KEY 'q'
 
-void Snake(){
+void Snake(uint8_t players, uint32_t color1, uint32_t color2){
     uint8_t exit=0,error=0;//only changes when exit key is pressed to exit the game or a colision happens
-    uint8_t snakes=0;//quantity of players
 
     player1Points=0;
     player2Points=0;
 
-    //snakecolor1=0x00FAE425;
-    snakecolor1=0x00FF71BE;
-    snakecolor2=0x0009802A;
+    snakecolor1=color1;
+    snakecolor2=color2;
 
     char keypressed[1]={0};
 
-    enum Direction lastdir=NONE;
+    enum Direction lastdir1=NONE, lastdir2=NONE;
 
     if(initGame()){
         print("size to small!");
         return;
     }
 
-    snakeSetup(SNAKE1,&snakes);    
+    snakeSetup(SNAKE1);    
+    if(players==2) snakeSetup(SNAKE2);
 
     while(!exit && !error){
         if(readLast(keypressed, 1)>0){
@@ -360,31 +363,59 @@ void Snake(){
                     break;
                 
                 case ('a'):
-                    if(lastdir!=RIGHT){//illegal dir
-                        lastdir= (lastdir==NONE)? RIGHT : LEFT ;
+                    if(lastdir1!=RIGHT){//illegal dir
+                        lastdir1= (lastdir1==NONE)? RIGHT : LEFT ;
                     }
-                    error = slither(lastdir,SNAKE1);
+                    error = slither(lastdir1,SNAKE1);
                     break;
 
                 case ('s'):
-                    if(lastdir!=UP){//illegal dir
-                        lastdir=DOWN;
+                    if(lastdir1!=UP){//illegal dir
+                        lastdir1=DOWN;
                     }
-                    error = slither(lastdir,SNAKE1);
+                    error = slither(lastdir1,SNAKE1);
                     break;
 
                 case ('d'):
-                    if(lastdir!=LEFT){//illegal dir
-                        lastdir=RIGHT;
+                    if(lastdir1!=LEFT){//illegal dir
+                        lastdir1=RIGHT;
                     }
-                    error = slither(lastdir,SNAKE1);
+                    error = slither(lastdir1,SNAKE1);
                     break;
 
                 case ('w'):
-                    if(lastdir!=DOWN){// illegal dir
-                        lastdir=UP;
+                    if(lastdir1!=DOWN){// illegal dir
+                        lastdir1=UP;
                     }
-                    error = slither(lastdir,SNAKE1);
+                    error = slither(lastdir1,SNAKE1);
+                    break;
+
+                case ('j'):
+                    if(lastdir2!=RIGHT){//illegal dir
+                        lastdir2=LEFT ;
+                    }
+                    error = slither(lastdir2,SNAKE2);
+                    break;
+
+                case ('k'):
+                    if(lastdir2!=UP){//illegal dir
+                        lastdir2=DOWN;
+                    }
+                    error = slither(lastdir2,SNAKE2);
+                    break;
+
+                case ('l'):
+                    if(lastdir2!=LEFT){//illegal dir
+                        lastdir2= (lastdir2==NONE)? LEFT : RIGHT ;
+                    }
+                    error = slither(lastdir2,SNAKE2);
+                    break;
+
+                case ('i'):
+                    if(lastdir2!=DOWN){// illegal dir
+                        lastdir2=UP;
+                    }
+                    error = slither(lastdir2,SNAKE2);
                     break;
 
                 default:
@@ -393,7 +424,8 @@ void Snake(){
             tablero();
         }
         else{
-            if(lastdir!=NONE) slither(lastdir,SNAKE1);
+            if(lastdir1!=NONE) slither(lastdir1,SNAKE1);
+            if(lastdir2!=NONE) slither(lastdir2,SNAKE2);
             tablero();
         }
         miliSleep(15);
@@ -406,11 +438,7 @@ void Snake(){
 
 //setup
 
-void snakeSetup(uint8_t snake, uint8_t * snakes){
-    uint8_t snake_column_start=START_MARGIN;
-    if(*snakes){
-        snake_column_start=BOARD_W - (MIN_DIM*dibSpaceWidth);
-    }
+void snakeSetup(uint8_t snake){
 
     //test apples, delete later
     addApple(BOARD_H-5,BOARD_W-5);
@@ -421,14 +449,23 @@ void snakeSetup(uint8_t snake, uint8_t * snakes){
     addApple(3,7);
     addApple(3,8);
 
-    addSnake(middleBoard_y,snake_column_start,snake,RIGHT);//tail
-    addSnake(middleBoard_y,snake_column_start+1,snake,RIGHT);//midle
-    addSnake(middleBoard_y,snake_column_start+2,snake,RIGHT);//head
+    if(snake==SNAKE1){
+        addSnake(middleBoard_y,2,snake,RIGHT);
+        addSnake(middleBoard_y,3,snake,RIGHT);
+        addSnake(middleBoard_y,4,snake,RIGHT);
 
-    saveTailPosition(snake,snake_column_start,middleBoard_y);
-    saveHeadPosition(snake,snake_column_start+2,middleBoard_y);    
+        saveHeadPosition(snake, 4, middleBoard_y);
+        saveTailPosition(snake, 2, middleBoard_y);
+    }
+    else{
+        addSnake(middleBoard_y,BOARD_W-4,snake,LEFT);
+        addSnake(middleBoard_y,BOARD_W-3,snake,LEFT);
+        addSnake(middleBoard_y,BOARD_W-2,snake,LEFT);
+        
+        saveHeadPosition(snake, BOARD_W-4, middleBoard_y);
+        saveTailPosition(snake, BOARD_W-2, middleBoard_y);
+    }
 
-    *snakes++;
 
     tablero();//print the starting board
 }

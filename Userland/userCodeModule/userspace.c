@@ -12,6 +12,6 @@ int main(){
     print(greeting);
     char buffer_space[1];
 
-    Snake();
+    Snake(2,0x00FF71BE,0x00FAE425);
     return 0;
 }
