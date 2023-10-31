@@ -63,17 +63,14 @@ void process_key(char key){
         - copio y printeo el start 
          */
 
-        screen_buffer[cursor_y][cursor_x] = '\0';
         command_buffer[command_cursor] = '\0';
-        check_shift();
 
+        write_out("\n");
         process_command(command_buffer);
 
         command_cursor = 0;
-        cursor_x = 2; // dejo lugar para el prompt start
         
-        strcpy(screen_buffer[cursor_y], PROMPT_START);
-        print(PROMPT_START);
+        write_out(PROMPT_START);
         return;
     }
 
@@ -83,6 +80,8 @@ void process_key(char key){
 
         command_cursor--;
         cursor_x = mod(cursor_x - 1, LINE_SIZE);
+
+        // aca va printChar y no write_out porq es un caso especial
         printChar(key);
         return;
     }
@@ -91,14 +90,9 @@ void process_key(char key){
     if (command_cursor == BUFFER_SIZE - 1) 
         return;
 
-    if (cursor_x == LINE_SIZE){
-        check_shift();
-        cursor_x = 0;
-    }
     else {
-        screen_buffer[cursor_y][cursor_x++] = key;
         command_buffer[command_cursor++] = key;
-        printChar(key);
+        write_out(char_buffer);
     }
 }
 
@@ -125,32 +119,23 @@ void process_command(char* buffer){
 
     // En caso de no encontrar hacemos esto
     cursor_x = 0;
-
-    strcpy(screen_buffer[(cursor_y) % VERT_SIZE], ERROR_PROMPT);
-    cursor_x += strlen(ERROR_PROMPT) - 1; // ese - 1 saca el \0 del final del ERROR_PROMPT
-
-
-    for (int c = 0; c < strlen(buffer); c++){
-        if (cursor_x == LINE_SIZE - 1){
-            print(screen_buffer[cursor_y]);
-            check_shift();
-            cursor_x = 0;
-        }
-        screen_buffer[cursor_y][cursor_x++] = buffer[c];
-    }
-
-    screen_buffer[cursor_y][cursor_x] = '\0';
-    print(screen_buffer[cursor_y]);
-    check_shift();
+    write_out(ERROR_PROMPT);
+    write_out(buffer);
+    write_out("\n");
     return;
 }
 
 void shift(){
     clearScreen();
-    for (int i = 1; i < rows_to_show; i++){
-        int line_number = mod(limit_index - rows_to_show + i, VERT_SIZE);
+
+    for (int i = 1; i < rows_to_show - 1; i++){
+        
+        int line_number = mod(limit_index - rows_to_show + i + 1, VERT_SIZE);
+
+
         print(screen_buffer[line_number]);
-        print("\n");
+        if (i != rows_to_show - 1)
+            print("\n");
     }
 }
 
@@ -161,9 +146,27 @@ int check_shift(){
         shifted = 1;
         limit_index = (limit_index + 1) % VERT_SIZE;
     }
-    else {
-        print("\n");
-    }
+
     cursor_y = (cursor_y + 1) % VERT_SIZE;
     return shifted;
+}
+
+
+void write_out(char* string){
+    for (int c = 0; c < strlen(string)-1; c++){
+        if (cursor_x == LINE_SIZE - 1 || string[c] == '\n'){
+            if (string[c] == '\n') 
+                screen_buffer[cursor_y][cursor_x] = '\0'; // null terminate en caso de print
+            else
+                c--;    // se que parece raro pero esto esta para no escribir el \n en la tabla pero si los demas despues del shift
+            check_shift();
+            cursor_x = 0;
+        }
+        // ese else c-- esta para que pueda entrar a este else con el ultimo caracter de cada linea
+        else {
+            screen_buffer[cursor_y][cursor_x++] = string[c];
+        }
+    }
+
+    print(string);
 }
