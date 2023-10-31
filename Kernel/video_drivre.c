@@ -4,7 +4,7 @@
 #include <lib.h>
 
 #define DEFAULT_FONT 0xDADADA
-#define DEFAULT_BACK 0X01002F
+#define DEFAULT_BACK 0X01233E
 
 
 typedef struct vbe_mode_info_structure {
@@ -98,6 +98,10 @@ void putChar(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t i
 }
 
 void printChar(uint8_t character){
+    printCharColor(character, DEFAULT_FONT, DEFAULT_BACK);
+}
+
+void printCharColor(uint8_t character, uint32_t fontColor, uint32_t bgColor){
     if (character == 0XA){
         newLine();
     }
@@ -106,8 +110,9 @@ void printChar(uint8_t character){
         delChar();
     }
 
+
     else{
-        putChar(character, DEFAULT_FONT, DEFAULT_BACK, cursor_location_x, cursor_location_y);
+        putChar(character, fontColor, bgColor, cursor_location_x, cursor_location_y);
         cursor_location_x += (charWidth * SCALE);
         if(cursor_location_x >= (VBE_mode_info->width)){
             cursor_location_x = 0;
@@ -116,23 +121,14 @@ void printChar(uint8_t character){
     }
 }
 
-void printCharColor(uint8_t character, uint32_t fontColor, uint32_t bgColor){
-	putChar(character, fontColor, bgColor, cursor_location_x, cursor_location_y);
-	cursor_location_x += (charWidth * SCALE);
-	if(cursor_location_x >= (VBE_mode_info->width)){
-		cursor_location_x = 0;
-		cursor_location_y += (charHeight * SCALE);
-	}
-}
-
 void print(const uint8_t * string){
-	for(int i=0; string[i]!=0; i++)
-		printChar(string[i]);
+	for(int i=0; string[i]!=0;)
+        i = process_input(string, i, DEFAULT_FONT, DEFAULT_BACK); 
 }
 
 void printCant(const uint8_t * string, uint64_t cant){
-	for(int i=0; string[i]!=0 && i<cant; i++)
-		printChar(string[i]);
+	for(int i=0; string[i]!=0 && i<cant;)
+        i = process_input(string, i, DEFAULT_FONT, DEFAULT_BACK); 
 }
 
 void printColor(const uint8_t * string, uint32_t fontColor, uint32_t bgColor){
@@ -149,7 +145,6 @@ void printColorCant(const uint8_t * string, uint64_t cant, uint32_t fontColor, u
 // Number stuff
 void printBase(uint64_t value, uint32_t base){
     uintToBase(value, buffer, base);
-
     print(buffer);
 }
 
@@ -194,4 +189,43 @@ void clear(){
         }
     }
 }
+
+//================================================================================================================================
+//========= INPUT PROCESSING
+//================================================================================================================================
+int process_input(char* string, int index, uint32_t fontColor, uint32_t bgColor){
+    char to_process = string[index];
+
+    if (to_process == '\n'){
+        newLine();
+        return index + 1;
+    }
+
+    else if (to_process == '\b'){
+        delChar();
+        return index + 1;
+    }
+
+    else if (to_process == '\033'){
+        if (string[index + 1] != '[')
+            return index + 1;
+
+        switch (string[index + 2]) {
+            case 'J':
+                clear();
+                return index + 3;
+                break;
+
+            default:
+                return index + 1;
+                break;
+        }
+    }
+
+    else {
+        printCharColor(string[index], fontColor, bgColor);
+        return index + 1;
+    }
+}
+
 //================================================================================================================================

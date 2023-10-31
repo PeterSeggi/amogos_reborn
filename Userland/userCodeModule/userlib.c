@@ -3,18 +3,31 @@
 #include "include/file_descriptors.h"
 
 static char buffer[64] = {'0'};
+static char* char_buffer = " ";
 
 //================================================================================================================================
 // Writting
 //================================================================================================================================
 //================================================================================================================================
+void printChar(char charToPrint){
+    buffer[0] = charToPrint;
+    print(buffer);
+}
 
 void print(char * string){
     _print(STDOUT, string, strlen(string));
 }
 
+void printCant(char* string, int cant){
+    _print(STDOUT, string, cant);
+}
+
 void printError(char * string){
     _print(STDERROR, string, strlen(string));
+}
+
+void clearScreen(){
+    _print(STDOUT, "\033[J", 3);
 }
 
 int read(char* buffer, int length){
@@ -23,12 +36,6 @@ int read(char* buffer, int length){
 
 int readRaw(char* buffer, int length){
     return _read(STDKEYS, buffer, length);
-}
-
-int strlen(char * string){
-    int i=0;
-    while(string[i++]!=0);
-    return i;
 }
 
 void printBase(uint64_t value, uint32_t base){
@@ -48,7 +55,7 @@ void printHex(uint64_t value){
 
 
 //================================================================================================================================
-// Number handling
+// General use
 //================================================================================================================================
 //================================================================================================================================
 uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
@@ -84,3 +91,34 @@ uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 	return digits;
 }
 
+int strcmp(const char *str1, const char *str2){
+    while (*str1 && (*str1 == *str2)){
+        str1++;
+        str2++;
+    }
+
+    return *(unsigned char *)str1 - *(unsigned char *)str2;
+}
+
+int strlen(char * string){
+    int i=0;
+    while(string[i++]!=0);
+    return i;
+}
+
+void strcpy(char *destination, const char *source) {
+    while (*source != '\0') {
+        *destination++ = *source++;
+    }
+    *destination = '\0';
+}
+
+
+void halt(){
+    _halt();
+}
+
+int mod(int val, int base){
+    if (val < 0) return (val + base) % base;
+    return val % base;
+}
