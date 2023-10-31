@@ -197,16 +197,16 @@ void putSnake(uint8_t row, uint8_t column, uint8_t snake){
     if((row==getSnakeTailRow(snake)) && (column==getSnakeTailCol(snake))){
         switch(mainDir){
             case(RIGHT):
-                draw_snakehead_left(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
+                draw_snaketail_left(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                 return;
             case(LEFT):
-                draw_snakehead_right(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
+                draw_snaketail_right(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                 return;
             case(DOWN):
-                draw_snakehead_up(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
+                draw_snaketail_up(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                 return;
             case(UP):
-                draw_snakehead_down(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
+                draw_snaketail_down(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                 return;
             default:
                 return;
@@ -425,6 +425,7 @@ void Snake(uint8_t players, uint32_t color1, uint32_t color2){
         }
         else{
             if(lastdir1!=NONE) slither(lastdir1,SNAKE1);
+            tablero();
             if(lastdir2!=NONE) slither(lastdir2,SNAKE2);
             tablero();
         }

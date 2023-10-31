@@ -26,6 +26,11 @@ extern uint16_t snakehead_right[][dibHeight];
 extern uint16_t snakehead_up[][dibHeight];
 extern uint16_t snakehead_down[][dibHeight];
 
+extern uint16_t snaketail_left[][dibHeight];
+extern uint16_t snaketail_right[][dibHeight];
+extern uint16_t snaketail_up[][dibHeight];
+extern uint16_t snaketail_down[][dibHeight];
+
 extern uint16_t snakecurve_downright[][dibHeight];
 extern uint16_t snakecurve_downleft[][dibHeight];
 extern uint16_t snakecurve_upright[][dibHeight];
@@ -40,6 +45,11 @@ void draw_snakehead_left(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
 void draw_snakehead_right(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
 void draw_snakehead_up(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
 void draw_snakehead_down(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
+
+void draw_snaketail_left(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
+void draw_snaketail_right(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
+void draw_snaketail_up(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
+void draw_snaketail_down(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
 
 void draw_snakecurve_downright(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
 void draw_snakecurve_downleft(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
