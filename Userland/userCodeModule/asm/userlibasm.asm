@@ -4,6 +4,7 @@ GLOBAL _read
 GLOBAL _draw
 GLOBAL _screenData
 GLOBAL _sleep
+GLOBAL _halt
 
 section .text
 
@@ -37,7 +38,9 @@ _read:
 	pop rbp
 	ret
     
-
+_halt:
+    hlt
+    ret
 
 int_test:
     push rbp
