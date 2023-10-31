@@ -6,8 +6,6 @@ int _read(int fd, char * buffer, int length);
 int int_test();
 void _sleep(int cant, int unidad);
 void _getClock(int *hrs, int *min, int *seg);
-void _getRax(int *rax);
-int _getRbx();
 struct registers
 {
 	int rax, rbx, rcx, rdx, rbp, rsp, rsi,

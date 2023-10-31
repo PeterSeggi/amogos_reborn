@@ -32,10 +32,6 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax) {
       break;
 
     case (0x77):
-      sys_getRax(rdi);
-      break;
-
-    case (0x78):
       sys_getRegisters(rdi);
       break;
   }
@@ -87,14 +83,9 @@ void sys_sleep(uint32_t  cant,uint32_t  unidad){
   newLine();
 }
 
-
 void sys_gettimeofday(int *hrs, int *min, int *seg){
   printTime(hrs, min, seg);
  }
-
-void sys_getRax(int *rax){
-  *rax = _getAReg();
-}
 
 void sys_getRegisters(struct registers *regsStruct){
   regsStruct->rax = _getAReg();

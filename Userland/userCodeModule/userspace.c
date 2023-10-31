@@ -22,15 +22,7 @@ int main(){
     if(seg<10) print("0");
     printDec(seg);
     print("\n");
-
-    print("\n");
-    int rax;
-    print("Desde el kernel: ");
-    getRax(&rax);
-    printDec(rax);
-    print("\n");
-    print("Desde el user: ");
-    printDec(_getRbx());
+    
     print("\n");
     printRegisters();
 

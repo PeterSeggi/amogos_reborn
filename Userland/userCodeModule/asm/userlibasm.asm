@@ -9,8 +9,6 @@ GLOBAL _getSeconds
 GLOBAL _getMinutes
 GLOBAL _getHours
 
-GLOBAL _getRax
-GLOBAL _getRbx
 GLOBAL _getRegisters
 
 section .text
@@ -82,32 +80,11 @@ _getClock:
 	pop rbp
 	ret
 
-_getRax:
-    push rbp
-	mov rbp, rsp
-
-    mov rax, 0x77
-    int 80h;
-
-	mov rsp, rbp
-	pop rbp
-	ret
-
-_getRbx:
-    push rbp
-	mov rbp, rsp
-
-	mov rax, 2
-	
-	mov rsp, rbp
-	pop rbp
-	ret
-
 _getRegisters:
  	push rbp
 	mov rbp, rsp
 
-    mov rax, 0x78
+    mov rax, 0x77
     int 80h;
 
 	mov rsp, rbp

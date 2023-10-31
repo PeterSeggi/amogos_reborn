@@ -24,7 +24,6 @@ void getClock(int *hrs, int *min, int *seg);
 void printClock();
 
 //Registers
-void getRax(int *rax);
 void printRegisters();
 
 #endif

@@ -112,10 +112,6 @@ void printClock(){
 // Registers
 //================================================================================================================================
 
-void getRax(int *rax){
-	_getRax(rax);
-}
-
 void printRegisters(){
 	//no estoy incluyendo los de 512/256/128/32/16-bit ni RFLAGS 
 	struct registers regsStruct;
