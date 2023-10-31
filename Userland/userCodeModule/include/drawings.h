@@ -5,7 +5,6 @@
 
 //colors
 
-#define TRAINCOLOR1 0x00FAE425
 #define LIGHTGRAY 0x00B8B8B8
 #define WHITELINE 0x00FBFBFB
 #define WHITE 0x00F6F6F6
@@ -36,20 +35,20 @@ extern uint16_t snakebody_horizontal[][dibHeight];
 extern uint16_t snakebody_vertical[][dibHeight];
 
 //functions
-void draw_snakehead_left(uint64_t init_x, uint64_t init_y);
-void draw_snakehead_right(uint64_t init_x, uint64_t init_y);
-void draw_snakehead_up(uint64_t init_x, uint64_t init_y);
-void draw_snakehead_down(uint64_t init_x, uint64_t init_y);
+void draw_snakehead_left(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
+void draw_snakehead_right(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
+void draw_snakehead_up(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
+void draw_snakehead_down(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
 
-void draw_snakecurve_downright(uint64_t init_x, uint64_t init_y);
-void draw_snakecurve_downleft(uint64_t init_x, uint64_t init_y);
-void draw_snakecurve_upright(uint64_t init_x, uint64_t init_y);
-void draw_snakecurve_upleft(uint64_t init_x, uint64_t init_y);
+void draw_snakecurve_downright(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
+void draw_snakecurve_downleft(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
+void draw_snakecurve_upright(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
+void draw_snakecurve_upleft(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
 
-void draw_snakebody_horizontal(uint64_t init_x, uint64_t init_y);
-void draw_snakebody_vertical(uint64_t init_x, uint64_t init_y);
+void draw_snakebody_horizontal(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
+void draw_snakebody_vertical(uint64_t init_x, uint64_t init_y, uint32_t traincolor);
 
-void draw_snake(uint16_t bitmap[][dibHeight], uint16_t layers, uint32_t colors[], uint64_t init_x, uint64_t init_y);
+void draw_snake(uint16_t bitmap[][dibHeight], uint16_t layers, uint32_t colors[], uint64_t init_x, uint64_t init_y, uint32_t traincolor);
 
 void draw_manzana(uint64_t init_x, uint64_t init_y);
 

@@ -35,6 +35,7 @@ uint8_t getSnakeTailCol(uint8_t snake);
 uint8_t getSnakeTailRow(uint8_t snake);
 uint8_t getSnakeHeadCol(uint8_t snake);
 uint8_t getSnakeHeadRow(uint8_t snake);
+uint32_t getSnakeColor(uint8_t snake);
 
 //checks
 uint8_t checkUp(uint8_t row, uint8_t column, uint8_t value);

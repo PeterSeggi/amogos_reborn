@@ -1,6 +1,9 @@
 #include "include/drawings.h"
 #include "include/userlib.h"
 
+//OBS! first layer must be the one you want to be able to
+//asign color, the rest will follow the given array
+
 uint16_t square[][dibHeight]={
     {0b1111111111111111,
      0b1111111111111111,
@@ -39,8 +42,8 @@ uint16_t apple[][dibHeight]={
      0b1111111111111111}
 };
 
-#define SNAKEHEAD_LEFT_LAYERS 4
-uint32_t snakehead_left_colors[SNAKEHEAD_LEFT_LAYERS]={TRAINCOLOR1,DARKGRAY,WHITELINE,BLACK};
+#define SNAKEHEAD_LEFT_LAYERS 3
+uint32_t snakehead_left_colors[SNAKEHEAD_LEFT_LAYERS]={DARKGRAY,WHITELINE,BLACK};
 uint16_t snakehead_left[][dibHeight]={
 
      //traincolor
@@ -117,8 +120,8 @@ uint16_t snakehead_left[][dibHeight]={
      0b0000000000000000},
 };
 
-#define SNAKEHEAD_RIGHT_LAYERS 5
-uint32_t snakehead_right_colors[SNAKEHEAD_RIGHT_LAYERS]={TRAINCOLOR1,LIGHTGRAY,DARKGRAY,RED,BLACK};
+#define SNAKEHEAD_RIGHT_LAYERS 4
+uint32_t snakehead_right_colors[SNAKEHEAD_RIGHT_LAYERS]={LIGHTGRAY,DARKGRAY,RED,BLACK};
 uint16_t snakehead_right[][dibHeight]={
 
     //traincolor
@@ -252,8 +255,8 @@ uint16_t snakehead_right[][dibHeight]={
      0b0000000000000000}
 };
 
-#define SNAKEHEAD_UP_LAYERS 3
-uint32_t snakehead_up_colors[SNAKEHEAD_UP_LAYERS]={TRAINCOLOR1,DARKGRAY,BLACK};
+#define SNAKEHEAD_UP_LAYERS 2
+uint32_t snakehead_up_colors[SNAKEHEAD_UP_LAYERS]={DARKGRAY,BLACK};
 uint16_t snakehead_up[][dibHeight]={
 
     //traincolor
@@ -335,8 +338,8 @@ uint16_t snakehead_up[][dibHeight]={
      0b0000000000000000}
 };
 
-#define SNAKEHEAD_DOWN_LAYERS 4
-uint32_t snakehead_down_colors[SNAKEHEAD_DOWN_LAYERS]={TRAINCOLOR1,WHITELINE,DARKGRAY,BLACK};
+#define SNAKEHEAD_DOWN_LAYERS 3
+uint32_t snakehead_down_colors[SNAKEHEAD_DOWN_LAYERS]={WHITELINE,DARKGRAY,BLACK};
 uint16_t snakehead_down[][dibHeight]={
 
     //traincolor
@@ -444,8 +447,8 @@ uint16_t snakehead_down[][dibHeight]={
      0b0000000000000000}
 };
 
-#define SNAKEBODY_HORIZONTAL_LAYERS 5
-uint32_t snakebody_horizontal_colors[SNAKEBODY_HORIZONTAL_LAYERS]={TRAINCOLOR1,LIGHTGRAY,DARKGRAY,WHITELINE,BLACK};
+#define SNAKEBODY_HORIZONTAL_LAYERS 4
+uint32_t snakebody_horizontal_colors[SNAKEBODY_HORIZONTAL_LAYERS]={LIGHTGRAY,DARKGRAY,WHITELINE,BLACK};
 uint16_t snakebody_horizontal[][dibHeight]={
 
     //traincolor
@@ -579,8 +582,8 @@ uint16_t snakebody_horizontal[][dibHeight]={
      0b0000000000000000}
 };
 
-#define SNAKEBODY_VERTICAL_LAYERS 3
-uint32_t snakebody_vertical_colors[SNAKEBODY_VERTICAL_LAYERS]={TRAINCOLOR1,DARKGRAY,BLACK};
+#define SNAKEBODY_VERTICAL_LAYERS 2
+uint32_t snakebody_vertical_colors[SNAKEBODY_VERTICAL_LAYERS]={DARKGRAY,BLACK};
 uint16_t snakebody_vertical[][dibHeight]={
 
     //traincolor
@@ -662,8 +665,8 @@ uint16_t snakebody_vertical[][dibHeight]={
      0b0000000000000000}
 };
 
-#define SNAKECURVE_DOWNRIGHT_LAYERS 3
-uint32_t snakecurve_downright_colors[SNAKECURVE_DOWNRIGHT_LAYERS]={TRAINCOLOR1,DARKGRAY,BLACK};
+#define SNAKECURVE_DOWNRIGHT_LAYERS 2
+uint32_t snakecurve_downright_colors[SNAKECURVE_DOWNRIGHT_LAYERS]={DARKGRAY,BLACK};
 uint16_t snakecurve_downright[][dibHeight]={
 
     //traincolor
@@ -745,8 +748,8 @@ uint16_t snakecurve_downright[][dibHeight]={
      0b0000000000000000}
 };
 
-#define SNAKECURVE_DOWNLEFT_LAYERS 3
-uint32_t snakecurve_downleft_colors[SNAKECURVE_DOWNLEFT_LAYERS]={TRAINCOLOR1,DARKGRAY,BLACK};
+#define SNAKECURVE_DOWNLEFT_LAYERS 2
+uint32_t snakecurve_downleft_colors[SNAKECURVE_DOWNLEFT_LAYERS]={DARKGRAY,BLACK};
 uint16_t snakecurve_downleft[][dibHeight]={
 
     //traincolor
@@ -828,35 +831,9 @@ uint16_t snakecurve_downleft[][dibHeight]={
      0b0000000000000000}
 };
 
-#define SNAKECURVE_UPRIGHT_LAYERS 4
-uint32_t snakecurve_upright_colors[SNAKECURVE_UPRIGHT_LAYERS]={LIGHTGRAY,TRAINCOLOR1,DARKGRAY,BLACK};
+#define SNAKECURVE_UPRIGHT_LAYERS 3
+uint32_t snakecurve_upright_colors[SNAKECURVE_UPRIGHT_LAYERS]={LIGHTGRAY,DARKGRAY,BLACK};
 uint16_t snakecurve_upright[][dibHeight]={
-
-    //lightgraylines
-    {0b1111100000010001,
-     0b0000000001100011,
-     0b1111111110011111,
-     0b0000000000111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111100,
-     0b1111111111100000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000},
 
     //traincolor
     {0b1111100000011111,
@@ -873,6 +850,32 @@ uint16_t snakecurve_upright[][dibHeight]={
      0b0000000000100101,
      0b0000000000100111,
      0b0000000000111100,
+     0b1111111111100000,
+     0b0000000000000000,
+     0b0000000000000000,
+     0b0000000000000000,
+     0b0000000000000000,
+     0b0000000000000000,
+     0b0000000000000000,
+     0b0000000000000000,
+     0b0000000000000000,
+     0b0000000000000000},
+
+     //lightgraylines
+    {0b1111100000010001,
+     0b0000000001100011,
+     0b1111111110011111,
+     0b0000000000111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111100,
      0b1111111111100000,
      0b0000000000000000,
      0b0000000000000000,
@@ -937,35 +940,9 @@ uint16_t snakecurve_upright[][dibHeight]={
      0b0000000000000000}
 };
 
-#define SNAKECURVE_UPLEFT_LAYERS 4
-uint32_t snakecurve_upleft_colors[SNAKECURVE_UPLEFT_LAYERS]={LIGHTGRAY,TRAINCOLOR1,DARKGRAY,BLACK};
+#define SNAKECURVE_UPLEFT_LAYERS 3
+uint32_t snakecurve_upleft_colors[SNAKECURVE_UPLEFT_LAYERS]={LIGHTGRAY,DARKGRAY,BLACK};
 uint16_t snakecurve_upleft[][dibHeight]={
-
-    //lightgraylines
-    {0b1000100000011111,
-     0b1100011000000000,
-     0b1111100111111111,
-     0b1111110000000000,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b0011111111111111,
-     0b0000011111111111,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000,
-     0b0000000000000000},
 
     //traincolor
     {0b1111100000011111,
@@ -982,6 +959,32 @@ uint16_t snakecurve_upleft[][dibHeight]={
      0b1010010000000001,
      0b1110010000000001,
      0b0011110000000001,
+     0b0000011111111111,
+     0b0000000000000000,
+     0b0000000000000000,
+     0b0000000000000000,
+     0b0000000000000000,
+     0b0000000000000000,
+     0b0000000000000000,
+     0b0000000000000000,
+     0b0000000000000000,
+     0b0000000000000000},
+
+    //lightgraylines
+    {0b1000100000011111,
+     0b1100011000000000,
+     0b1111100111111111,
+     0b1111110000000000,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b0011111111111111,
      0b0000011111111111,
      0b0000000000000000,
      0b0000000000000000,
@@ -1046,49 +1049,50 @@ uint16_t snakecurve_upleft[][dibHeight]={
      0b0000000000000000}
 };
 
-void draw_snakehead_left(uint64_t init_x, uint64_t init_y){
-    draw_snake(snakehead_left, SNAKEHEAD_LEFT_LAYERS,snakehead_left_colors, init_x, init_y);
+void draw_snakehead_left(uint64_t init_x, uint64_t init_y, uint32_t traincolor){
+    draw_snake(snakehead_left, SNAKEHEAD_LEFT_LAYERS,snakehead_left_colors, init_x, init_y, traincolor);
 }
 
-void draw_snakehead_right(uint64_t init_x, uint64_t init_y){
-    draw_snake(snakehead_right, SNAKEHEAD_RIGHT_LAYERS,snakehead_right_colors, init_x, init_y);
+void draw_snakehead_right(uint64_t init_x, uint64_t init_y, uint32_t traincolor){
+    draw_snake(snakehead_right, SNAKEHEAD_RIGHT_LAYERS,snakehead_right_colors, init_x, init_y, traincolor);
 }
 
-void draw_snakehead_up(uint64_t init_x, uint64_t init_y){
-    draw_snake(snakehead_up, SNAKEHEAD_UP_LAYERS,snakehead_up_colors, init_x, init_y);
+void draw_snakehead_up(uint64_t init_x, uint64_t init_y, uint32_t traincolor){
+    draw_snake(snakehead_up, SNAKEHEAD_UP_LAYERS,snakehead_up_colors, init_x, init_y, traincolor);
 }
 
-void draw_snakehead_down(uint64_t init_x, uint64_t init_y){
-    draw_snake(snakehead_down, SNAKEHEAD_DOWN_LAYERS,snakehead_down_colors, init_x, init_y);
+void draw_snakehead_down(uint64_t init_x, uint64_t init_y, uint32_t traincolor){
+    draw_snake(snakehead_down, SNAKEHEAD_DOWN_LAYERS,snakehead_down_colors, init_x, init_y, traincolor);
 }
 
-void draw_snakebody_horizontal(uint64_t init_x, uint64_t init_y){
-    draw_snake(snakebody_horizontal, SNAKEBODY_HORIZONTAL_LAYERS,snakebody_horizontal_colors, init_x, init_y);
+void draw_snakebody_horizontal(uint64_t init_x, uint64_t init_y, uint32_t traincolor){
+    draw_snake(snakebody_horizontal, SNAKEBODY_HORIZONTAL_LAYERS,snakebody_horizontal_colors, init_x, init_y, traincolor);
 }
 
-void draw_snakebody_vertical(uint64_t init_x, uint64_t init_y){
-    draw_snake(snakebody_vertical, SNAKEBODY_VERTICAL_LAYERS,snakebody_vertical_colors, init_x, init_y);
+void draw_snakebody_vertical(uint64_t init_x, uint64_t init_y, uint32_t traincolor){
+    draw_snake(snakebody_vertical, SNAKEBODY_VERTICAL_LAYERS,snakebody_vertical_colors, init_x, init_y, traincolor);
 }
 
-void draw_snakecurve_downright(uint64_t init_x, uint64_t init_y){
-    draw_snake(snakecurve_downright, SNAKECURVE_DOWNRIGHT_LAYERS,snakecurve_downright_colors, init_x, init_y);
+void draw_snakecurve_downright(uint64_t init_x, uint64_t init_y, uint32_t traincolor){
+    draw_snake(snakecurve_downright, SNAKECURVE_DOWNRIGHT_LAYERS,snakecurve_downright_colors, init_x, init_y, traincolor);
 }
 
-void draw_snakecurve_downleft(uint64_t init_x, uint64_t init_y){
-    draw_snake(snakecurve_downleft, SNAKECURVE_DOWNLEFT_LAYERS,snakecurve_downleft_colors, init_x, init_y);
+void draw_snakecurve_downleft(uint64_t init_x, uint64_t init_y, uint32_t traincolor){
+    draw_snake(snakecurve_downleft, SNAKECURVE_DOWNLEFT_LAYERS,snakecurve_downleft_colors, init_x, init_y, traincolor);
 }
 
-void draw_snakecurve_upright(uint64_t init_x, uint64_t init_y){
-    draw_snake(snakecurve_upright, SNAKECURVE_UPRIGHT_LAYERS,snakecurve_upright_colors, init_x, init_y);
+void draw_snakecurve_upright(uint64_t init_x, uint64_t init_y, uint32_t traincolor){
+    draw_snake(snakecurve_upright, SNAKECURVE_UPRIGHT_LAYERS,snakecurve_upright_colors, init_x, init_y, traincolor);
 }
 
-void draw_snakecurve_upleft(uint64_t init_x, uint64_t init_y){
-    draw_snake(snakecurve_upleft, SNAKECURVE_UPLEFT_LAYERS,snakecurve_upleft_colors, init_x, init_y);
+void draw_snakecurve_upleft(uint64_t init_x, uint64_t init_y, uint32_t traincolor){
+    draw_snake(snakecurve_upleft, SNAKECURVE_UPLEFT_LAYERS,snakecurve_upleft_colors, init_x, init_y, traincolor);
 }
 
-void draw_snake(uint16_t bitmap[][dibHeight], uint16_t layers, uint32_t colors[], uint64_t init_x, uint64_t init_y){
-    for(int i=0; i<layers; i++){
-        draw(bitmap[i], colors[i], dibHeight, init_x, init_y);
+void draw_snake(uint16_t bitmap[][dibHeight], uint16_t layers, uint32_t colors[], uint64_t init_x, uint64_t init_y, uint32_t traincolor){
+    for(int i=0; i<layers+1; i++){
+        if(i==0) draw(bitmap[i], traincolor, dibHeight, init_x, init_y);
+        else draw(bitmap[i], colors[i-1], dibHeight, init_x, init_y);
     }
 }
 void draw_manzana(uint64_t init_x, uint64_t init_y){

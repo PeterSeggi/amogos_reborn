@@ -82,6 +82,9 @@ void addSnake(uint8_t row, uint8_t column, uint8_t elem, enum Direction dir){
 uint16_t player1Points=0;
 uint16_t player2Points=0;
 
+uint32_t snakecolor1=0x00;
+uint32_t snakecolor2=0x00;
+
 //directions stuff
 
 uint8_t snake1_head_row=0, snake1_head_column=0;
@@ -176,16 +179,16 @@ void putSnake(uint8_t row, uint8_t column, uint8_t snake){
     if((row==getSnakeHeadRow(snake)) && (column==getSnakeHeadCol(snake))){
         switch(mainDir){
             case(LEFT):
-                draw_snakehead_left(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                draw_snakehead_left(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                 return;
             case(RIGHT):
-                draw_snakehead_right(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                draw_snakehead_right(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                 return;
             case(UP):
-                draw_snakehead_up(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                draw_snakehead_up(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                 return;
             case(DOWN):
-                draw_snakehead_down(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                draw_snakehead_down(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                 return;
             default:
                 return;
@@ -194,16 +197,16 @@ void putSnake(uint8_t row, uint8_t column, uint8_t snake){
     if((row==getSnakeTailRow(snake)) && (column==getSnakeTailCol(snake))){
         switch(mainDir){
             case(RIGHT):
-                draw_snakehead_left(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                draw_snakehead_left(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                 return;
             case(LEFT):
-                draw_snakehead_right(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                draw_snakehead_right(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                 return;
             case(DOWN):
-                draw_snakehead_up(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                draw_snakehead_up(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                 return;
             case(UP):
-                draw_snakehead_down(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                draw_snakehead_down(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                 return;
             default:
                 return;
@@ -213,15 +216,15 @@ void putSnake(uint8_t row, uint8_t column, uint8_t snake){
     switch(mainDir){
         case (UP):
             if(((caso&0xC)==0xC) && getDirection(row-1,column)==UP){//theres snake up and down
-                draw_snakebody_vertical(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                draw_snakebody_vertical(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
             }
             else{
                 if((caso & 0x02) && getDirection(row,column-1)==LEFT){//theres snake left with correct direction
-                    draw_snakecurve_downright(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                    draw_snakecurve_downright(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                 }
                 else{
                     if((caso & 0x01) && getDirection(row,column+1)==RIGHT){//theres snake right
-                        draw_snakecurve_downleft(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                        draw_snakecurve_downleft(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                     }
                 }
             }
@@ -229,15 +232,15 @@ void putSnake(uint8_t row, uint8_t column, uint8_t snake){
 
         case (DOWN):
             if(((caso&0xC)==0xC) && getDirection(row+1,column)==DOWN){//theres snake down and up
-                draw_snakebody_vertical(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                draw_snakebody_vertical(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
             }
             else{
                 if((caso & 0x02) && getDirection(row,column-1)==LEFT){//theres snake left with correct direction
-                    draw_snakecurve_upright(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                    draw_snakecurve_upright(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                 }
                 else{
                     if((caso & 0x01) && getDirection(row,column+1)==RIGHT){//theres snake right
-                        draw_snakecurve_upleft(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                        draw_snakecurve_upleft(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                     }
                 }
             }
@@ -245,15 +248,15 @@ void putSnake(uint8_t row, uint8_t column, uint8_t snake){
 
         case (LEFT):
             if(((caso&0x3)==0x3) && getDirection(row,column-1)==LEFT){//theres snake left and right
-                draw_snakebody_horizontal(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                draw_snakebody_horizontal(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
             }
             else{
                 if((caso & 0x08) && getDirection(row-1,column)==UP){//theres snake up with correct direction
-                    draw_snakecurve_upleft(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                    draw_snakecurve_upleft(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                 }
                 else{
                     if((caso & 0x04) && getDirection(row+1,column)==DOWN){//theres snake down
-                        draw_snakecurve_downleft(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                        draw_snakecurve_downleft(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                     }
                 }
             }
@@ -261,15 +264,15 @@ void putSnake(uint8_t row, uint8_t column, uint8_t snake){
 
         case (RIGHT):
             if(((caso&0x3)==0x3) && getDirection(row,column+1)==RIGHT){//theres snake left and right
-                draw_snakebody_horizontal(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                draw_snakebody_horizontal(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
             }
             else{
                 if((caso & 0x08) && getDirection(row-1,column)==UP){//theres snake up with correct direction
-                    draw_snakecurve_upright(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                    draw_snakecurve_upright(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                 }
                 else{
                     if((caso & 0x04) && getDirection(row+1,column)==DOWN){//theres snake down
-                        draw_snakecurve_downright(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                        draw_snakecurve_downright(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y, getSnakeColor(snake));
                     }
                 }
             }
@@ -332,6 +335,10 @@ void Snake(){
 
     player1Points=0;
     player2Points=0;
+
+    //snakecolor1=0x00FAE425;
+    snakecolor1=0x00FF71BE;
+    snakecolor2=0x0009802A;
 
     char keypressed[1]={0};
 
@@ -461,4 +468,8 @@ uint8_t getSnakeHeadCol(uint8_t snake){
 
 uint8_t getSnakeHeadRow(uint8_t snake){
     return (snake==SNAKE1)? snake1_head_row:snake2_head_row;
+}
+
+uint32_t getSnakeColor(uint8_t snake){
+    return (snake==SNAKE1)? snakecolor1:snakecolor2;
 }
