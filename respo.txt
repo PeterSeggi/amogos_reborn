@@ -1,0 +1,1320 @@
+BOX
+make: Entering directory '/root/Toolchain'
+cd ModulePacker; make clean
+make[1]: Entering directory '/root/Toolchain/ModulePacker'
+rm -rf mp.bin
+make[1]: Leaving directory '/root/Toolchain/ModulePacker'
+make: Leaving directory '/root/Toolchain'
+make: Entering directory '/root'
+cd Bootloader; make clean
+make[1]: Entering directory '/root/Bootloader'
+cd BMFS; make clean
+make[2]: Entering directory '/root/Bootloader/BMFS'
+rm -f bmfs.bin
+make[2]: Leaving directory '/root/Bootloader/BMFS'
+cd Pure64; make clean
+make[2]: Entering directory '/root/Bootloader/Pure64'
+rm -rf *.sys
+make[2]: Leaving directory '/root/Bootloader/Pure64'
+make[1]: Leaving directory '/root/Bootloader'
+cd Image; make clean
+make[1]: Entering directory '/root/Image'
+rm -rf x64BareBonesImage.img x64BareBonesImage.vmdk x64BareBonesImage.qcow2 *.bin
+make[1]: Leaving directory '/root/Image'
+cd Kernel; make clean
+make[1]: Entering directory '/root/Kernel'
+rm -rf asm/*.o *.o *.bin
+make[1]: Leaving directory '/root/Kernel'
+cd Userland; make clean
+make[1]: Entering directory '/root/Userland'
+cd userCodeModule; make clean
+make[2]: Entering directory '/root/Userland/userCodeModule'
+rm -rf *.o
+make[2]: Leaving directory '/root/Userland/userCodeModule'
+rm -rf *.bin
+make[1]: Leaving directory '/root/Userland'
+make: Leaving directory '/root'
+make: Entering directory '/root/Toolchain'
+cd ModulePacker; make all
+make[1]: Entering directory '/root/Toolchain/ModulePacker'
+gcc main.c -o mp.bin
+make[1]: Leaving directory '/root/Toolchain/ModulePacker'
+make: Leaving directory '/root/Toolchain'
+make: Entering directory '/root'
+cd Bootloader; make all
+make[1]: Entering directory '/root/Bootloader'
+cd BMFS; make all
+make[2]: Entering directory '/root/Bootloader/BMFS'
+gcc -ansi -std=c99 -Wall -pedantic -o bmfs.bin bmfs.c
+make[2]: Leaving directory '/root/Bootloader/BMFS'
+cd Pure64; make all
+make[2]: Entering directory '/root/Bootloader/Pure64'
+nasm src/bootsectors/bmfs_mbr.asm -o bmfs_mbr.sys
+nasm src/bootsectors/pxestart.asm -o pxestart.sys
+cd src; nasm pure64.asm -o ../pure64.sys
+make[2]: Leaving directory '/root/Bootloader/Pure64'
+make[1]: Leaving directory '/root/Bootloader'
+cd Kernel; make all
+make[1]: Entering directory '/root/Kernel'
+nasm -felf64 loader.asm -o loader.o
+gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c drawings.c -o drawings.o
+drawings.c: In function 'loadKernelScreen':
+drawings.c:23:9: warning: array subscript has type 'char' [-Wchar-subscripts]
+         printBitmap(font[title[i]], TITLEGOLD, charHeight, titleStartX + (charWidth*getDrawSize()*(i)), titleStartY);
+         ^
+drawings.c:35:9: warning: array subscript has type 'char' [-Wchar-subscripts]
+         printBitmap(font[loading[i]], TITLEGOLD, charHeight, loadStartX + (charWidth*getDrawSize()*(i)), loadStartY);
+         ^
+gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c lib.c -o lib.o
+gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c time.c -o time.o
+time.c: In function 'formatTime':
+time.c:45:3: warning: implicit declaration of function '_getSeconds' [-Wimplicit-function-declaration]
+   *sec = _getSeconds();
+   ^
+time.c:46:3: warning: implicit declaration of function '_getMinutes' [-Wimplicit-function-declaration]
+   *min = _getMinutes();
+   ^
+time.c:47:3: warning: implicit declaration of function '_getHours' [-Wimplicit-function-declaration]
+   *hour = _getHours();
+   ^
+time.c:50:3: warning: implicit declaration of function '_getDateTimeFormat' [-Wimplicit-function-declaration]
+   uint8_t format = _getDateTimeFormat();
+   ^
+time.c: In function 'formatDate':
+time.c:73:3: warning: implicit declaration of function '_getDayWeek' [-Wimplicit-function-declaration]
+   *dayWeek = _getDayWeek();
+   ^
+time.c:74:3: warning: implicit declaration of function '_getDayMonth' [-Wimplicit-function-declaration]
+   *dayMonth = _getDayMonth();
+   ^
+time.c:75:3: warning: implicit declaration of function '_getMonth' [-Wimplicit-function-declaration]
+   *month = _getMonth();
+   ^
+time.c:76:3: warning: implicit declaration of function '_getYear' [-Wimplicit-function-declaration]
+   *year = _getYear(); // solo trae los dos ultimos numeros
+   ^
+In file included from ./include/interrupts.h:11:0,
+                 from time.c:5:
+time.c: At top level:
+./include/idtLoader.h:2:13: warning: 'setup_IDT_entry' declared 'static' but never defined [-Wunused-function]
+ static void setup_IDT_entry (int index, uint64_t offset);
+             ^
+gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c fonts.c -o fonts.o
+fonts.c:2078:6: warning: excess elements in array initializer
+      0b0000000000000000}, 
+      ^
+fonts.c:2078:6: warning: (near initialization for 'font[82]')
+gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c irqDispatcher.c -o irqDispatcher.o
+gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c exceptions.c -o exceptions.o
+gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c naiveConsole.c -o naiveConsole.o
+gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c moduleLoader.c -o moduleLoader.o
+gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c syscall_handler.c -o syscall_handler.o
+syscall_handler.c: In function 'sys_nanosleep':
+syscall_handler.c:70:3: warning: implicit declaration of function 'milisleep' [-Wimplicit-function-declaration]
+   milisleep(nanos);
+   ^
+syscall_handler.c: In function 'sys_draw':
+syscall_handler.c:75:15: warning: passing argument 1 of 'printBitmap' makes pointer from integer without a cast
+   printBitmap(bitmap, hexColor, height, init_x, init_y);
+               ^
+In file included from syscall_handler.c:5:0:
+./include/videoDriver.h:17:6: note: expected 'uint16_t *' but argument is of type 'uint64_t'
+ void printBitmap(uint16_t * bitmap, uint32_t color, uint16_t alto ,uint64_t x, uint64_t y);
+      ^
+gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c video_drivre.c -o video_drivre.o
+video_drivre.c:45:1: warning: useless storage class specifier in empty declaration
+ }__attribute__((packed));
+ ^
+video_drivre.c: In function 'putPixel':
+video_drivre.c:88:27: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+   uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
+                           ^
+video_drivre.c: In function 'print':
+video_drivre.c:170:27: warning: passing argument 1 of 'process_input' discards 'const' qualifier from pointer target type
+         i = process_input(string, i, DEFAULT_FONT, DEFAULT_BACK); 
+                           ^
+In file included from video_drivre.c:1:0:
+./include/videoDriver.h:34:5: note: expected 'char *' but argument is of type 'const uint8_t *'
+ int process_input(char* string, int index, uint32_t frontColor, uint32_t bgColor);
+     ^
+video_drivre.c: In function 'printCant':
+video_drivre.c:175:27: warning: passing argument 1 of 'process_input' discards 'const' qualifier from pointer target type
+         i = process_input(string, i, DEFAULT_FONT, DEFAULT_BACK); 
+                           ^
+In file included from video_drivre.c:1:0:
+./include/videoDriver.h:34:5: note: expected 'char *' but argument is of type 'const uint8_t *'
+ int process_input(char* string, int index, uint32_t frontColor, uint32_t bgColor);
+     ^
+video_drivre.c: In function 'printBase':
+video_drivre.c:192:11: warning: pointer targets in passing argument 1 of 'print' differ in signedness [-Wpointer-sign]
+     print(buffer);
+           ^
+video_drivre.c:168:6: note: expected 'const uint8_t *' but argument is of type 'char *'
+ void print(const uint8_t * string){
+      ^
+gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c idtLoader.c -o idtLoader.o
+gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c keyboard.c -o keyboard.o
+gcc -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -I./include -c kernel.c -o kernel.o
+In file included from kernel.c:9:0:
+./include/idtLoader.h:2:13: warning: 'setup_IDT_entry' declared 'static' but never defined [-Wunused-function]
+ static void setup_IDT_entry (int index, uint64_t offset);
+             ^
+nasm -felf64 asm/interrupts.asm -o asm/interrupts.o
+nasm -felf64 asm/libasm.asm -o asm/libasm.o
+ld --warn-common -z max-page-size=0x1000 -T kernel.ld -o kernel.bin loader.o drawings.o lib.o time.o fonts.o irqDispatcher.o exceptions.o naiveConsole.o moduleLoader.o syscall_handler.o video_drivre.o idtLoader.o keyboard.o kernel.o asm/interrupts.o asm/libasm.o 
+make[1]: Leaving directory '/root/Kernel'
+cd Userland; make all
+make[1]: Entering directory '/root/Userland'
+cd userCodeModule; make
+make[2]: Entering directory '/root/Userland/userCodeModule'
+gcc -m64 -fno-exceptions -std=c99 -Wall -ffreestanding -nostdlib -fno-common -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -T userCodeModule.ld _loader.c drawings.c shell.c userspace.c userlib.c snake.c asm/userlibasm.o -o ../0000-userCodeModule.bin
+drawings.c:81:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:81:6: warning: (near initialization for 'snakehead_left[1]')
+drawings.c:141:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:141:6: warning: (near initialization for 'snakehead_right[0]')
+drawings.c:142:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:142:6: warning: (near initialization for 'snakehead_right[0]')
+drawings.c:143:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:143:6: warning: (near initialization for 'snakehead_right[0]')
+drawings.c:144:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:144:6: warning: (near initialization for 'snakehead_right[0]')
+drawings.c:145:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:145:6: warning: (near initialization for 'snakehead_right[0]')
+drawings.c:146:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:146:6: warning: (near initialization for 'snakehead_right[0]')
+drawings.c:147:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:147:6: warning: (near initialization for 'snakehead_right[0]')
+drawings.c:148:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:148:6: warning: (near initialization for 'snakehead_right[0]')
+drawings.c:167:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:167:6: warning: (near initialization for 'snakehead_right[1]')
+drawings.c:168:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:168:6: warning: (near initialization for 'snakehead_right[1]')
+drawings.c:169:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:169:6: warning: (near initialization for 'snakehead_right[1]')
+drawings.c:170:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:170:6: warning: (near initialization for 'snakehead_right[1]')
+drawings.c:171:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:171:6: warning: (near initialization for 'snakehead_right[1]')
+drawings.c:172:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:172:6: warning: (near initialization for 'snakehead_right[1]')
+drawings.c:173:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:173:6: warning: (near initialization for 'snakehead_right[1]')
+drawings.c:174:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:174:6: warning: (near initialization for 'snakehead_right[1]')
+drawings.c:193:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:193:6: warning: (near initialization for 'snakehead_right[2]')
+drawings.c:194:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:194:6: warning: (near initialization for 'snakehead_right[2]')
+drawings.c:195:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:195:6: warning: (near initialization for 'snakehead_right[2]')
+drawings.c:196:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:196:6: warning: (near initialization for 'snakehead_right[2]')
+drawings.c:197:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:197:6: warning: (near initialization for 'snakehead_right[2]')
+drawings.c:198:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:198:6: warning: (near initialization for 'snakehead_right[2]')
+drawings.c:199:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:199:6: warning: (near initialization for 'snakehead_right[2]')
+drawings.c:200:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:200:6: warning: (near initialization for 'snakehead_right[2]')
+drawings.c:219:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:219:6: warning: (near initialization for 'snakehead_right[3]')
+drawings.c:220:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:220:6: warning: (near initialization for 'snakehead_right[3]')
+drawings.c:221:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:221:6: warning: (near initialization for 'snakehead_right[3]')
+drawings.c:222:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:222:6: warning: (near initialization for 'snakehead_right[3]')
+drawings.c:223:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:223:6: warning: (near initialization for 'snakehead_right[3]')
+drawings.c:224:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:224:6: warning: (near initialization for 'snakehead_right[3]')
+drawings.c:225:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:225:6: warning: (near initialization for 'snakehead_right[3]')
+drawings.c:226:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:226:6: warning: (near initialization for 'snakehead_right[3]')
+drawings.c:245:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:245:6: warning: (near initialization for 'snakehead_right[4]')
+drawings.c:246:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:246:6: warning: (near initialization for 'snakehead_right[4]')
+drawings.c:247:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:247:6: warning: (near initialization for 'snakehead_right[4]')
+drawings.c:248:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:248:6: warning: (near initialization for 'snakehead_right[4]')
+drawings.c:249:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:249:6: warning: (near initialization for 'snakehead_right[4]')
+drawings.c:250:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:250:6: warning: (near initialization for 'snakehead_right[4]')
+drawings.c:251:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:251:6: warning: (near initialization for 'snakehead_right[4]')
+drawings.c:252:6: warning: excess elements in array initializer
+      0b0000000000000000}
+      ^
+drawings.c:252:6: warning: (near initialization for 'snakehead_right[4]')
+drawings.c:276:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:276:6: warning: (near initialization for 'snakehead_up[0]')
+drawings.c:277:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:277:6: warning: (near initialization for 'snakehead_up[0]')
+drawings.c:278:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:278:6: warning: (near initialization for 'snakehead_up[0]')
+drawings.c:279:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:279:6: warning: (near initialization for 'snakehead_up[0]')
+drawings.c:280:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:280:6: warning: (near initialization for 'snakehead_up[0]')
+drawings.c:281:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:281:6: warning: (near initialization for 'snakehead_up[0]')
+drawings.c:282:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:282:6: warning: (near initialization for 'snakehead_up[0]')
+drawings.c:283:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:283:6: warning: (near initialization for 'snakehead_up[0]')
+drawings.c:302:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:302:6: warning: (near initialization for 'snakehead_up[1]')
+drawings.c:303:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:303:6: warning: (near initialization for 'snakehead_up[1]')
+drawings.c:304:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:304:6: warning: (near initialization for 'snakehead_up[1]')
+drawings.c:305:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:305:6: warning: (near initialization for 'snakehead_up[1]')
+drawings.c:306:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:306:6: warning: (near initialization for 'snakehead_up[1]')
+drawings.c:307:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:307:6: warning: (near initialization for 'snakehead_up[1]')
+drawings.c:308:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:308:6: warning: (near initialization for 'snakehead_up[1]')
+drawings.c:309:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:309:6: warning: (near initialization for 'snakehead_up[1]')
+drawings.c:328:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:328:6: warning: (near initialization for 'snakehead_up[2]')
+drawings.c:329:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:329:6: warning: (near initialization for 'snakehead_up[2]')
+drawings.c:330:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:330:6: warning: (near initialization for 'snakehead_up[2]')
+drawings.c:331:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:331:6: warning: (near initialization for 'snakehead_up[2]')
+drawings.c:332:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:332:6: warning: (near initialization for 'snakehead_up[2]')
+drawings.c:333:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:333:6: warning: (near initialization for 'snakehead_up[2]')
+drawings.c:334:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:334:6: warning: (near initialization for 'snakehead_up[2]')
+drawings.c:335:6: warning: excess elements in array initializer
+      0b0000000000000000}
+      ^
+drawings.c:335:6: warning: (near initialization for 'snakehead_up[2]')
+drawings.c:359:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:359:6: warning: (near initialization for 'snakehead_down[0]')
+drawings.c:360:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:360:6: warning: (near initialization for 'snakehead_down[0]')
+drawings.c:361:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:361:6: warning: (near initialization for 'snakehead_down[0]')
+drawings.c:362:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:362:6: warning: (near initialization for 'snakehead_down[0]')
+drawings.c:363:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:363:6: warning: (near initialization for 'snakehead_down[0]')
+drawings.c:364:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:364:6: warning: (near initialization for 'snakehead_down[0]')
+drawings.c:365:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:365:6: warning: (near initialization for 'snakehead_down[0]')
+drawings.c:366:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:366:6: warning: (near initialization for 'snakehead_down[0]')
+drawings.c:385:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:385:6: warning: (near initialization for 'snakehead_down[1]')
+drawings.c:386:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:386:6: warning: (near initialization for 'snakehead_down[1]')
+drawings.c:387:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:387:6: warning: (near initialization for 'snakehead_down[1]')
+drawings.c:388:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:388:6: warning: (near initialization for 'snakehead_down[1]')
+drawings.c:389:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:389:6: warning: (near initialization for 'snakehead_down[1]')
+drawings.c:390:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:390:6: warning: (near initialization for 'snakehead_down[1]')
+drawings.c:391:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:391:6: warning: (near initialization for 'snakehead_down[1]')
+drawings.c:392:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:392:6: warning: (near initialization for 'snakehead_down[1]')
+drawings.c:411:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:411:6: warning: (near initialization for 'snakehead_down[2]')
+drawings.c:412:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:412:6: warning: (near initialization for 'snakehead_down[2]')
+drawings.c:413:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:413:6: warning: (near initialization for 'snakehead_down[2]')
+drawings.c:414:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:414:6: warning: (near initialization for 'snakehead_down[2]')
+drawings.c:415:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:415:6: warning: (near initialization for 'snakehead_down[2]')
+drawings.c:416:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:416:6: warning: (near initialization for 'snakehead_down[2]')
+drawings.c:417:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:417:6: warning: (near initialization for 'snakehead_down[2]')
+drawings.c:418:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:418:6: warning: (near initialization for 'snakehead_down[2]')
+drawings.c:437:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:437:6: warning: (near initialization for 'snakehead_down[3]')
+drawings.c:438:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:438:6: warning: (near initialization for 'snakehead_down[3]')
+drawings.c:439:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:439:6: warning: (near initialization for 'snakehead_down[3]')
+drawings.c:440:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:440:6: warning: (near initialization for 'snakehead_down[3]')
+drawings.c:441:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:441:6: warning: (near initialization for 'snakehead_down[3]')
+drawings.c:442:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:442:6: warning: (near initialization for 'snakehead_down[3]')
+drawings.c:443:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:443:6: warning: (near initialization for 'snakehead_down[3]')
+drawings.c:444:6: warning: excess elements in array initializer
+      0b0000000000000000}
+      ^
+drawings.c:444:6: warning: (near initialization for 'snakehead_down[3]')
+drawings.c:468:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:468:6: warning: (near initialization for 'snakebody_horizontal[0]')
+drawings.c:469:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:469:6: warning: (near initialization for 'snakebody_horizontal[0]')
+drawings.c:470:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:470:6: warning: (near initialization for 'snakebody_horizontal[0]')
+drawings.c:471:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:471:6: warning: (near initialization for 'snakebody_horizontal[0]')
+drawings.c:472:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:472:6: warning: (near initialization for 'snakebody_horizontal[0]')
+drawings.c:473:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:473:6: warning: (near initialization for 'snakebody_horizontal[0]')
+drawings.c:474:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:474:6: warning: (near initialization for 'snakebody_horizontal[0]')
+drawings.c:475:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:475:6: warning: (near initialization for 'snakebody_horizontal[0]')
+drawings.c:494:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:494:6: warning: (near initialization for 'snakebody_horizontal[1]')
+drawings.c:495:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:495:6: warning: (near initialization for 'snakebody_horizontal[1]')
+drawings.c:496:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:496:6: warning: (near initialization for 'snakebody_horizontal[1]')
+drawings.c:497:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:497:6: warning: (near initialization for 'snakebody_horizontal[1]')
+drawings.c:498:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:498:6: warning: (near initialization for 'snakebody_horizontal[1]')
+drawings.c:499:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:499:6: warning: (near initialization for 'snakebody_horizontal[1]')
+drawings.c:500:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:500:6: warning: (near initialization for 'snakebody_horizontal[1]')
+drawings.c:501:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:501:6: warning: (near initialization for 'snakebody_horizontal[1]')
+drawings.c:520:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:520:6: warning: (near initialization for 'snakebody_horizontal[2]')
+drawings.c:521:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:521:6: warning: (near initialization for 'snakebody_horizontal[2]')
+drawings.c:522:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:522:6: warning: (near initialization for 'snakebody_horizontal[2]')
+drawings.c:523:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:523:6: warning: (near initialization for 'snakebody_horizontal[2]')
+drawings.c:524:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:524:6: warning: (near initialization for 'snakebody_horizontal[2]')
+drawings.c:525:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:525:6: warning: (near initialization for 'snakebody_horizontal[2]')
+drawings.c:526:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:526:6: warning: (near initialization for 'snakebody_horizontal[2]')
+drawings.c:527:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:527:6: warning: (near initialization for 'snakebody_horizontal[2]')
+drawings.c:546:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:546:6: warning: (near initialization for 'snakebody_horizontal[3]')
+drawings.c:547:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:547:6: warning: (near initialization for 'snakebody_horizontal[3]')
+drawings.c:548:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:548:6: warning: (near initialization for 'snakebody_horizontal[3]')
+drawings.c:549:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:549:6: warning: (near initialization for 'snakebody_horizontal[3]')
+drawings.c:550:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:550:6: warning: (near initialization for 'snakebody_horizontal[3]')
+drawings.c:551:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:551:6: warning: (near initialization for 'snakebody_horizontal[3]')
+drawings.c:552:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:552:6: warning: (near initialization for 'snakebody_horizontal[3]')
+drawings.c:553:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:553:6: warning: (near initialization for 'snakebody_horizontal[3]')
+drawings.c:572:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:572:6: warning: (near initialization for 'snakebody_horizontal[4]')
+drawings.c:573:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:573:6: warning: (near initialization for 'snakebody_horizontal[4]')
+drawings.c:574:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:574:6: warning: (near initialization for 'snakebody_horizontal[4]')
+drawings.c:575:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:575:6: warning: (near initialization for 'snakebody_horizontal[4]')
+drawings.c:576:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:576:6: warning: (near initialization for 'snakebody_horizontal[4]')
+drawings.c:577:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:577:6: warning: (near initialization for 'snakebody_horizontal[4]')
+drawings.c:578:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:578:6: warning: (near initialization for 'snakebody_horizontal[4]')
+drawings.c:579:6: warning: excess elements in array initializer
+      0b0000000000000000}
+      ^
+drawings.c:579:6: warning: (near initialization for 'snakebody_horizontal[4]')
+drawings.c:603:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:603:6: warning: (near initialization for 'snakebody_vertical[0]')
+drawings.c:604:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:604:6: warning: (near initialization for 'snakebody_vertical[0]')
+drawings.c:605:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:605:6: warning: (near initialization for 'snakebody_vertical[0]')
+drawings.c:606:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:606:6: warning: (near initialization for 'snakebody_vertical[0]')
+drawings.c:607:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:607:6: warning: (near initialization for 'snakebody_vertical[0]')
+drawings.c:608:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:608:6: warning: (near initialization for 'snakebody_vertical[0]')
+drawings.c:609:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:609:6: warning: (near initialization for 'snakebody_vertical[0]')
+drawings.c:610:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:610:6: warning: (near initialization for 'snakebody_vertical[0]')
+drawings.c:629:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:629:6: warning: (near initialization for 'snakebody_vertical[1]')
+drawings.c:630:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:630:6: warning: (near initialization for 'snakebody_vertical[1]')
+drawings.c:631:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:631:6: warning: (near initialization for 'snakebody_vertical[1]')
+drawings.c:632:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:632:6: warning: (near initialization for 'snakebody_vertical[1]')
+drawings.c:633:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:633:6: warning: (near initialization for 'snakebody_vertical[1]')
+drawings.c:634:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:634:6: warning: (near initialization for 'snakebody_vertical[1]')
+drawings.c:635:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:635:6: warning: (near initialization for 'snakebody_vertical[1]')
+drawings.c:636:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:636:6: warning: (near initialization for 'snakebody_vertical[1]')
+drawings.c:655:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:655:6: warning: (near initialization for 'snakebody_vertical[2]')
+drawings.c:656:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:656:6: warning: (near initialization for 'snakebody_vertical[2]')
+drawings.c:657:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:657:6: warning: (near initialization for 'snakebody_vertical[2]')
+drawings.c:658:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:658:6: warning: (near initialization for 'snakebody_vertical[2]')
+drawings.c:659:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:659:6: warning: (near initialization for 'snakebody_vertical[2]')
+drawings.c:660:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:660:6: warning: (near initialization for 'snakebody_vertical[2]')
+drawings.c:661:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:661:6: warning: (near initialization for 'snakebody_vertical[2]')
+drawings.c:662:6: warning: excess elements in array initializer
+      0b0000000000000000}
+      ^
+drawings.c:662:6: warning: (near initialization for 'snakebody_vertical[2]')
+drawings.c:686:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:686:6: warning: (near initialization for 'snakecurve_downright[0]')
+drawings.c:687:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:687:6: warning: (near initialization for 'snakecurve_downright[0]')
+drawings.c:688:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:688:6: warning: (near initialization for 'snakecurve_downright[0]')
+drawings.c:689:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:689:6: warning: (near initialization for 'snakecurve_downright[0]')
+drawings.c:690:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:690:6: warning: (near initialization for 'snakecurve_downright[0]')
+drawings.c:691:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:691:6: warning: (near initialization for 'snakecurve_downright[0]')
+drawings.c:692:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:692:6: warning: (near initialization for 'snakecurve_downright[0]')
+drawings.c:693:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:693:6: warning: (near initialization for 'snakecurve_downright[0]')
+drawings.c:712:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:712:6: warning: (near initialization for 'snakecurve_downright[1]')
+drawings.c:713:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:713:6: warning: (near initialization for 'snakecurve_downright[1]')
+drawings.c:714:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:714:6: warning: (near initialization for 'snakecurve_downright[1]')
+drawings.c:715:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:715:6: warning: (near initialization for 'snakecurve_downright[1]')
+drawings.c:716:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:716:6: warning: (near initialization for 'snakecurve_downright[1]')
+drawings.c:717:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:717:6: warning: (near initialization for 'snakecurve_downright[1]')
+drawings.c:718:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:718:6: warning: (near initialization for 'snakecurve_downright[1]')
+drawings.c:719:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:719:6: warning: (near initialization for 'snakecurve_downright[1]')
+drawings.c:738:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:738:6: warning: (near initialization for 'snakecurve_downright[2]')
+drawings.c:739:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:739:6: warning: (near initialization for 'snakecurve_downright[2]')
+drawings.c:740:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:740:6: warning: (near initialization for 'snakecurve_downright[2]')
+drawings.c:741:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:741:6: warning: (near initialization for 'snakecurve_downright[2]')
+drawings.c:742:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:742:6: warning: (near initialization for 'snakecurve_downright[2]')
+drawings.c:743:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:743:6: warning: (near initialization for 'snakecurve_downright[2]')
+drawings.c:744:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:744:6: warning: (near initialization for 'snakecurve_downright[2]')
+drawings.c:745:6: warning: excess elements in array initializer
+      0b0000000000000000}
+      ^
+drawings.c:745:6: warning: (near initialization for 'snakecurve_downright[2]')
+drawings.c:769:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:769:6: warning: (near initialization for 'snakecurve_downleft[0]')
+drawings.c:770:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:770:6: warning: (near initialization for 'snakecurve_downleft[0]')
+drawings.c:771:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:771:6: warning: (near initialization for 'snakecurve_downleft[0]')
+drawings.c:772:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:772:6: warning: (near initialization for 'snakecurve_downleft[0]')
+drawings.c:773:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:773:6: warning: (near initialization for 'snakecurve_downleft[0]')
+drawings.c:774:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:774:6: warning: (near initialization for 'snakecurve_downleft[0]')
+drawings.c:775:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:775:6: warning: (near initialization for 'snakecurve_downleft[0]')
+drawings.c:776:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:776:6: warning: (near initialization for 'snakecurve_downleft[0]')
+drawings.c:795:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:795:6: warning: (near initialization for 'snakecurve_downleft[1]')
+drawings.c:796:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:796:6: warning: (near initialization for 'snakecurve_downleft[1]')
+drawings.c:797:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:797:6: warning: (near initialization for 'snakecurve_downleft[1]')
+drawings.c:798:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:798:6: warning: (near initialization for 'snakecurve_downleft[1]')
+drawings.c:799:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:799:6: warning: (near initialization for 'snakecurve_downleft[1]')
+drawings.c:800:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:800:6: warning: (near initialization for 'snakecurve_downleft[1]')
+drawings.c:801:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:801:6: warning: (near initialization for 'snakecurve_downleft[1]')
+drawings.c:802:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:802:6: warning: (near initialization for 'snakecurve_downleft[1]')
+drawings.c:821:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:821:6: warning: (near initialization for 'snakecurve_downleft[2]')
+drawings.c:822:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:822:6: warning: (near initialization for 'snakecurve_downleft[2]')
+drawings.c:823:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:823:6: warning: (near initialization for 'snakecurve_downleft[2]')
+drawings.c:824:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:824:6: warning: (near initialization for 'snakecurve_downleft[2]')
+drawings.c:825:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:825:6: warning: (near initialization for 'snakecurve_downleft[2]')
+drawings.c:826:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:826:6: warning: (near initialization for 'snakecurve_downleft[2]')
+drawings.c:827:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:827:6: warning: (near initialization for 'snakecurve_downleft[2]')
+drawings.c:828:6: warning: excess elements in array initializer
+      0b0000000000000000}
+      ^
+drawings.c:828:6: warning: (near initialization for 'snakecurve_downleft[2]')
+drawings.c:852:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:852:6: warning: (near initialization for 'snakecurve_upright[0]')
+drawings.c:853:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:853:6: warning: (near initialization for 'snakecurve_upright[0]')
+drawings.c:854:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:854:6: warning: (near initialization for 'snakecurve_upright[0]')
+drawings.c:855:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:855:6: warning: (near initialization for 'snakecurve_upright[0]')
+drawings.c:856:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:856:6: warning: (near initialization for 'snakecurve_upright[0]')
+drawings.c:857:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:857:6: warning: (near initialization for 'snakecurve_upright[0]')
+drawings.c:858:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:858:6: warning: (near initialization for 'snakecurve_upright[0]')
+drawings.c:859:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:859:6: warning: (near initialization for 'snakecurve_upright[0]')
+drawings.c:878:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:878:6: warning: (near initialization for 'snakecurve_upright[1]')
+drawings.c:879:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:879:6: warning: (near initialization for 'snakecurve_upright[1]')
+drawings.c:880:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:880:6: warning: (near initialization for 'snakecurve_upright[1]')
+drawings.c:881:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:881:6: warning: (near initialization for 'snakecurve_upright[1]')
+drawings.c:882:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:882:6: warning: (near initialization for 'snakecurve_upright[1]')
+drawings.c:883:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:883:6: warning: (near initialization for 'snakecurve_upright[1]')
+drawings.c:884:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:884:6: warning: (near initialization for 'snakecurve_upright[1]')
+drawings.c:885:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:885:6: warning: (near initialization for 'snakecurve_upright[1]')
+drawings.c:904:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:904:6: warning: (near initialization for 'snakecurve_upright[2]')
+drawings.c:905:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:905:6: warning: (near initialization for 'snakecurve_upright[2]')
+drawings.c:906:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:906:6: warning: (near initialization for 'snakecurve_upright[2]')
+drawings.c:907:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:907:6: warning: (near initialization for 'snakecurve_upright[2]')
+drawings.c:908:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:908:6: warning: (near initialization for 'snakecurve_upright[2]')
+drawings.c:909:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:909:6: warning: (near initialization for 'snakecurve_upright[2]')
+drawings.c:910:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:910:6: warning: (near initialization for 'snakecurve_upright[2]')
+drawings.c:911:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:911:6: warning: (near initialization for 'snakecurve_upright[2]')
+drawings.c:930:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:930:6: warning: (near initialization for 'snakecurve_upright[3]')
+drawings.c:931:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:931:6: warning: (near initialization for 'snakecurve_upright[3]')
+drawings.c:932:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:932:6: warning: (near initialization for 'snakecurve_upright[3]')
+drawings.c:933:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:933:6: warning: (near initialization for 'snakecurve_upright[3]')
+drawings.c:934:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:934:6: warning: (near initialization for 'snakecurve_upright[3]')
+drawings.c:935:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:935:6: warning: (near initialization for 'snakecurve_upright[3]')
+drawings.c:936:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:936:6: warning: (near initialization for 'snakecurve_upright[3]')
+drawings.c:937:6: warning: excess elements in array initializer
+      0b0000000000000000}
+      ^
+drawings.c:937:6: warning: (near initialization for 'snakecurve_upright[3]')
+drawings.c:961:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:961:6: warning: (near initialization for 'snakecurve_upleft[0]')
+drawings.c:962:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:962:6: warning: (near initialization for 'snakecurve_upleft[0]')
+drawings.c:963:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:963:6: warning: (near initialization for 'snakecurve_upleft[0]')
+drawings.c:964:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:964:6: warning: (near initialization for 'snakecurve_upleft[0]')
+drawings.c:965:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:965:6: warning: (near initialization for 'snakecurve_upleft[0]')
+drawings.c:966:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:966:6: warning: (near initialization for 'snakecurve_upleft[0]')
+drawings.c:967:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:967:6: warning: (near initialization for 'snakecurve_upleft[0]')
+drawings.c:968:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:968:6: warning: (near initialization for 'snakecurve_upleft[0]')
+drawings.c:987:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:987:6: warning: (near initialization for 'snakecurve_upleft[1]')
+drawings.c:988:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:988:6: warning: (near initialization for 'snakecurve_upleft[1]')
+drawings.c:989:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:989:6: warning: (near initialization for 'snakecurve_upleft[1]')
+drawings.c:990:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:990:6: warning: (near initialization for 'snakecurve_upleft[1]')
+drawings.c:991:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:991:6: warning: (near initialization for 'snakecurve_upleft[1]')
+drawings.c:992:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:992:6: warning: (near initialization for 'snakecurve_upleft[1]')
+drawings.c:993:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:993:6: warning: (near initialization for 'snakecurve_upleft[1]')
+drawings.c:994:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:994:6: warning: (near initialization for 'snakecurve_upleft[1]')
+drawings.c:1013:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:1013:6: warning: (near initialization for 'snakecurve_upleft[2]')
+drawings.c:1014:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:1014:6: warning: (near initialization for 'snakecurve_upleft[2]')
+drawings.c:1015:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:1015:6: warning: (near initialization for 'snakecurve_upleft[2]')
+drawings.c:1016:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:1016:6: warning: (near initialization for 'snakecurve_upleft[2]')
+drawings.c:1017:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:1017:6: warning: (near initialization for 'snakecurve_upleft[2]')
+drawings.c:1018:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:1018:6: warning: (near initialization for 'snakecurve_upleft[2]')
+drawings.c:1019:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:1019:6: warning: (near initialization for 'snakecurve_upleft[2]')
+drawings.c:1020:6: warning: excess elements in array initializer
+      0b0000000000000000},
+      ^
+drawings.c:1020:6: warning: (near initialization for 'snakecurve_upleft[2]')
+drawings.c:1039:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:1039:6: warning: (near initialization for 'snakecurve_upleft[3]')
+drawings.c:1040:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:1040:6: warning: (near initialization for 'snakecurve_upleft[3]')
+drawings.c:1041:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:1041:6: warning: (near initialization for 'snakecurve_upleft[3]')
+drawings.c:1042:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:1042:6: warning: (near initialization for 'snakecurve_upleft[3]')
+drawings.c:1043:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:1043:6: warning: (near initialization for 'snakecurve_upleft[3]')
+drawings.c:1044:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:1044:6: warning: (near initialization for 'snakecurve_upleft[3]')
+drawings.c:1045:6: warning: excess elements in array initializer
+      0b0000000000000000,
+      ^
+drawings.c:1045:6: warning: (near initialization for 'snakecurve_upleft[3]')
+drawings.c:1046:6: warning: excess elements in array initializer
+      0b0000000000000000}
+      ^
+drawings.c:1046:6: warning: (near initialization for 'snakecurve_upleft[3]')
+shell.c: In function 'shell':
+shell.c:40:13: warning: implicit declaration of function 'process_key' [-Wimplicit-function-declaration]
+             process_key(char_buffer[0]);
+             ^
+shell.c:42:9: warning: implicit declaration of function 'halt' [-Wimplicit-function-declaration]
+         halt();
+         ^
+shell.c: At top level:
+shell.c:51:6: warning: conflicting types for 'process_key'
+ void process_key(char key){
+      ^
+shell.c:40:13: note: previous implicit declaration of 'process_key' was here
+             process_key(char_buffer[0]);
+             ^
+shell.c: In function 'process_key':
+shell.c:68:9: warning: implicit declaration of function 'write_out' [-Wimplicit-function-declaration]
+         write_out("\n");
+         ^
+shell.c:69:9: warning: implicit declaration of function 'process_command' [-Wimplicit-function-declaration]
+         process_command(command_buffer);
+         ^
+shell.c: At top level:
+shell.c:99:6: warning: conflicting types for 'process_command'
+ void process_command(char* buffer){
+      ^
+shell.c:69:9: note: previous implicit declaration of 'process_command' was here
+         process_command(command_buffer);
+         ^
+shell.c:155:6: warning: conflicting types for 'write_out'
+ void write_out(char* string){
+      ^
+shell.c:68:9: note: previous implicit declaration of 'write_out' was here
+         write_out("\n");
+         ^
+userspace.c: In function 'main':
+userspace.c:13:10: warning: unused variable 'buffer_space' [-Wunused-variable]
+     char buffer_space[1];
+          ^
+userlib.c:6:14: warning: 'char_buffer' defined but not used [-Wunused-variable]
+ static char* char_buffer = " ";
+              ^
+snake.c: In function 'snakeSetup':
+snake.c:418:5: warning: value computed is not used [-Wunused-value]
+     *snakes++;
+     ^
+/tmp/ccIlLHaT.o: In function `shell':
+shell.c:(.text+0x4a): undefined reference to `halt'
+collect2: error: ld returned 1 exit status
+Makefile:11: recipe for target '0000-userCodeModule.bin' failed
+make[2]: *** [0000-userCodeModule.bin] Error 1
+make[2]: Leaving directory '/root/Userland/userCodeModule'
+Makefile:8: recipe for target 'userCodeModule' failed
+make[1]: *** [userCodeModule] Error 2
+make[1]: Leaving directory '/root/Userland'
+Makefile:11: recipe for target 'userland' failed
+make: *** [userland] Error 2
+make: Leaving directory '/root'
+BOX

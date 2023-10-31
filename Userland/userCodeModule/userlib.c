@@ -42,12 +42,6 @@ int readLast(char* buffer, int length){
     return _read(STDLAST, buffer, length);
 }
 
-int strlen(char * string){
-    int i=0;
-    while(string[i++]!=0);
-    return i;
-}
-
 void printBase(uint64_t value, uint32_t base){
     uintToBase(value, buffer, base);
     print(buffer);

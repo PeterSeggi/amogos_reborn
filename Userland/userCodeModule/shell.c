@@ -39,7 +39,7 @@ int shell(){
         if (read(char_buffer, 1) == 1){
             process_key(char_buffer[0]);
         }
-        halt();
+        miliSleep(10);
     }
 
     clearScreen();
