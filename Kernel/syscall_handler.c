@@ -105,6 +105,7 @@ void sys_getRegisters(struct registers *regsStruct){
   regsStruct->rsp = _getRsp();
   regsStruct->rsi = _getRsi();
   regsStruct->rdi = _getRdi();
+  regsStruct->rip = _getRip();
   regsStruct->r8 = _getR8();
   regsStruct->r9 = _getR9();
   regsStruct->r10 = _getR10();

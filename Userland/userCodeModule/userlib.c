@@ -117,20 +117,21 @@ void getRax(int *rax){
 }
 
 void printRegisters(){
+	//no estoy incluyendo los de 512/256/128/32/16-bit ni RFLAGS 
 	struct registers regsStruct;
 	_getRegisters(&regsStruct);
 	int values[]={regsStruct.rax, regsStruct.rbx, regsStruct.rcx, regsStruct.rdx, regsStruct.rbp, regsStruct.rsp,
-					regsStruct.rsi, regsStruct.rdi, regsStruct.r8, regsStruct.r9, regsStruct.r10, regsStruct.r11, 
+					regsStruct.rsi, regsStruct.rdi, regsStruct.rip, regsStruct.r8, regsStruct.r9, regsStruct.r10, regsStruct.r11, 
 					regsStruct.r12, regsStruct.r13, regsStruct.r14, regsStruct.r15};
-	char* names[]={"rax:", "rbx:", "rcx:", "rdx:", "rbp:", "rsp:", "rsi:", "rdi:",
+	char* names[]={"rax:", "rbx:", "rcx:", "rdx:", "rbp:", "rsp:", "rsi:", "rdi:", "rip:",
 				 	"r8:", "r9:", "r10:", "r11:", "r12:", "r13:", "r14:", "r15:"};
-	int cantRegisters=16;
+	int cantRegisters=17;
 	for(int i=0; i<cantRegisters; i++){
 		print(names[i]);
 		printDec(values[i]);
-		if(i%5==0){
+		if(i%6==0 && i!=0){
 			print("\n");
 		}
-		print("   ");
+		print("  ");
 	}	
 }
