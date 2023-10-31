@@ -22,10 +22,10 @@ void addSnake(uint8_t row, uint8_t column, uint8_t elem, enum Direction dir);
 void putSnake(uint8_t row, uint8_t column, uint8_t snake);
 
 //directions
-uint8_t slither(uint8_t column, uint8_t row, enum Direction dir, uint8_t snake);
+uint8_t slither(enum Direction dir, uint8_t snake);
 
-void checkWithOthersDir( enum Direction currenDir, uint8_t currentRow, uint8_t currentCol, uint8_t othersInfo);
-enum Direction getDirection(uint8_t row, uint8_t column);
+enum Direction getDirection(int row, int column);
+
 uint8_t changePosition(uint8_t column, uint8_t row, enum Direction dir, uint8_t snake);
 void saveTailPosition(uint8_t snake, uint8_t column, uint8_t row);
 void saveHeadPosition(uint8_t snake, uint8_t column, uint8_t row);

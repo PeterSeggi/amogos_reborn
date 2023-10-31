@@ -89,7 +89,8 @@ uint8_t snake2_head_row=0, snake2_head_column=0;
 uint8_t snake1_tail_row=0, snake1_tail_column=0;
 uint8_t snake2_tail_row=0, snake2_tail_column=0;
 
-uint8_t slither(uint8_t column, uint8_t row, enum Direction dir, uint8_t snake){
+uint8_t slither(enum Direction dir, uint8_t snake){
+    uint8_t column=getSnakeHeadCol(snake), row=getSnakeHeadRow(snake);
     uint8_t newHeadCol=column, newHeadRow=row;
     switch(dir){
         case (UP):
@@ -115,13 +116,20 @@ uint8_t slither(uint8_t column, uint8_t row, enum Direction dir, uint8_t snake){
         default:
             break;
     }
-    if((board[newHeadCol][newHeadRow] & 0x0F)==((snake==SNAKE1)? SNAKE2:SNAKE1)) return 2;//snakes colision
-    if((board[newHeadCol][newHeadRow] & 0x0F)==1){//apple
-        //puntaje++;
+    if(!( ((board[newHeadCol][newHeadRow] & 0x0F)==0) || ((board[newHeadCol][newHeadRow] & 0x0F)==APPLE)) ){
+        //TODO printear una explosion o algo
+        return 2;//snakes colision
     }
-    board[newHeadCol][newHeadRow]=snake + dir;
+    if((board[newHeadCol][newHeadRow] & 0x0F)==APPLE){//apple saves points
+        (snake==SNAKE1)? player1Points++ : player2Points++;
+        board[column][row]=snake + (board[column][row]&0xF0);
+    }
+    else{
+        changePosition(column,row,dir,snake);
+    }
     saveHeadPosition(snake,newHeadCol,newHeadRow);
-    changePosition(column,row,dir,snake);
+    board[newHeadCol][newHeadRow]=snake + dir;
+    
     return 0;
 }
 
@@ -130,7 +138,6 @@ uint8_t changePosition(uint8_t column, uint8_t row, enum Direction dir, uint8_t 
         board[column][row]=0;
         return 1;//aviso que debe establecerse nuevas posiciones de tail
     }
-
     uint8_t prevCol=column, prevRow=row;
     enum Direction currentDir = board[column][row] & 0xF0;
     switch(currentDir){
@@ -160,107 +167,123 @@ uint8_t changePosition(uint8_t column, uint8_t row, enum Direction dir, uint8_t 
     return 0;
 }
 
-
-void putSnake(uint8_t row, uint8_t column, uint8_t snake){//contemplamos casos de que parte de la serpiente imprimir
+void putSnake(uint8_t row, uint8_t column, uint8_t snake){
     uint8_t caso = checkRight(row,column,snake);
     caso += checkLeft(row,column,snake)<<1;
     caso += checkDown(row,column,snake)<<2;
     caso += checkUp(row,column,snake)<<3;
-    switch(caso){
-        case(1):
-            draw_snakehead_left(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+    enum Direction mainDir=getDirection(row,column);
+    if((row==getSnakeHeadRow(snake)) && (column==getSnakeHeadCol(snake))){
+        switch(mainDir){
+            case(LEFT):
+                draw_snakehead_left(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                return;
+            case(RIGHT):
+                draw_snakehead_right(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                return;
+            case(UP):
+                draw_snakehead_up(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                return;
+            case(DOWN):
+                draw_snakehead_down(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                return;
+            default:
+                return;
+        }
+    }
+    if((row==getSnakeTailRow(snake)) && (column==getSnakeTailCol(snake))){
+        switch(mainDir){
+            case(RIGHT):
+                draw_snakehead_left(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                return;
+            case(LEFT):
+                draw_snakehead_right(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                return;
+            case(DOWN):
+                draw_snakehead_up(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                return;
+            case(UP):
+                draw_snakehead_down(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                return;
+            default:
+                return;
+        }
+    }
+    
+    switch(mainDir){
+        case (UP):
+            if(((caso&0xC)==0xC) && getDirection(row-1,column)==UP){//theres snake up and down
+                draw_snakebody_vertical(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+            }
+            else{
+                if((caso & 0x02) && getDirection(row,column-1)==LEFT){//theres snake left with correct direction
+                    draw_snakecurve_downright(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                }
+                else{
+                    if((caso & 0x01) && getDirection(row,column+1)==RIGHT){//theres snake right
+                        draw_snakecurve_downleft(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                    }
+                }
+            }
             break;
-        case(2):
-            draw_snakehead_right(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+
+        case (DOWN):
+            if(((caso&0xC)==0xC) && getDirection(row+1,column)==DOWN){//theres snake down and up
+                draw_snakebody_vertical(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+            }
+            else{
+                if((caso & 0x02) && getDirection(row,column-1)==LEFT){//theres snake left with correct direction
+                    draw_snakecurve_upright(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                }
+                else{
+                    if((caso & 0x01) && getDirection(row,column+1)==RIGHT){//theres snake right
+                        draw_snakecurve_upleft(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                    }
+                }
+            }
             break;
-        case(3):
-            draw_snakebody_horizontal(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+
+        case (LEFT):
+            if(((caso&0x3)==0x3) && getDirection(row,column-1)==LEFT){//theres snake left and right
+                draw_snakebody_horizontal(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+            }
+            else{
+                if((caso & 0x08) && getDirection(row-1,column)==UP){//theres snake up with correct direction
+                    draw_snakecurve_upleft(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                }
+                else{
+                    if((caso & 0x04) && getDirection(row+1,column)==DOWN){//theres snake down
+                        draw_snakecurve_downleft(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                    }
+                }
+            }
             break;
-        case(4):
-            draw_snakehead_up(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+
+        case (RIGHT):
+            if(((caso&0x3)==0x3) && getDirection(row,column+1)==RIGHT){//theres snake left and right
+                draw_snakebody_horizontal(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+            }
+            else{
+                if((caso & 0x08) && getDirection(row-1,column)==UP){//theres snake up with correct direction
+                    draw_snakecurve_upright(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                }
+                else{
+                    if((caso & 0x04) && getDirection(row+1,column)==DOWN){//theres snake down
+                        draw_snakecurve_downright(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
+                    }
+                }
+            }
             break;
-        case(5):
-            draw_snakecurve_downleft(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
-            break;
-        case(6):
-            draw_snakecurve_downright(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
-            break;
-        case(8):
-            draw_snakehead_down(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
-            break;
-        case(9):
-            draw_snakecurve_upleft(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
-            break;
-        case(10):
-            draw_snakecurve_upright(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
-            break;
-        case(12):
-            draw_snakebody_vertical(column*(dibSpaceWidth) + board_start_x ,row*(dibSpaceHeight) + board_start_y);
-            break;
-        case(7):
-        case(11):
-        case(13):
-        case(14):
-        case(15):
-            checkWithOthersDir(getDirection(row,column),row,column,caso);
-            break;
-        default://casos sin sentido
+        
+        default:
             break;
     }
 }
 
 
-//current receives de flow from left(Left goes Right), from right(Right goes Left), from down(Down goes Up) or from up(Up goes Down)
-
-void checkWithOthersDir( enum Direction currenDir, uint8_t currentRow, uint8_t currentCol, uint8_t othersInfo){
-    switch(currenDir){
-                case(UP):
-                    if( (othersInfo & 0x02) && getDirection(currentRow,currentCol-1)==RIGHT)
-                        draw_snakecurve_upright(currentCol*(dibSpaceWidth) + board_start_x ,currentRow*(dibSpaceHeight) + board_start_y);
-                    else if( (othersInfo & 0x01) && getDirection(currentRow,currentCol+1)==LEFT)
-                        draw_snakecurve_upleft(currentCol*(dibSpaceWidth) + board_start_x ,currentRow*(dibSpaceHeight) + board_start_y);
-                    else if( (othersInfo & 0x04) && getDirection(currentRow-1,currentCol)==UP)
-                        draw_snakebody_vertical(currentCol*(dibSpaceWidth) + board_start_x ,currentRow*(dibSpaceHeight) + board_start_y);
-                    else if(!(othersInfo & 0x08))
-                        draw_snakehead_up(currentCol*(dibSpaceWidth) + board_start_x ,currentRow*(dibSpaceHeight) + board_start_y);
-                    break;
-                case(DOWN):
-                    if( (othersInfo & 0x02) && getDirection(currentRow,currentCol-1)==RIGHT)
-                        draw_snakecurve_downright(currentCol*(dibSpaceWidth) + board_start_x ,currentRow*(dibSpaceHeight) + board_start_y);
-                    else if( (othersInfo & 0x01) && getDirection(currentRow,currentCol+1)==LEFT)
-                        draw_snakecurve_downleft(currentCol*(dibSpaceWidth) + board_start_x ,currentRow*(dibSpaceHeight) + board_start_y);
-                    else if(!(othersInfo & 0x04))
-                        draw_snakehead_down(currentCol*(dibSpaceWidth) + board_start_x ,currentRow*(dibSpaceHeight) + board_start_y);
-                    else if( (othersInfo & 0x08) && getDirection(currentRow+1,currentCol)==DOWN)
-                        draw_snakebody_vertical(currentCol*(dibSpaceWidth) + board_start_x ,currentRow*(dibSpaceHeight) + board_start_y);
-                    break;
-                case(LEFT):
-                    if(!(othersInfo & 0x02))
-                        draw_snakehead_left(currentCol*(dibSpaceWidth) + board_start_x ,currentRow*(dibSpaceHeight) + board_start_y);
-                    else if( (othersInfo & 0x01) && getDirection(currentRow,currentCol+1)==LEFT)
-                        draw_snakebody_horizontal(currentCol*(dibSpaceWidth) + board_start_x ,currentRow*(dibSpaceHeight) + board_start_y);
-                    else if( (othersInfo & 0x04) && getDirection(currentRow-1,currentCol)==UP)
-                        draw_snakecurve_downright(currentCol*(dibSpaceWidth) + board_start_x ,currentRow*(dibSpaceHeight) + board_start_y);
-                    else if( (othersInfo & 0x08) && getDirection(currentRow+1,currentCol)==DOWN)
-                        draw_snakecurve_upright(currentCol*(dibSpaceWidth) + board_start_x ,currentRow*(dibSpaceHeight) + board_start_y);
-                    break;
-                case(RIGHT):
-                    if( (othersInfo & 0x02) && getDirection(currentRow,currentCol-1)==RIGHT)
-                        draw_snakebody_horizontal(currentCol*(dibSpaceWidth) + board_start_x ,currentRow*(dibSpaceHeight) + board_start_y);
-                    else if(!(othersInfo & 0x01))
-                        draw_snakehead_right(currentCol*(dibSpaceWidth) + board_start_x ,currentRow*(dibSpaceHeight) + board_start_y);
-                    else if( (othersInfo & 0x04) && getDirection(currentRow-1,currentCol)==UP)
-                        draw_snakecurve_downleft(currentCol*(dibSpaceWidth) + board_start_x ,currentRow*(dibSpaceHeight) + board_start_y);
-                    else if( (othersInfo & 0x08) && getDirection(currentRow+1,currentCol)==DOWN)
-                        draw_snakecurve_upleft(currentCol*(dibSpaceWidth) + board_start_x ,currentRow*(dibSpaceHeight) + board_start_y);
-                    break;
-                default:
-                    break;
-            }
-}
-
 //getting info from board
-enum Direction getDirection(uint8_t row, uint8_t column){
+enum Direction getDirection(int row, int column){
+    if(row<0 || row>=BOARD_H || column<0 || column>=BOARD_W) return NONE;//out of bounds
     uint8_t caso = board[column][row] & 0xF0;//me quedo con los bits superiores, la direccion
     switch(caso){
         case (UP):
@@ -307,6 +330,9 @@ void Snake(){
     uint8_t exit=0,error=0;//only changes when exit key is pressed to exit the game or a colision happens
     uint8_t snakes=0;//quantity of players
 
+    player1Points=0;
+    player2Points=0;
+
     char keypressed[1]={0};
 
     enum Direction lastdir=NONE;
@@ -324,75 +350,49 @@ void Snake(){
                 case ('q'):
                     exit=1;
                     keypressed[0]=0;
-                    tablero();
                     break;
                 
                 case ('a'):
                     if(lastdir!=RIGHT){//illegal dir
                         lastdir= (lastdir==NONE)? RIGHT : LEFT ;
                     }
-                    error = slither(snake1_head_column,snake1_head_row,lastdir,SNAKE1);
-                    tablero();
+                    error = slither(lastdir,SNAKE1);
                     break;
 
                 case ('s'):
                     if(lastdir!=UP){//illegal dir
                         lastdir=DOWN;
                     }
-                    error = slither(snake1_head_column,snake1_head_row,lastdir,SNAKE1);
-                    tablero();
+                    error = slither(lastdir,SNAKE1);
                     break;
 
                 case ('d'):
                     if(lastdir!=LEFT){//illegal dir
                         lastdir=RIGHT;
                     }
-                    error = slither(snake1_head_column,snake1_head_row,lastdir,SNAKE1);
-                    tablero();
+                    error = slither(lastdir,SNAKE1);
                     break;
 
                 case ('w'):
                     if(lastdir!=DOWN){// illegal dir
                         lastdir=UP;
                     }
-                    error = slither(snake1_head_column,snake1_head_row,lastdir,SNAKE1);
-                    tablero();
+                    error = slither(lastdir,SNAKE1);
                     break;
 
                 default:
                     break;
             }
+            tablero();
         }
         else{
-            switch(lastdir){
-                case(UP):
-                    error = slither(snake1_head_column,snake1_head_row,lastdir,SNAKE1);
-                    tablero();
-                    break;
-
-                case(DOWN):
-                    error = slither(snake1_head_column,snake1_head_row,lastdir,SNAKE1);
-                    tablero();
-                    break;
-
-                case(LEFT):
-                    error = slither(snake1_head_column,snake1_head_row,lastdir,SNAKE1);
-                    tablero();
-                    break;
-
-                case(RIGHT):
-                    error = slither(snake1_head_column,snake1_head_row,lastdir,SNAKE1);
-                    tablero();
-                    break;
-
-                default:
-                    break;
-            }
+            if(lastdir!=NONE) slither(lastdir,SNAKE1);
+            tablero();
         }
         miliSleep(15);
     }
 
-    print("Lmao you are trash kiddo!");
+    print("BYE!");
 
     return;
 }
@@ -404,6 +404,15 @@ void snakeSetup(uint8_t snake, uint8_t * snakes){
     if(*snakes){
         snake_column_start=BOARD_W - (MIN_DIM*dibSpaceWidth);
     }
+
+    //test apples, delete later
+    addApple(BOARD_H-5,BOARD_W-5);
+    addApple(3,3);
+    addApple(3,4);
+    addApple(3,5);
+    addApple(3,6);
+    addApple(3,7);
+    addApple(3,8);
 
     addSnake(middleBoard_y,snake_column_start,snake,RIGHT);//tail
     addSnake(middleBoard_y,snake_column_start+1,snake,RIGHT);//midle
