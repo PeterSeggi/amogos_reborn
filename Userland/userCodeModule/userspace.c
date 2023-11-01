@@ -11,13 +11,7 @@ int main(){
 
     print(greeting);
 
-    while(1){
-        if (readRaw(buffer_space, 1) == 1){
-//            printHex(buffer_space[0]);
-            print("-");
-        } 
-        halt(); 
-    }
+    shell();
 
     print("Bye now!");
 

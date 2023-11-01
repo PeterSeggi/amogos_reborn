@@ -128,9 +128,9 @@ void process_command(char* buffer){
 void shift(){
     clearScreen();
 
-    for (int i = 1; i < rows_to_show - 1; i++){
+    for (int i = 1; i < rows_to_show; i++){
         
-        int line_number = mod(limit_index - rows_to_show + i + 1, VERT_SIZE);
+        int line_number = mod(i + (limit_index - rows_to_show + 1), VERT_SIZE);
 
 
         print(screen_buffer[line_number]);
@@ -154,6 +154,7 @@ int check_shift(){
 
 void write_out(char* string){
     for (int c = 0; c < strlen(string)-1; c++){
+        // if line es mas largo que size hago un coso extra aquip 
         if (cursor_x == LINE_SIZE - 1 || string[c] == '\n'){
             if (string[c] == '\n') 
                 screen_buffer[cursor_y][cursor_x] = '\0'; // null terminate en caso de print

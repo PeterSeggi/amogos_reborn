@@ -46,7 +46,6 @@ int read_chars(int fd, char *buffer, int length) {
   for (int i = 0; i < length; i++) {
     chars_read++;
     buffer[i] = read_key(fd);
-    printHex(buffer[i]);
     if (buffer[i] == 0) {
       i = length; // si llego a un null dejo de leer
       chars_read--;
