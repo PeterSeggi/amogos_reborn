@@ -2,6 +2,8 @@ GLOBAL int_test
 GLOBAL _print
 GLOBAL _read
 GLOBAL _halt
+GLOBAL _sleep
+GLOBAL _getClock
 
 section .text
 
@@ -54,6 +56,27 @@ int_test:
     pop rbp
     ret
 
+_sleep:
+	push rbp
+	mov rbp, rsp
+
+    mov rax, 0x23
+    int 80h;
+
+	mov rsp, rbp
+	pop rbp
+	ret
+
+_getClock:
+	push rbp
+	mov rbp, rsp
+
+    mov rax, 0x4e
+    int 80h;
+
+	mov rsp, rbp
+	pop rbp
+	ret
 ;================================================================================================================================
 
 

@@ -1,7 +1,7 @@
 #include "include/userlib.h"
 #include "include/userlibasm.h"
 
-#define COMMANDS 2
+#define COMMANDS 6
 #define VERT_SIZE 32
 #define LINE_SIZE 63
 #define BUFFER_SIZE 128
@@ -13,7 +13,7 @@
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear"};
+static char* commands[COMMANDS] = {"exit", "clear", "time", "sleep", "infoSleep", "help"};
 char char_buffer[1];
 
 // Cursors & flags
@@ -26,7 +26,8 @@ int exit_command = 0;
 int limit_index = VERT_SIZE - 1;
 int rows_to_show = VERT_SIZE / FONT_SIZE;
 
-
+int *hrs, *min, *sec;
+char *tiempos[3];
 // commands to do: help, resize, time, registers
 // commands to shitpost: cowsay, ls, amogus?
 
@@ -111,6 +112,46 @@ void process_command(char* buffer){
                     cursor_y = 0;
                     cursor_x = 0;
                     limit_index = VERT_SIZE/FONT_SIZE - 1;
+                    break;
+                case 2:
+                    getClock(&hrs, &min, &sec);
+                    write_out("La hora es...");
+                    uintToBase(hrs, tiempos, 10);
+                    if(hrs<10){
+                        write_out("0");
+                        write_out(tiempos);
+                    }
+                    else{
+                        write_out(tiempos);
+                    }
+                    write_out(":");
+                    uintToBase(min, tiempos, 10);
+                    if(min<10){
+                        write_out("0");
+                        write_out(tiempos);
+                    }
+                    else{
+                        write_out(tiempos);
+                    }
+                    write_out(":");
+                    uintToBase(sec, tiempos, 10);
+                    if(sec<10){
+                        write_out("0");
+                        write_out(tiempos);
+                    }
+                    else{
+                        write_out(tiempos);
+                    }
+                    write_out("\n");
+                    break;
+                case 3:
+                    sleep(4, 0); //todo borrar los printe de "Antes" y "Dsp"
+                    break;
+                case 4:
+                    write_out("Voce quer usar o nosso sleep??\nVoce deve nos passar dois parametros\no primeiro e a quantidade de segundos/milissegundos/nanosegundoso segundo sera 0=segundos, 1=milissegundos e 2=nanosegundos\n");
+                    break;
+                case 5:
+                    write_out("Los comandos existentes son: \n- exit\n- clear\n- time\n- infoSleep\n- sleep\n");
                     break;
             }
             return;
