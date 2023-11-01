@@ -2,18 +2,18 @@
 #include "include/userlibasm.h"
 #include <stdint.h>
 
-#define COMMANDS 2
+#define COMMANDS 4
 #define VERT_SIZE 32
 #define LINE_SIZE 63
 #define BUFFER_SIZE 128
 
-#define PROMPT_START "$ "
+#define PROMPT_START ">"
 #define ERROR_PROMPT "Unknown command: "
 
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear"};
+static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size"};
 char char_buffer[1];
 
 // Cursors & flags
@@ -23,8 +23,8 @@ int cursor_x = 0;
 int exit_command = 0;
 
 // Important values
-uint8_t font_size = 1;
-int rows_to_show = 32/1;
+uint8_t font_size;
+int rows_to_show;
 int limit_index = VERT_SIZE - 1;
 
 
@@ -34,6 +34,7 @@ int limit_index = VERT_SIZE - 1;
 
 int shell(){
     clearScreen();
+    init_shell();
     write_out(PROMPT_START);
 
     while(!exit_command){
@@ -102,6 +103,25 @@ void process_command(char* buffer){
                     cursor_x = 0;
                     limit_index = VERT_SIZE/font_size - 1;
                     break;
+                case 2:
+                    // get second param
+                    if (font_size == 3){
+                        write_out("Font size max!\n");
+                    }
+                    else {
+                        change_font(++font_size);
+                    }
+                    break;
+                
+                case 3:
+                    // get second param
+                    if (font_size == 1){
+                        write_out("Font size minimum!\n");
+                    }
+                    else {
+                        change_font(--font_size);
+                    }
+                    break;
                 
             }
             return;
@@ -167,3 +187,12 @@ void write_out(char* string){
 
     print(string);
 }
+
+
+void init_shell(){
+    font_size = getFontSize();
+    rows_to_show = VERT_SIZE/font_size;
+}
+
+
+

@@ -31,6 +31,12 @@ void clearScreen(){
     _print(STDOUT, "\033[J", 3);
 }
 
+void change_font(int size){
+    char* msg = "\033[nF";
+    msg[2] = size + '0';
+    print(msg);
+}
+
 int read(char* buffer, int length){
     return _read(STDIN, buffer, length);
 }
@@ -144,10 +150,11 @@ void getScreenData(uint16_t * screenHeight, uint16_t * screenWidth, uint8_t * fo
 }
 
 int getFontSize(){
-    uint16_t* bufferHeight;
-    uint16_t* bufferWeight;
-    uint8_t* bufferDraw;
-    _screenData(bufferHeight, bufferWeight, char_buffer,bufferDraw);
+    // estos estan inicializados porq sino se rompe la funcion al querer escribir vacio
+    uint16_t bufferHeight = 0;
+    uint16_t bufferWeight = 0;
+    uint8_t bufferDraw = 0;
+    _screenData(&bufferHeight, &bufferWeight, char_buffer,&bufferDraw);
     return (int) char_buffer[0];
 }
 

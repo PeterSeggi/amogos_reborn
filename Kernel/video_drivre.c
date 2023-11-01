@@ -1,6 +1,7 @@
 #include <videoDriver.h>
 #include <fonts.h>
 #include <lib.h>
+#include <stdint.h>
 
 #define DEFAULT_FONT 0xDADADA
 #define DEFAULT_BACK 0X01233E
@@ -254,16 +255,19 @@ int process_input(char* string, int index, uint32_t fontColor, uint32_t bgColor)
         if (string[index + 1] != '[')
             return index + 1;
 
-        switch (string[index + 2]) {
-            case 'J':
+        if (string[index + 2] >= '0' && string[index + 2] <= '9'){
+            if (string[index + 3] == 'F'){
+                changeFontSize(string[index + 2] - '0');
+                return index + 4;
+            }
+        }
+
+        else if (string[index + 2] == 'J') {
                 clear();
                 return index + 3;
-                break;
-
-            default:
-                return index + 1;
-                break;
         }
+        else
+            return index + 1;
     }
 
     else {
