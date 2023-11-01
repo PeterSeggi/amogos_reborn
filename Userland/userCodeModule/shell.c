@@ -1,11 +1,11 @@
 #include "include/userlib.h"
 #include "include/userlibasm.h"
+#include <stdint.h>
 
 #define COMMANDS 2
 #define VERT_SIZE 32
 #define LINE_SIZE 63
 #define BUFFER_SIZE 128
-#define FONT_SIZE 1
 
 #define PROMPT_START "$ "
 #define ERROR_PROMPT "Unknown command: "
@@ -22,9 +22,10 @@ int cursor_y = 0;
 int cursor_x = 0;
 int exit_command = 0;
 
-// Important indexes
+// Important values
+uint8_t font_size = 1;
+int rows_to_show = 32/1;
 int limit_index = VERT_SIZE - 1;
-int rows_to_show = VERT_SIZE / FONT_SIZE;
 
 
 // commands to do: help, resize, time, registers
@@ -33,13 +34,13 @@ int rows_to_show = VERT_SIZE / FONT_SIZE;
 
 int shell(){
     clearScreen();
-    print(PROMPT_START);
+    write_out(PROMPT_START);
 
     while(!exit_command){
         if (read(char_buffer, 1) == 1){
             process_key(char_buffer[0]);
         }
-        halt();
+        sleep_once();
     }
 
     clearScreen();
@@ -50,18 +51,6 @@ int shell(){
 
 void process_key(char key){
     if (key == '\n'){
-
-        /*
-        En orden quiero:
-        - Agregar \0 a ambos buffers
-        - Shift 
-            + check si esta en el limit
-            + reescribo desde limit - rows_shown y cambio el limite a uno para abajo
-        - cursor_y va para abajo o loopea (es circular) 
-        - Meto un enter
-        - proceso el comando 
-        - copio y printeo el start 
-         */
 
         command_buffer[command_cursor] = '\0';
 
@@ -100,6 +89,7 @@ void process_command(char* buffer){
    if (buffer[0] == '\0'){
         return;
     }
+
    for(int i = 0; i < COMMANDS; i++){
         if (!strcmp(buffer, commands[i])){
             switch (i) {
@@ -110,11 +100,17 @@ void process_command(char* buffer){
                     clearScreen(); 
                     cursor_y = 0;
                     cursor_x = 0;
-                    limit_index = VERT_SIZE/FONT_SIZE - 1;
+                    limit_index = VERT_SIZE/font_size - 1;
                     break;
+                
             }
             return;
         }
+    }
+
+    if (strlen(buffer) == BUFFER_SIZE){
+        write_out("Buenas... una poesia?\n");
+        return;
     }
 
     // En caso de no encontrar hacemos esto

@@ -11,14 +11,27 @@
 #define ERRCOLORFONT 0xFF0000 // texto rojo, bg gris;
 #define ERRCOLORBACK 0xDADADA // texto rojo, bg gris;
 
-void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rax) {
+void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t rax) {
   switch (rax) {
+
+  case (0x00):
+    sys_read(rdi, rsi, rdx);
+    break;
+
   case (0x01):
     sys_write(rdi, rsi, rdx);
     break;
 
-  case (0x00):
-    sys_read(rdi, rsi, rdx);
+  case (0x23):
+    sys_nanosleep(rdi);
+    break;
+
+  case (0x77):
+    sys_draw(rdi, rsi, rdx, rcx, r8);
+    break;
+
+  case (0x83):
+    sys_screenData(rdi, rsi, rdx, rcx);
     break;
   }
 }
@@ -52,4 +65,24 @@ int read_chars(int fd, char *buffer, int length) {
     }
   }
   return chars_read;
+}
+
+void sys_nanosleep(uint64_t nanos){
+  milisleep(nanos);
+}
+
+void sys_draw(uint64_t bitmap, uint64_t hexColor, uint64_t height, uint64_t init_x, uint64_t init_y){
+  changeDrawSize(3);
+  printBitmap(bitmap, hexColor, height, init_x, init_y);
+}
+
+void sys_screenData(uint64_t screenHeight, uint64_t screenWidth, uint64_t fontSize, uint64_t drawSize){
+  getScreenData((uint16_t *) screenHeight, (uint16_t *) screenWidth, (uint8_t *) fontSize, (uint8_t *) drawSize);
+}
+
+void getScreenData(uint16_t * screenHeight, uint16_t * screenWidth, uint8_t * fontSize, uint8_t * drawSize){
+  *screenHeight=getScreenHeight();
+  *screenWidth=getScreenWidth();
+  *fontSize=getFontSize();
+  *drawSize=getDrawSize();
 }

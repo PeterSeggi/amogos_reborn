@@ -1,6 +1,7 @@
 #include "include/userlib.h"
 #include "include/userlibasm.h"
 #include "include/file_descriptors.h"
+#include <stdint.h>
 
 static char buffer[64] = {'0'};
 static char* char_buffer = " ";
@@ -36,6 +37,10 @@ int read(char* buffer, int length){
 
 int readRaw(char* buffer, int length){
     return _read(STDKEYS, buffer, length);
+}
+
+int readLast(char* buffer, int length){
+    return _read(STDLAST, buffer, length);
 }
 
 void printBase(uint64_t value, uint32_t base){
@@ -114,11 +119,39 @@ void strcpy(char *destination, const char *source) {
 }
 
 
-void halt(){
-    _halt();
-}
-
 int mod(int val, int base){
     if (val < 0) return (val + base) % base;
     return val % base;
+}
+//================================================================================================================================
+// Sleeping
+//================================================================================================================================
+//================================================================================================================================
+void miliSleep(uint64_t milis){
+	_sleep(milis);
+}
+
+void sleep_once(){
+    _sleep(0);
+}
+
+//================================================================================================================================
+// Drawing
+//================================================================================================================================
+//================================================================================================================================
+void getScreenData(uint16_t * screenHeight, uint16_t * screenWidth, uint8_t * fontSize, uint8_t * drawSize){
+	_screenData(screenHeight,screenWidth,fontSize,drawSize);
+}
+
+int getFontSize(){
+    uint16_t* bufferHeight;
+    uint16_t* bufferWeight;
+    uint8_t* bufferDraw;
+    _screenData(bufferHeight, bufferWeight, char_buffer,bufferDraw);
+    return (int) char_buffer[0];
+}
+
+
+void draw(uint16_t * bitmap, uint32_t color, uint16_t height, uint64_t x, uint64_t y){
+	_draw(bitmap, color, height, x, y);
 }

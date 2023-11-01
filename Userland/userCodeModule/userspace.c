@@ -17,8 +17,3 @@ int main(){
 
     return 0;
 }
-
-
-int returns_48(){
-    return 48;
-}

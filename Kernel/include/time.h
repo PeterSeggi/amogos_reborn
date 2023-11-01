@@ -4,8 +4,12 @@
 #include <stdint.h>
 
 void timer_handler();
-int ticks_elapsed();
-int seconds_elapsed();
+
+unsigned long ticks_elapsed();
+unsigned long seconds_elapsed();
+long long milis_elapsed();
+long long nanos_elapsed();
+
 void update_clock();
 void set_clock_location(uint8_t *location);
 void formatTime(uint8_t *sec, uint8_t *min, uint8_t *hour);
@@ -15,7 +19,10 @@ uint8_t calculateMonthLastDay(uint8_t month, uint16_t year);
 void printTime();
 void printDate();
 
-void sleep(int sec);
+void sleep(uint64_t sec);
+void nanosleep(uint64_t nanos);
+void milisleep(uint64_t milis);
+
 void my_ints();
 
 
