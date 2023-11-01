@@ -10,9 +10,4 @@ void sys_sleep(uint32_t cant, uint32_t unidad);
 
 void sys_gettimeofday(int *hrs, int *min, int *seg);
 
-struct registers
-{
-	uint64_t rax, rbx, rcx, rdx, rbp, rsp, rsi,
-	rdi, rip, r8, r9, r10, r11, r12, r13, r14, r15;
-};
-void sys_getRegisters(struct registers *regsStruct);
+void sys_getRegisters(char *regsBuf);

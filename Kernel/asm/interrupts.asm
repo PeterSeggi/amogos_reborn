@@ -162,3 +162,4 @@ haltcpu:
 
 SECTION .bss
 	aux resq 1
+	regsBuf resq 15

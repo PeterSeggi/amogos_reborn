@@ -87,22 +87,6 @@ void sys_gettimeofday(int *hrs, int *min, int *seg){
   printTime(hrs, min, seg);
  }
 
-void sys_getRegisters(struct registers *regsStruct){
-  regsStruct->rax = _getAReg();
-  regsStruct->rbx = _getBReg();
-  regsStruct->rcx = _getCReg();
-  regsStruct->rdx = _getDReg();
-  regsStruct->rbp = _getRbp();
-  regsStruct->rsp = _getRsp();
-  regsStruct->rsi = _getRsi();
-  regsStruct->rdi = _getRdi();
-  regsStruct->rip = _getRip();
-  regsStruct->r8 = _getR8();
-  regsStruct->r9 = _getR9();
-  regsStruct->r10 = _getR10();
-  regsStruct->r11 = _getR11();
-  regsStruct->r12 = _getR12();
-  regsStruct->r13 = _getR13();
-  regsStruct->r14 = _getR14();
-  regsStruct->r15 = _getR15();
+void sys_getRegisters(char *regsBuf){
+  print("acá no hay nada");
 }
