@@ -15,6 +15,7 @@ void clearScreen();
 
 //wait
 void miliSleep(uint64_t milis);
+void sleep_once();
 
 //dibujo
 void draw(uint16_t * bitmap, uint32_t color, uint16_t height, uint64_t x, uint64_t y);

@@ -164,6 +164,10 @@ void nanosleep(uint64_t nanos){
 }
 
 void milisleep(uint64_t milis){
+  if(milis==0){
+    _hlt();
+    return;
+  }
   long long t0 = milis_elapsed();
   while( (milis_elapsed()-t0) < milis ) _hlt();
 }

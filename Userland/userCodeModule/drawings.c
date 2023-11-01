@@ -1423,3 +1423,444 @@ void draw_snake(uint16_t bitmap[][dibHeight], uint16_t layers, uint32_t colors[]
 void draw_manzana(uint64_t init_x, uint64_t init_y){
     draw(apple[0],0x00FF0000,dibHeight,init_x,init_y);
 }
+
+//a lot of logic specific for this font effect
+#define SNAKE_TITLE_LAYERS 5
+uint16_t snake_title[][dibHeight]={
+
+    //blacklines
+    {0b0011111111111100,
+     0b0011111111111100,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b0111111111111111,
+     0b0111111111111111,
+     0b0111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b0011111111111100,
+     0b0011111111111100},
+
+     //color
+    {0b0000000000000000,
+     0b0001111111111000,
+     0b0001111111111000,
+     0b0111111111111110,
+     0b0111111111111110,
+     0b0111111000000000,
+     0b0111111000000000,
+     0b0001111111111110,
+     0b0001111111111110,
+     0b0000000000000110,
+     0b0000000000000110,
+     0b0111111111111110,
+     0b0111111111111110,
+     0b0001111111111000,
+     0b0001111111111000,
+     0b0000000000000000},
+
+     //blacklines
+    {0b1111111100001111,
+     0b1111111100001111,
+     0b1111111110001111,
+     0b1111111111001111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111100111111,
+     0b1111111100111111,
+     0b1111111100111111,
+     0b1111111100111111},
+
+     //color
+    {0b0000000000000000,
+     0b1011111000000110,
+     0b0111111000000110,
+     0b0111111110000110,
+     0b0111111110000110,
+     0b0111111111100110,
+     0b0111111111100110,
+     0b0111111111111110,
+     0b0111111111111110,
+     0b0111111001111110,
+     0b0111111001111110,
+     0b0111111000011110,
+     0b0111111000011110,
+     0b0111111000011110,
+     0b0111111000011110,
+     0b0000000000000000},
+
+     //blacklines
+    {0b0011111111111100,
+     0b0011111111111100,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111100001111,
+     0b1111111100001111,
+     0b1111111100001111,
+     0b1111111100001111},
+
+     //color
+    {0b0000000000000000,
+     0b0001111111111000,
+     0b0001111111111000,
+     0b0111111111111110,
+     0b0111111111111110,
+     0b0111111000000110,
+     0b0111111000000110,
+     0b0111111000000110,
+     0b0111111000000110,
+     0b0111111111111110,
+     0b0111111111111110,
+     0b0111111000000110,
+     0b0111111000000110,
+     0b0111111000000110,
+     0b0111111000000110,
+     0b0000000000000000},
+
+    //blacklines
+    {0b1111111100001111,
+     0b1111111100001111,
+     0b1111111100001111,
+     0b1111111100001111,
+     0b1111111101111111,
+     0b1111111101111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111100111111,
+     0b1111111100111111,
+     0b1111111100111111,
+     0b1111111100111111},
+
+     //color
+    {0b0000000000000000,
+     0b0111111000000110,
+     0b0111111000000110,
+     0b0111111000000110,
+     0b0111111000000110,
+     0b0111111000111110,
+     0b0111111000111110,
+     0b0111111111111000,
+     0b0111111111111000,
+     0b0111111001111110,
+     0b0111111001111110,
+     0b0111111000011110,
+     0b0111111000011110,
+     0b0111111000011110,
+     0b0111111000011110,
+     0b0000000000000000},
+
+    //blacklines
+    {0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111000,
+     0b1111111111111000,
+     0b1111111111111000,
+     0b1111111111111000,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111,
+     0b1111111111111111},
+
+     //color
+    {0b0000000000000000,
+     0b0111111111111110,
+     0b0111111111111110,
+     0b0111111111111110,
+     0b0111111111111110,
+     0b0111111000000000,
+     0b0111111000000000,
+     0b0111111111110000,
+     0b0111111111110000,
+     0b0111111000000000,
+     0b0111111000000000,
+     0b0111111111111110,
+     0b0111111111111110,
+     0b0111111111111110,
+     0b0111111111111110,
+     0b0000000000000000}
+
+};
+
+void draw_snake_letter(uint16_t bitmap[][dibHeight], uint64_t init_x, uint64_t init_y, uint32_t color, uint8_t drawSize){    
+    draw(bitmap[0], BLACK, dibHeight, init_x - 4*drawSize, init_y +  4*drawSize);
+    draw(bitmap[0], BLACK, dibHeight, init_x, init_y);
+    draw(bitmap[1], color, dibHeight, init_x, init_y);
+}
+
+//title colors
+#define S_COLOR 0x00FF0000
+#define N_COLOR 0x000000FF
+#define A_COLOR 0x00FF8900
+#define K_COLOR 0x00FFF300
+#define E_COLOR 0x0000FF00
+
+uint32_t snake_title_colors[]={S_COLOR, N_COLOR, A_COLOR, K_COLOR, E_COLOR};
+
+//now the selections
+uint64_t selectX, select1Y, select2Y;
+
+#define SELECT_PLAYER_LAYERS 6
+uint16_t select_player[][dibHeight]={
+    {0b0000000000000000,
+     0b0011111111110000,
+     0b0011111111110000,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0011111111110000,
+     0b0011111111110000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0000000000000000},
+
+    {0b0000000000000000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011111111111100,
+     0b0011111111111100,
+     0b0000000000000000},
+
+    {0b0000000000000000,
+     0b0000001111000000,
+     0b0000001111000000,
+     0b0000110000110000,
+     0b0000110000110000,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0011111111111100,
+     0b0011111111111100,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0000000000000000},
+
+    {0b0000000000000000,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0000111111110000,
+     0b0000111111110000,
+     0b0000001111000000,
+     0b0000001111000000,
+     0b0000001111000000,
+     0b0000001111000000,
+     0b0000001111000000,
+     0b0000001111000000,
+     0b0000000000000000},
+
+    {0b0000000000000000,
+     0b0011111111111100,
+     0b0011111111111100,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011111111110000,
+     0b0011111111110000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011110000000000,
+     0b0011111111111100,
+     0b0011111111111100,
+     0b0000000000000000},
+
+    {0b0000000000000000,
+     0b0011111111110000,
+     0b0011111111110000,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0011110000110000,
+     0b0011111111110000,
+     0b0011111111000000,
+     0b0011111111000000,
+     0b0011110011110000,
+     0b0011110011110000,
+     0b0011110000111100,
+     0b0011110000111100,
+     0b0000000000000000},
+
+    {0b0000000000000000,
+     0b0000001111000000,
+     0b0000001111000000,
+     0b0000001111000000,
+     0b0000111111000000,
+     0b0011111111000000,
+     0b0011111111000000,
+     0b0000001111000000,
+     0b0000001111000000,
+     0b0000001111000000,
+     0b0000001111000000,
+     0b0000001111000000,
+     0b0000001111000000,
+     0b0011111111111100,
+     0b0011111111111100,
+     0b0000000000000000},
+
+    {0b0000000000000000,
+     0b0000111111111000,
+     0b0001111111111000,
+     0b0011100000111100,
+     0b0011100000111100,
+     0b0000000011111100,
+     0b0000000011111100,
+     0b0000011111110000,
+     0b0000011111110000,
+     0b0001111111000000,
+     0b0001111111000000,
+     0b0011111100000000,
+     0b0011110000000000,
+     0b0011111111111100,
+     0b0011111111111100,
+     0b0000000000000000},
+
+     {0b0000000000000000,
+     0b0011000000000000,
+     0b0011000000000000,
+     0b0000110000000000,
+     0b0000110000000000,
+     0b0000001100000000,
+     0b0000001100000000,
+     0b0000000011000000,
+     0b0000000011000000,
+     0b0000001100000000,
+     0b0000001100000000,
+     0b0000110000000000,
+     0b0000110000000000,
+     0b0011000000000000,
+     0b0011000000000000,
+     0b0000000000000000}
+};
+
+//colors
+#define WHITETEXT 0x00FFFFFF
+
+#define SCREEN_BG_COLOR1 0x008ED17F
+#define SCREEN_BG_COLOR2 0x0086C578
+#define SCREEN_BG_MARGIN 0x00000000
+
+void putSnakeTitle(){
+    //getting dimensions
+    uint16_t screenHeight, screenWidth;
+    uint8_t fontSize, drawSize;
+    getScreenData(&screenHeight,&screenWidth,&fontSize,&drawSize);
+
+    //imprimimos el bg
+    uint8_t dibSpaceWidth = (dibWidth*drawSize), dibSpaceHeight=(dibHeight*drawSize);
+    
+    //añadimos margen si es necesario
+    uint64_t bg_initialx=(screenWidth%dibSpaceWidth)/2;
+    uint64_t bg_initialy=(screenHeight%dibSpaceHeight)/2;
+
+    //blackout margins
+    for(int i=0; i<(screenWidth/dibSpaceWidth)+1; i++){
+        for(int j=0; j<(screenHeight/dibSpaceHeight)+1; j++){
+            draw(square[0], SCREEN_BG_MARGIN, dibHeight, i*(dibSpaceWidth), j*(dibSpaceHeight));
+        }
+    }
+    
+    for(int i=0; i<(screenWidth/dibSpaceWidth); i++){
+        for(int j=0; j<(screenHeight/dibSpaceHeight); j++){
+            uint32_t bgcolor = ((i%2==0 && j%2) || (i%2 && j%2==0))? SCREEN_BG_COLOR1:SCREEN_BG_COLOR2;
+            draw(square[0], bgcolor, dibHeight,bg_initialx + i*(dibSpaceWidth),bg_initialy + j*(dibSpaceHeight));
+        }
+    }
+
+    int middleStartX= (screenWidth)/2 - ((dibWidth*drawSize)/2);
+	int middleStartY= (screenHeight)/2 - ((dibHeight*drawSize)/2);
+
+    uint8_t title_len=5;
+
+    int titleStartX = middleStartX - ((dibWidth*drawSize)*(title_len)/2);
+	int titleStartY = middleStartY - ((dibHeight*drawSize)*(title_len)/2);
+
+
+    //imprimimos en cascada
+    for(int i=0; i<SNAKE_TITLE_LAYERS; i++){
+        draw_snake_letter(snake_title+(i*2), titleStartX,titleStartY,snake_title_colors[i],drawSize);
+        titleStartX+=(dibWidth*drawSize);
+        titleStartY+=(dibHeight*drawSize);
+    }
+
+    //calculamos devuelta pero para el espacio para las options
+    titleStartX = middleStartX - ((dibWidth*drawSize)*(SELECT_PLAYER_LAYERS+2)/2);
+	titleStartY = titleStartY + ((screenHeight-(titleStartY+(dibHeight*drawSize)))/2);
+    titleStartY = titleStartY - ((dibHeight*drawSize)*3/2);
+
+    //imprimimos options
+    draw(select_player[SELECT_PLAYER_LAYERS], WHITETEXT, dibHeight, titleStartX, titleStartY);
+    draw(select_player[SELECT_PLAYER_LAYERS+1], WHITETEXT, dibHeight, titleStartX, titleStartY+(dibHeight*drawSize)*2);
+
+    //guardamos variables para el select
+    selectX=titleStartX-(dibWidth*drawSize);
+    select1Y=titleStartY;
+    select2Y=titleStartY+(dibHeight*drawSize*2);
+
+    titleStartX+=(dibWidth*drawSize)*2;
+
+    for(int i=0; i<SELECT_PLAYER_LAYERS;i++){
+        draw(select_player[i], WHITETEXT, dibHeight, titleStartX+i*(dibWidth*drawSize), titleStartY);
+        draw(select_player[i], WHITETEXT, dibHeight, titleStartX+i*(dibWidth*drawSize), titleStartY+(dibHeight*drawSize)*2);
+    }
+}
+
+void selectHover(uint8_t selection){
+    draw(select_player[SELECT_PLAYER_LAYERS+2], getBgColor(selectX, selection? select1Y : select2Y), dibHeight, selectX, selection? select1Y : select2Y);
+    draw(select_player[SELECT_PLAYER_LAYERS+2], WHITETEXT, dibHeight, selectX, selection? select2Y : select1Y);
+}
+
+uint32_t getBgColor(int column, int row){
+    return ((column%2==0 && row%2) || (column%2 && row%2==0))? SCREEN_BG_COLOR1:SCREEN_BG_COLOR2;
+}

@@ -64,9 +64,19 @@ void draw_snake(uint16_t bitmap[][dibHeight], uint16_t layers, uint32_t colors[]
 
 void draw_manzana(uint64_t init_x, uint64_t init_y);
 
-uint8_t checkUp(uint8_t row, uint8_t column, uint8_t value);
-uint8_t checkDown(uint8_t row, uint8_t column, uint8_t value);
-uint8_t checkLeft(uint8_t row, uint8_t column, uint8_t value);
-uint8_t checkRight(uint8_t row, uint8_t column, uint8_t value);
+//title for snake
+extern uint16_t snake_S[][dibHeight];
+extern uint16_t snake_N[][dibHeight];
+extern uint16_t snake_A[][dibHeight];
+extern uint16_t snake_K[][dibHeight];
+extern uint16_t snake_E[][dibHeight];
+
+extern uint16_t select_player[][dibHeight];
+
+void draw_snake_letter(uint16_t bitmap[][dibHeight], uint64_t init_x, uint64_t init_y, uint32_t color, uint8_t drawSize);
+
+void putSnakeTitle();
+void selectHover(uint8_t selection);
+uint32_t getBgColor(int column, int row);
 
 #endif

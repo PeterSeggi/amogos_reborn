@@ -366,70 +366,59 @@ void Snake(uint8_t players, uint32_t color1, uint32_t color2){
                     if(lastdir1!=RIGHT){//illegal dir
                         lastdir1= (lastdir1==NONE)? RIGHT : LEFT ;
                     }
-                    error = slither(lastdir1,SNAKE1);
                     break;
 
                 case ('s'):
                     if(lastdir1!=UP){//illegal dir
                         lastdir1=DOWN;
                     }
-                    error = slither(lastdir1,SNAKE1);
                     break;
 
                 case ('d'):
                     if(lastdir1!=LEFT){//illegal dir
                         lastdir1=RIGHT;
                     }
-                    error = slither(lastdir1,SNAKE1);
                     break;
 
                 case ('w'):
                     if(lastdir1!=DOWN){// illegal dir
                         lastdir1=UP;
                     }
-                    error = slither(lastdir1,SNAKE1);
                     break;
 
                 case ('j'):
                     if(lastdir2!=RIGHT){//illegal dir
                         lastdir2=LEFT ;
                     }
-                    error = slither(lastdir2,SNAKE2);
                     break;
 
                 case ('k'):
                     if(lastdir2!=UP){//illegal dir
                         lastdir2=DOWN;
                     }
-                    error = slither(lastdir2,SNAKE2);
                     break;
 
                 case ('l'):
                     if(lastdir2!=LEFT){//illegal dir
                         lastdir2= (lastdir2==NONE)? LEFT : RIGHT ;
                     }
-                    error = slither(lastdir2,SNAKE2);
                     break;
 
                 case ('i'):
                     if(lastdir2!=DOWN){// illegal dir
                         lastdir2=UP;
                     }
-                    error = slither(lastdir2,SNAKE2);
                     break;
 
                 default:
                     break;
             }
-            tablero();
         }
-        else{
-            if(lastdir1!=NONE) slither(lastdir1,SNAKE1);
-            tablero();
-            if(lastdir2!=NONE) slither(lastdir2,SNAKE2);
-            tablero();
-        }
-        miliSleep(15);
+        if(lastdir1!=NONE) error += slither(lastdir1,SNAKE1);
+        tablero();
+        if(lastdir2!=NONE && !error) error += slither(lastdir2,SNAKE2);
+        tablero();
+        sleep_once();
     }
 
     print("BYE!");
