@@ -160,7 +160,7 @@ void process_command(char* buffer){
                 case 6:
                     //getRegs(&regs);
                     if(regs=='\0'){
-                        write_out("Antes de pedir los registros debe apretar alt para que se guarden\n");
+                        write_out("Antes de pedir los registros debe apretar la tecla alt izquierda para que los mismos se guarden\n");
                     }
                     else{
                         for(int i=0; i<cantRegs; i++){
