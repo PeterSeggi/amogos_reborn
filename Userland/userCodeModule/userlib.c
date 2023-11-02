@@ -132,7 +132,7 @@ void sleep(uint32_t cant, uint32_t unidad){
 }
 
 void sleep_once(){
-	_sleep(0, 1);
+	_sleep(0, 0);
 }
 
 

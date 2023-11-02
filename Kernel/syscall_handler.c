@@ -72,12 +72,7 @@ int read_chars(int fd, char *buffer, int length) {
 }
 
 void sys_sleep(uint32_t  cant,uint32_t  unidad){
-  newLine();
-  print("antes de sleep");
-  newLine();
   sleep(cant, unidad); 
-  print("despues de sleep");
-  newLine();
 }
 
 void sys_gettimeofday(int *hrs, int *min, int *seg){
