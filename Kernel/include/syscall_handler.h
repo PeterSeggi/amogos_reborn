@@ -10,3 +10,7 @@ void sys_screenData(uint64_t screenHeight, uint64_t screenWidth, uint64_t fontSi
 
 int read_chars(int fd, char* buffer, int length);
 void getScreenData(uint16_t * screenHeight, uint16_t * screenWidth, uint8_t * fontSize, uint8_t * drawSize);
+
+void sys_sleep(uint32_t cant, uint32_t unidad);
+
+void sys_gettimeofday(int *hrs, int *min, int *seg);

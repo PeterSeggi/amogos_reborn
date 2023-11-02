@@ -115,7 +115,11 @@ int read_key(int fd) {
     toRet = ascii_buf[ascii_insert_index - 1];
   }
 
-  return toRet;
+  else if (fd == STDLAST) {
+    toRet = ascii_buf[ascii_insert_index - 1];
+  }
+
+  return (int) toRet;
 }
 
 // flush the input buffer

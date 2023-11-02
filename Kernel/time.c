@@ -34,14 +34,16 @@ void update_clock() {
 
     uint8_t *current = getCurrentVideo();
     setCurrentVideo(clockLocation);
-    printTime();
+    //printTime();
     setCurrentVideo(current);
   }
 }
 
 void set_clock_location(uint8_t *location) { clockLocation = location; }
 
-void formatTime(uint8_t *sec, uint8_t *min, uint8_t *hour) {
+int seconds_elapsed() { return ticks / 18; }
+
+void formatTime(uint8_t *hour, uint8_t *min, uint8_t *sec) {
   *sec = _getSeconds();
   *min = _getMinutes();
   *hour = _getHours();
@@ -119,20 +121,16 @@ uint8_t calculateMonthLastDay(uint8_t month, uint16_t year) {
   }
 }
 
-void printTime(){
-
-    uint8_t sec, min, hour;
-    formatTime(&sec, &min, &hour);
-
-	if(hour<10) ncPrintDec(0);
-	ncPrintDec(hour);
-	ncPrint(":");
-	if(min<10) ncPrintDec(0);
-	ncPrintDec(min);
-	ncPrint(":");
-	if(sec<10) ncPrintDec(0);
-	ncPrintDec(sec);
-	ncNewline();
+void printTime(int *hrs, int *min, int *seg){
+     
+    uint8_t segs, hrss, mins;
+    formatTime(&hrss, &mins, &segs);
+    *hrs=hrss;
+    *min=mins;
+    *seg=segs;
+    
+    //no tiene sentido, en esta linea por alguna razón solo andan bien los min
+    //formatTime((uint32_t*)hrs, (uint32_t*)min, (uint32_t*)seg);
 }
 
 void printDate(){
@@ -153,28 +151,26 @@ void printDate(){
 	ncNewline();
 }
 
-void sleep(uint64_t sec){
+//================================================================================================================================
+// Sleep
+//================================================================================================================================
+
+void timer_handler() {
+  ticks++;
+  //update_clock();
+}
+
+int ticks_elapsed() {
+   return ticks; 
+}
+
+void sleep(int sec, int uni){
 	unsigned long t0 = ticks_elapsed();
-	while( (ticks_elapsed()-t0)/18 < sec ) _hlt();
-}
-
-void nanosleep(uint64_t nanos){
-  long long t0 = nanos_elapsed();
-  while( (nanos_elapsed()-t0) < nanos ) _hlt();
-}
-
-void milisleep(uint64_t milis){
-  if(milis==0){
-    _hlt();
-    return;
-  }
-  long long t0 = milis_elapsed();
-  while( (milis_elapsed()-t0) < milis ) _hlt();
+  while(((ticks_elapsed()-t0)*pow(1000, uni))/18 < sec ) _hlt(); 
 }
 
 void my_ints(){
 	if(ticks%18 == 0){
-		printTime();
 	}
 }
 

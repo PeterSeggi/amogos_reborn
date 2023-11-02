@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <syscall_handler.h>
 #include <videoDriver.h>
+#include <time.h>
 
 #define STDIN 0
 #define STDOUT 1
@@ -20,9 +21,13 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
   case (0x00):
     sys_read(rdi, rsi, rdx);
     break;
-
+    
   case (0x23):
-    sys_nanosleep(rdi);
+    sys_sleep(rdi, rsi);
+    break;  
+
+  case (0x4e):
+    sys_gettimeofday(rdi, rsi, rdx);
     break;
 
   case (0x77):
@@ -66,9 +71,18 @@ int read_chars(int fd, char *buffer, int length) {
   return chars_read;
 }
 
-void sys_nanosleep(uint64_t nanos){
-  milisleep(nanos);
+void sys_sleep(uint32_t  cant,uint32_t  unidad){
+  newLine();
+  print("antes de sleep");
+  newLine();
+  sleep(cant, unidad); 
+  print("despues de sleep");
+  newLine();
 }
+
+void sys_gettimeofday(int *hrs, int *min, int *seg){
+  printTime(hrs, min, seg);
+ }
 
 void sys_draw(uint64_t bitmap, uint64_t hexColor, uint64_t height, uint64_t init_x, uint64_t init_y){
   changeDrawSize(3);
