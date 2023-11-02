@@ -12,11 +12,6 @@ uint8_t *clockLocation = (uint8_t *)0xB808E;
 
 char *dayNames[] = {"Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"};
 
-void timer_handler() {
-  ticks++;
-  update_clock();
-}
-
 unsigned long ticks_elapsed() { return ticks; }
 
 long long nanos_elapsed(){
@@ -40,8 +35,6 @@ void update_clock() {
 }
 
 void set_clock_location(uint8_t *location) { clockLocation = location; }
-
-int seconds_elapsed() { return ticks / 18; }
 
 void formatTime(uint8_t *hour, uint8_t *min, uint8_t *sec) {
   *sec = _getSeconds();
@@ -158,10 +151,6 @@ void printDate(){
 void timer_handler() {
   ticks++;
   //update_clock();
-}
-
-int ticks_elapsed() {
-   return ticks; 
 }
 
 void sleep(int sec, int uni){

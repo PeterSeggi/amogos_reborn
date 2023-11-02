@@ -40,9 +40,9 @@ void loadKernelScreen(){
     for(int i=0; i<4; i++){
         printBitmap(dibujitos[9], SKYBLUE, charHeight, middleStartX, middleStartY);
         printBitmap(dibujitos[0], TITLEGOLD, charHeight, middleStartX, middleStartY);
-        sleep(1);
+        sleep(1, 0);
         printBitmap(dibujitos[9], SKYBLUE, charHeight, middleStartX, middleStartY);
         printBitmap(dibujitos[1], TITLEGOLD, charHeight, middleStartX, middleStartY);
-        sleep(1);
+        sleep(1, 0);
     }
 }
