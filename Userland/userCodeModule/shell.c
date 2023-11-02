@@ -173,7 +173,6 @@ int check_shift(){
 
 void write_out(char* string){
     for (int c = 0; c < strlen(string)-1; c++){
-
         // el menos 1 es porq line_size es 1 mas que el maximo indice
         if (cursor_x == line_size - 1|| string[c] == '\n'){
             if (string[c] == '\n') 
@@ -203,9 +202,7 @@ void resize(){
     init_shell();
     line_size = LINE_SIZE/font_size;
 
-
-
-    int from = mod(cursor_y - rows_to_show + 1, VERT_SIZE);
+    int from = mod(cursor_y - rows_to_show, VERT_SIZE);
     int offset = 0;
 
     clearScreen();
@@ -216,10 +213,12 @@ void resize(){
             offset++;
     }
 
-    // falta casi nada, lo tenes cocinado rey
+    limit_index = (offset + from + rows_to_show + 1) % VERT_SIZE;
+
+
     for (int i = 0; i < rows_to_show - offset - 1; i++){
-        mat_copy(screen_buffer[(offset + from + i) % VERT_SIZE]);
-        mat_copy("\n");
+        write_out(screen_buffer[(offset + from + i) % VERT_SIZE]);
+        write_out("\n");
     }
 
 }
