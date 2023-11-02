@@ -75,3 +75,7 @@ void sys_sleep(uint32_t  cant,uint32_t  unidad){
 void sys_gettimeofday(int *hrs, int *min, int *seg){
   printTime(hrs, min, seg);
  }
+
+void sys_registers(char *regs){
+  getRegss(regs);
+}

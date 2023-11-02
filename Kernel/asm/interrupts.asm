@@ -15,6 +15,7 @@ GLOBAL _irq05Handler
 GLOBAL _irq128Handler
 
 GLOBAL _exception0Handler
+GLOBAL _regsInterrupt
 
 EXTERN irqDispatcher
 EXTERN syscall_handler
@@ -157,7 +158,61 @@ haltcpu:
 	hlt
 	ret
 
+; guardar los registros
+    ; hacer el print o lo q queramos
+    ; recuperar
+       ; rsp > dir retorno (rip)
+        ;   rflags
+        ;   code segment
+    	;   rsp
+		;   stack segment
+_regsInterrupt:
+	mov [regsBuf], rax 	
+	mov [regsBuf+8], rbx
+	mov [regsBuf+8*2], rcx
+	mov [regsBuf+8*3], rdx
+	mov [regsBuf+8*4], rsi
+	mov [regsBuf+8*5], rdi
+	mov [regsBuf+8*6], rbp
+	mov [regsBuf+8*7], rsp
+	mov [regsBuf+8*8], r8
+	mov [regsBuf+8*9], r9 
+	mov [regsBuf+8*10], r10
+	mov [regsBuf+8*11], r11
+	mov [regsBuf+8*12], r12
+	mov [regsBuf+8*13], r13
+	mov [regsBuf+8*14], r14
+	mov [regsBuf+8*15], r15
+
+	push rax
+	mov rax, regsBuf
+	pop rax
+	ret
+
+	;push rbp
+	;mov rbp, rsp
+	;push rax
+    
+	;mov rax, [rsp]  		;guardo el rip en rax
+    ;mov [regsBuf+8*16], rax
+    ;add rsp, 16
+    ;mov rax, [rsp]    		;guardo el rflags en rax
+    ;mov [regsBuf+8*17], rax
+	
+    ;mov [rsp], userland_direc
+    ;call getStackBase
+    ;mov [rsp+24], rax   	;acomodo el valor de retorno
+	
+	;pop rax
+	;mov rsp, rbp
+	;pop rbp
+
+	;iretq
 
 
 SECTION .bss
 	aux resq 1
+	regsBuf resq 18
+
+section .rodata
+	userland_direc equ 0x400000

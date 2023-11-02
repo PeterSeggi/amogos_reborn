@@ -1,7 +1,7 @@
 #include "include/userlib.h"
 #include "include/userlibasm.h"
 
-#define COMMANDS 6
+#define COMMANDS 7
 #define VERT_SIZE 32
 #define LINE_SIZE 63
 #define BUFFER_SIZE 128
@@ -13,7 +13,7 @@
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear", "time", "sleep", "infoSleep", "help"};
+static char* commands[COMMANDS] = {"exit", "clear", "time", "sleep", "infoSleep", "help", "registros"};
 char char_buffer[1];
 
 // Cursors & flags
@@ -27,7 +27,11 @@ int limit_index = VERT_SIZE - 1;
 int rows_to_show = VERT_SIZE / FONT_SIZE;
 
 int *hrs, *min, *sec;
-char *tiempos[3];
+char *aux;
+int cantRegs = 16;
+char *regs[16];
+char *regsNames = {"rax:", "rbx:", "rcx:", "rdx:", "rsi:", "rdi:", "rbp:", "rsp:", "r8:", "r9:", "r10:", "r11:", "r12:", "r13:", "r14:", "r15:"};
+
 // commands to do: help, resize, time, registers
 // commands to shitpost: cowsay, ls, amogus?
 
@@ -116,31 +120,31 @@ void process_command(char* buffer){
                 case 2:
                     getClock(&hrs, &min, &sec);
                     write_out("La hora es...");
-                    uintToBase(hrs, tiempos, 10);
+                    uintToBase(hrs, aux, 10);
                     if(hrs<10){
                         write_out("0");
-                        write_out(tiempos);
+                        write_out(aux);
                     }
                     else{
-                        write_out(tiempos);
+                        write_out(aux);
                     }
                     write_out(":");
-                    uintToBase(min, tiempos, 10);
+                    uintToBase(min, aux, 10);
                     if(min<10){
                         write_out("0");
-                        write_out(tiempos);
+                        write_out(aux);
                     }
                     else{
-                        write_out(tiempos);
+                        write_out(aux);
                     }
                     write_out(":");
-                    uintToBase(sec, tiempos, 10);
+                    uintToBase(sec, aux, 10);
                     if(sec<10){
                         write_out("0");
-                        write_out(tiempos);
+                        write_out(aux);
                     }
                     else{
-                        write_out(tiempos);
+                        write_out(aux);
                     }
                     write_out("\n");
                     break;
@@ -151,7 +155,21 @@ void process_command(char* buffer){
                     write_out("Voce quer usar o nosso sleep??\nVoce deve nos passar dois parametros\no primeiro e a quantidade de segundos/milissegundos/nanosegundoso segundo sera 0=segundos, 1=milissegundos e 2=nanosegundos\n");
                     break;
                 case 5:
-                    write_out("Los comandos existentes son: \n- exit\n- clear\n- time\n- infoSleep\n- sleep\n");
+                    write_out("Los comandos existentes son: \n- exit\n- clear\n- time\n- infoSleep\n- sleep\n- registros\n");
+                    break;
+                case 6:
+                    //getRegs(&regs);
+                    if(regs=='\0'){
+                        write_out("Antes de pedir los registros debe apretar alt para que se guarden\n");
+                    }
+                    else{
+                        for(int i=0; i<cantRegs; i++){
+                        write_out(regsNames[i]);
+                       // uintToBase(regs[i], aux, 10);
+                       // write_out(aux);
+                        write_out("\n");
+                        }
+                    }
                     break;
             }
             return;

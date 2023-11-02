@@ -35,6 +35,7 @@ int key_buf[KEY_BUF_SIZE];
 int insert_index = 0;
 int read_index = 0;
 int to_read = 0;
+char* registros;
 
 // Ascii characters
 int ascii_buf[KEY_BUF_SIZE];
@@ -44,12 +45,12 @@ int ascii_insert_index = 0;
 int ascii_read_index = 0;
 int ascii_to_read = 0;
 
-
 void key_handler() { insert_key(_getKey()); }
 
 void insert_key(int key) {
 
   checkShift(key);
+  checkRegs(key);
 
   if (key <= 0x52 && scan_chars[key] != 0) {
     if (shifted || (caps && key >= 0x10))
@@ -115,4 +116,23 @@ void checkShift(int key) {
     shifted = 0;
   if (key == 0x3A)
     caps = !caps;
+}
+
+
+void checkRegs(int key){
+  if(key==0x38){
+    print("testing1 \n");
+    registros=_regsInterrupt();
+   /* for (int i = 0; i < 18; i++) {
+        printDec(i);
+        print(":");
+        printDec(registros[i]);
+        print("\n");
+    }*/
+    print("testing2 \n");
+  }
+}
+
+void getRegss(char *regs){
+    regs = registros;
 }

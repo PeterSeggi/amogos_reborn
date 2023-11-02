@@ -4,6 +4,7 @@ GLOBAL _read
 GLOBAL _halt
 GLOBAL _sleep
 GLOBAL _getClock
+GLOBAL _getRegs
 
 section .text
 
@@ -72,6 +73,17 @@ _getClock:
 	mov rbp, rsp
 
     mov rax, 0x4e
+    int 80h;
+
+	mov rsp, rbp
+	pop rbp
+	ret
+
+_getRegs:
+	push rbp
+	mov rbp, rsp
+
+    mov rax, 0x78
     int 80h;
 
 	mov rsp, rbp
