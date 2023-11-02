@@ -24,4 +24,10 @@ int strcmp(const char *str1, const char *str2);
 uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 int mod(int val, int base);
 
+//sleep
+void sleep(uint32_t cant, uint32_t unidad);
+  
+//clock
+void getClock(int *hrs, int *min, int *seg);
+
 #endif
