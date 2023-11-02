@@ -17,7 +17,7 @@ void tablero();
 void snakeSetup(uint8_t snake);
 
 //logic
-void addApple(uint8_t row, uint8_t column);
+void addApple();
 void addSnake(uint8_t row, uint8_t column, uint8_t elem, enum Direction dir);
 void putSnake(uint8_t row, uint8_t column, uint8_t snake);
 

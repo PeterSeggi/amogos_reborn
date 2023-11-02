@@ -4,6 +4,7 @@
 #include "include/drawings.h"
 #include "include/snake.h"
 #include "include/snakeModule.h"
+#include "include/rand.h"
 
 
 int main(){

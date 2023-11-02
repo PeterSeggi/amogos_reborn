@@ -1,6 +1,7 @@
 #include "include/snake.h"
 #include "include/drawings.h"
 #include "include/userlib.h"
+#include "include/rand.h"
 
 #define APPLE 1
 #define SNAKE1  4
@@ -64,8 +65,14 @@ void tablero(){
     }
 }
 
-void addApple(uint8_t row, uint8_t column){
-    board[column][row]=1;
+void addApple(){
+    uint8_t row, column;
+    do{
+        row = (uint8_t) (rand()%BOARD_H);
+        column = (uint8_t) (rand()%BOARD_W);
+    }
+    while(board[row][column]);//espero a una casilla no ocupada
+    board[column][row]=1;//guardo manzana
 }
 
 void addSnake(uint8_t row, uint8_t column, uint8_t elem, enum Direction dir){
@@ -126,9 +133,7 @@ uint8_t slither(enum Direction dir, uint8_t snake){
     if((board[newHeadCol][newHeadRow] & 0x0F)==APPLE){//apple saves points
         (snake==SNAKE1)? player1Points++ : player2Points++;
         board[column][row]=snake + (board[column][row]&0xF0);
-        //TODO logica addAPPLE
-        //llamar aca a addApple y que ahi se chequee si es casilla permitida.
-        //ver random gen
+        addApple();
     }
     else{
         changePosition(column,row,dir,snake);
@@ -337,6 +342,9 @@ uint8_t checkRight(uint8_t row, uint8_t column, uint8_t value){
 #define EXIT_KEY 'q'
 
 void Snake(uint8_t players, uint32_t color1, uint32_t color2){
+    //rand init
+    srand(time());
+
     uint8_t exit=0,error=0;//only changes when exit key is pressed to exit the game or a colision happens
 
     player1Points=0;
@@ -356,6 +364,8 @@ void Snake(uint8_t players, uint32_t color1, uint32_t color2){
 
     snakeSetup(SNAKE1);    
     if(players==2) snakeSetup(SNAKE2);
+
+    addApple();//colocamos la primer manzana
 
     while(!exit && !error){
         if(readLast(keypressed, 1)>0){
@@ -432,15 +442,6 @@ void Snake(uint8_t players, uint32_t color1, uint32_t color2){
 //setup
 
 void snakeSetup(uint8_t snake){
-
-    //test apples, delete later
-    addApple(BOARD_H-5,BOARD_W-5);
-    addApple(3,3);
-    addApple(3,4);
-    addApple(3,5);
-    addApple(3,6);
-    addApple(3,7);
-    addApple(3,8);
 
     if(snake==SNAKE1){
         addSnake(middleBoard_y,2,snake,RIGHT);
