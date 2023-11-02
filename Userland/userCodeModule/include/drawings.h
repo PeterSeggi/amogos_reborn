@@ -78,5 +78,8 @@ void draw_snake_letter(uint16_t bitmap[][dibHeight], uint64_t init_x, uint64_t i
 void putSnakeTitle();
 void selectHover(uint8_t selection);
 uint32_t getBgColor(int column, int row);
+void putBg(uint8_t width, uint8_t height, uint64_t bg_initialx, uint64_t bg_initialy, uint8_t squareWidth, uint8_t squareHeight);
+
+void selectColor(uint8_t selection, uint32_t* color1, uint32_t* color2);
 
 #endif

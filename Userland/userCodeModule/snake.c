@@ -126,6 +126,9 @@ uint8_t slither(enum Direction dir, uint8_t snake){
     if((board[newHeadCol][newHeadRow] & 0x0F)==APPLE){//apple saves points
         (snake==SNAKE1)? player1Points++ : player2Points++;
         board[column][row]=snake + (board[column][row]&0xF0);
+        //TODO logica addAPPLE
+        //llamar aca a addApple y que ahi se chequee si es casilla permitida.
+        //ver random gen
     }
     else{
         changePosition(column,row,dir,snake);

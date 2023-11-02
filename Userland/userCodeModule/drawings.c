@@ -24,22 +24,22 @@ uint16_t square[][dibHeight]={
 };
 
 uint16_t apple[][dibHeight]={
-    {0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111,
-     0b1111111111111111}
+    {0b0000000000000000,
+     0b0000001111000000,
+     0b0000010000100000,
+     0b0000010000100000,
+     0b0000010000100000,
+     0b0000001111000000,
+     0b0000000110000000,
+     0b0000011111100000,
+     0b0001100110011000,
+     0b0110000110000110,
+     0b0000000110000000,
+     0b0000000110000000,
+     0b0000011001100000,
+     0b0000110000110000,
+     0b0001100000011000,
+     0b0000000000000000}
 };
 
 #define SNAKEHEAD_LEFT_LAYERS 3
@@ -1421,7 +1421,7 @@ void draw_snake(uint16_t bitmap[][dibHeight], uint16_t layers, uint32_t colors[]
     }
 }
 void draw_manzana(uint64_t init_x, uint64_t init_y){
-    draw(apple[0],0x00FF0000,dibHeight,init_x,init_y);
+    draw(apple[0],0x00FFFFFF,dibHeight,init_x,init_y);
 }
 
 //a lot of logic specific for this font effect
@@ -1811,12 +1811,7 @@ void putSnakeTitle(){
         }
     }
     
-    for(int i=0; i<(screenWidth/dibSpaceWidth); i++){
-        for(int j=0; j<(screenHeight/dibSpaceHeight); j++){
-            uint32_t bgcolor = ((i%2==0 && j%2) || (i%2 && j%2==0))? SCREEN_BG_COLOR1:SCREEN_BG_COLOR2;
-            draw(square[0], bgcolor, dibHeight,bg_initialx + i*(dibSpaceWidth),bg_initialy + j*(dibSpaceHeight));
-        }
-    }
+    putBg((screenWidth/dibSpaceWidth),(screenHeight/dibSpaceHeight),bg_initialx,bg_initialy,dibSpaceWidth,dibSpaceHeight);
 
     int middleStartX= (screenWidth)/2 - ((dibWidth*drawSize)/2);
 	int middleStartY= (screenHeight)/2 - ((dibHeight*drawSize)/2);
@@ -1861,6 +1856,33 @@ void selectHover(uint8_t selection){
     draw(select_player[SELECT_PLAYER_LAYERS+2], WHITETEXT, dibHeight, selectX, selection? select2Y : select1Y);
 }
 
+void putBg(uint8_t width, uint8_t height, uint64_t bg_initialx, uint64_t bg_initialy, uint8_t squareWidth, uint8_t squareHeight){
+    for(int i=0; i<width; i++){
+        for(int j=0; j<height; j++){
+            uint32_t bgcolor = ((i%2==0 && j%2) || (i%2 && j%2==0))? SCREEN_BG_COLOR1:SCREEN_BG_COLOR2;
+            draw(square[0], bgcolor, dibHeight,bg_initialx + i*(squareWidth),bg_initialy + j*(squareHeight));
+        }
+    }
+}
+
 uint32_t getBgColor(int column, int row){
     return ((column%2==0 && row%2) || (column%2 && row%2==0))? SCREEN_BG_COLOR1:SCREEN_BG_COLOR2;
+}
+
+void selectColor(uint8_t selection, uint32_t* color1, uint32_t* color2){
+    //getting dimensions
+    uint16_t screenHeight, screenWidth;
+    uint8_t fontSize, drawSize;
+    getScreenData(&screenHeight,&screenWidth,&fontSize,&drawSize);
+
+    //imprimimos el bg
+    uint8_t dibSpaceWidth = (dibWidth*drawSize), dibSpaceHeight=(dibHeight*drawSize);
+    
+    //añadimos margen si es necesario
+    uint64_t bg_initialx=(screenWidth%dibSpaceWidth)/2;
+    uint64_t bg_initialy=(screenHeight%dibSpaceHeight)/2;
+    
+    putBg((screenWidth/dibSpaceWidth),(screenHeight/dibSpaceHeight),bg_initialx,bg_initialy,dibSpaceWidth,dibSpaceHeight);
+
+
 }

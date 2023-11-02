@@ -42,5 +42,10 @@ uint8_t snakeScreen(){
         selectHover(selection);
     }
 
+    uint32_t c1=0;
+    uint32_t c2=0;
+
+    selectColor(selection, &c1, &c2);
+
     return selection;
 }
