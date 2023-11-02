@@ -26,6 +26,7 @@ int exit_command = 0;
 uint8_t font_size;
 int rows_to_show;
 int limit_index = VERT_SIZE - 1;
+int line_size = LINE_SIZE;
 
 
 // commands to do: help, resize, time, registers
@@ -69,7 +70,7 @@ void process_key(char key){
             return;
 
         command_cursor--;
-        cursor_x = mod(cursor_x - 1, LINE_SIZE);
+        cursor_x = mod(cursor_x - 1, line_size);
 
         // aca va printChar y no write_out porq es un caso especial
         printChar(key);
@@ -110,6 +111,7 @@ void process_command(char* buffer){
                     }
                     else {
                         change_font(++font_size);
+                        resize();
                     }
                     break;
                 
@@ -120,6 +122,7 @@ void process_command(char* buffer){
                     }
                     else {
                         change_font(--font_size);
+                        resize();
                     }
                     break;
                 
@@ -170,8 +173,9 @@ int check_shift(){
 
 void write_out(char* string){
     for (int c = 0; c < strlen(string)-1; c++){
-        // if line es mas largo que size hago un coso extra aquip 
-        if (cursor_x == LINE_SIZE - 1 || string[c] == '\n'){
+
+        // el menos 1 es porq line_size es 1 mas que el maximo indice
+        if (cursor_x == line_size - 1|| string[c] == '\n'){
             if (string[c] == '\n') 
                 screen_buffer[cursor_y][cursor_x] = '\0'; // null terminate en caso de print
             else
@@ -195,4 +199,30 @@ void init_shell(){
 }
 
 
+void resize(){
+    init_shell();
+    line_size = LINE_SIZE/font_size;
 
+
+
+    int from = mod(cursor_y - rows_to_show + 1, VERT_SIZE);
+    int offset = 0;
+
+    clearScreen();
+
+    // voy a hacer un for auxiliar para no tener que shiftear mil veces
+    for (int i = 0; i < rows_to_show; i++){
+        if (screen_buffer[(from + i) % VERT_SIZE][0] == 0 || strlen(screen_buffer[(from + i) % VERT_SIZE]) > line_size)
+            offset++;
+    }
+
+
+    for (int i = 0; i < rows_to_show - offset - 1; i++){
+        
+        
+        write_out(screen_buffer[(offset + from + i) % VERT_SIZE]);
+        write_out("\n");
+    }
+  
+
+}
