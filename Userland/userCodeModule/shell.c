@@ -150,8 +150,6 @@ void shift(){
     for (int i = 1; i < rows_to_show; i++){
         
         int line_number = mod(i + (limit_index - rows_to_show + 1), VERT_SIZE);
-
-
         print(screen_buffer[line_number]);
         if (i != rows_to_show - 1)
             print("\n");
@@ -195,17 +193,15 @@ void write_out(char* string){
 void init_shell(){
     font_size = getFontSize();
     rows_to_show = VERT_SIZE/font_size;
+    line_size = LINE_SIZE/font_size;
 }
 
 
 void resize(){
     init_shell();
-    line_size = LINE_SIZE/font_size;
 
     int from = mod(cursor_y - rows_to_show, VERT_SIZE);
     int offset = 0;
-
-    clearScreen();
 
     // voy a hacer un for auxiliar para no tener que shiftear mil veces
     for (int i = 0; i < rows_to_show; i++){
@@ -215,32 +211,10 @@ void resize(){
 
     limit_index = (offset + from + rows_to_show + 1) % VERT_SIZE;
 
-
+    clearScreen();
     for (int i = 0; i < rows_to_show - offset - 1; i++){
         write_out(screen_buffer[(offset + from + i) % VERT_SIZE]);
         write_out("\n");
     }
-
-}
-
-
-void mat_copy(char* string){
-    for (int c = 0; c < strlen(string)-1; c++){
-
-        // el menos 1 es porq line_size es 1 mas que el maximo indice
-        if (cursor_x == line_size - 1|| string[c] == '\n'){
-            if (string[c] == '\n') 
-                screen_buffer[cursor_y][cursor_x] = '\0'; // null terminate en caso de print
-            else
-                c--;    // se que parece raro pero esto esta para no escribir el \n en la tabla pero si los demas despues del shift
-            cursor_x = 0;
-        }
-        // ese else c-- esta para que pueda entrar a este else con el ultimo caracter de cada linea
-        else {
-            screen_buffer[cursor_y][cursor_x++] = string[c];
-        }
-    }
-
-    print(string);
 
 }
