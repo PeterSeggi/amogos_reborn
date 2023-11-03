@@ -9,8 +9,7 @@
 #define STDOUT 1
 #define STDERR 2
 
-#define ERRCOLORFONT 0xFF0000 // texto rojo, bg gris;
-#define ERRCOLORBACK 0xDADADA // texto rojo, bg gris;
+
 
 void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t rax) {
   switch (rax) {

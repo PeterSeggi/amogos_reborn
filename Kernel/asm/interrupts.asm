@@ -15,10 +15,13 @@ GLOBAL _irq05Handler
 GLOBAL _irq128Handler
 
 GLOBAL _exception0Handler
+GLOBAL _exception6Handler
 
 EXTERN irqDispatcher
 EXTERN syscall_handler
 EXTERN exceptionDispatcher
+
+EXTERN getStackBase
 
 SECTION .text
 
@@ -80,7 +83,11 @@ SECTION .text
 	mov rdi, %1 ; pasaje de parametro
 	call exceptionDispatcher
 
-	popState
+	call getStackBase
+	mov [rsp+24], rax
+	mov rax, userland
+	mov [rsp], rax
+
 	iretq
 %endmacro
 
@@ -152,6 +159,10 @@ _irq128Handler:
 _exception0Handler:
 	exceptionHandler 0
 
+;Invalid Opcode Exception
+_exception6Handler:
+	exceptionHandler 6
+
 haltcpu:
 	cli
 	hlt
@@ -161,3 +172,6 @@ haltcpu:
 
 SECTION .bss
 	aux resq 1
+
+section .rodata
+	userland equ 0x400000
