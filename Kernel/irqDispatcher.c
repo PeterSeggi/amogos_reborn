@@ -3,10 +3,12 @@
 #include <stdint.h>
 #include <syscall_handler.h>
 #include <naiveConsole.h>
+#include <registers.h>
 
 static void int_20();
 static void int_21();
 static void int_48();
+static void int_77();
 static void int_80();
 
 void irqDispatcher(uint64_t irq) {
@@ -20,6 +22,10 @@ void irqDispatcher(uint64_t irq) {
 
         case 0x48:
             int_48();
+            break;
+
+        case 0x77:
+            int_77();
             break;
 
         case 0x80:
@@ -42,4 +48,8 @@ void int_48(){
 
 void int_80() {
     syscall_handler();
+}
+
+void int_77(){
+    regs_handler();
 }

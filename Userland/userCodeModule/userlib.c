@@ -142,6 +142,6 @@ void getClock(int *hrs, int *min, int *seg){
 // Registers
 //================================================================================================================================
 
-void getRegs(char * regs){
-    _getRegs(regs);
+int getRegs(long regs[]){
+    return _getRegs(regs);
 }

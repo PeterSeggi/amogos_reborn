@@ -10,7 +10,8 @@ void * memcpy(void * destination, const void * source, uint64_t length);
 char *cpuVendor(char *result);
 int rtcInfo(int value);
 int _getKey();
-char* _regsInterrupt();
+long* _regsInterrupt();
+void _saveRegs();
 
 // base changing
 uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);

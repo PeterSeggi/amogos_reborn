@@ -35,7 +35,6 @@ int key_buf[KEY_BUF_SIZE];
 int insert_index = 0;
 int read_index = 0;
 int to_read = 0;
-char* registros;
 
 // Ascii characters
 int ascii_buf[KEY_BUF_SIZE];
@@ -118,21 +117,8 @@ void checkShift(int key) {
     caps = !caps;
 }
 
-
 void checkRegs(int key){
   if(key==0x38){
-    print("testing1 \n");
-    registros=_regsInterrupt();
-   /* for (int i = 0; i < 18; i++) {
-        printDec(i);
-        print(":");
-        printDec(registros[i]);
-        print("\n");
-    }*/
-    print("testing2 \n");
+    _saveRegs();
   }
-}
-
-void getRegss(char *regs){
-    regs = registros;
 }
