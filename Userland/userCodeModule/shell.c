@@ -105,7 +105,6 @@ void process_command(char* buffer){
                     limit_index = VERT_SIZE/font_size - 1;
                     break;
                 case 2:
-                    // get second param
                     if (font_size == 3){
                         write_out("Font size max!\n");
                     }
@@ -116,13 +115,12 @@ void process_command(char* buffer){
                     break;
                 
                 case 3:
-                    // get second param
                     if (font_size == 1){
                         write_out("Font size minimum!\n");
                     }
                     else {
                         change_font(--font_size);
-                        resize();
+                        desize();
                     }
                     break;
                 
@@ -205,15 +203,35 @@ void resize(){
 
     // voy a hacer un for auxiliar para no tener que shiftear mil veces
     for (int i = 0; i < rows_to_show; i++){
-        if (screen_buffer[(from + i) % VERT_SIZE][0] == 0 || strlen(screen_buffer[(from + i) % VERT_SIZE]) > line_size)
-            offset++;
+        int line_len = strlen(screen_buffer[(from + i) % VERT_SIZE]);
+        if (screen_buffer[(from + i) % VERT_SIZE][0] == 0 || line_len > line_size)
+            offset += line_len/line_size; 
     }
 
-    limit_index = (offset + from + rows_to_show + 1) % VERT_SIZE;
+    limit_index = (cursor_y + rows_to_show - 1) % VERT_SIZE;
 
     clearScreen();
-    for (int i = 0; i < rows_to_show - offset - 1; i++){
+
+    for (int i = 0; i < rows_to_show - offset; i++){
         write_out(screen_buffer[(offset + from + i) % VERT_SIZE]);
+        write_out("\n");
+    }
+
+}
+
+void desize(){
+
+    // El from va antes del init_shell para no agarrar cosas de mas cunado cambia r_t_s
+    clearScreen();
+
+    int from = mod(limit_index - rows_to_show + 1, VERT_SIZE);
+    int until = mod(cursor_y - from, VERT_SIZE);
+    init_shell();
+
+    limit_index = (cursor_y + rows_to_show - 1) % VERT_SIZE;
+
+    for (int i = 0; i < until && screen_buffer[(from + i) % VERT_SIZE][0] != '\0'; i++){
+        write_out(screen_buffer[(from + i) % VERT_SIZE]);
         write_out("\n");
     }
 
