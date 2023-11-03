@@ -6,6 +6,9 @@
 #define BOARDCOLOR1 0x00B77460
 #define BOARDCOLOR2 0x00F2997F
 
+#define PLAYER1_DEFAULT_COLOR 0x00FAE425
+#define PLAYER2_DEFAULT_COLOR 0x00FF71BE
+
 enum Direction {NONE=(0x00), UP=(0x80), DOWN=(0x40), RIGHT=(0x10), LEFT=(0x20)};
 
 //main function
@@ -20,6 +23,8 @@ void snakeSetup(uint8_t snake);
 void addApple();
 void addSnake(uint8_t row, uint8_t column, uint8_t elem, enum Direction dir);
 void putSnake(uint8_t row, uint8_t column, uint8_t snake);
+
+void printPoints(uint8_t snake);
 
 //directions
 uint8_t slither(enum Direction dir, uint8_t snake);

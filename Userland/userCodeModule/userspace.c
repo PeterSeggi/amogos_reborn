@@ -14,7 +14,7 @@ int main(){
     print(greeting);
     char buffer_space[1];
 
-    snakeScreen();
-    Snake(2,0x00FF71BE,0x00FAE425);
+    uint8_t amountPlayers=snakeScreen();
+    Snake(amountPlayers,PLAYER1_DEFAULT_COLOR,PLAYER2_DEFAULT_COLOR);
     return 0;
 }

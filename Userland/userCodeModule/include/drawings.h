@@ -13,6 +13,13 @@
 #define DARKERGRAY 0x00343434
 #define RED 0x00FF290E
 
+#define WHITETEXT 0x00FFFFFF
+
+#define SCREEN_BG_COLOR1 0x008ED17F
+#define SCREEN_BG_COLOR2 0x0086C578
+//#define SCREEN_BG_MARGIN 0x005A93FF
+#define SCREEN_BG_MARGIN 0x0086C578
+
 //bitmaps
 #define dibHeight 16
 #define dibWidth 16
@@ -65,13 +72,13 @@ void draw_snake(uint16_t bitmap[][dibHeight], uint16_t layers, uint32_t colors[]
 void draw_manzana(uint64_t init_x, uint64_t init_y);
 
 //title for snake
-extern uint16_t snake_S[][dibHeight];
-extern uint16_t snake_N[][dibHeight];
-extern uint16_t snake_A[][dibHeight];
-extern uint16_t snake_K[][dibHeight];
-extern uint16_t snake_E[][dibHeight];
+extern uint16_t snake_title[][dibHeight];
 
 extern uint16_t select_player[][dibHeight];
+
+extern uint16_t points_digits[][dibHeight];
+
+extern uint16_t gameover_text[][dibHeight];
 
 void draw_snake_letter(uint16_t bitmap[][dibHeight], uint64_t init_x, uint64_t init_y, uint32_t color, uint8_t drawSize);
 

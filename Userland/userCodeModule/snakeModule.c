@@ -10,12 +10,11 @@ uint8_t snakeScreen(){
     //title
     putSnakeTitle();
 
-    //select
-    #define UPSELECT PLAYER1
-    #define DOWNSELECT PLAYER2
+    #define PLAYERS_1 0
+    #define PLAYERS_2 1
 
     char keypressed[1]={0};
-    uint8_t selected=0, selection=UPSELECT;
+    uint8_t selected=0, selection=PLAYERS_1;
 
     while(!selected){
         if(readLast(keypressed,1)>0){
@@ -26,12 +25,12 @@ uint8_t snakeScreen(){
 
                 case('w'):
                 case('i'):
-                    selection=UPSELECT;
+                    selection=PLAYERS_1;
                     break;
 
                 case('s'):
                 case('k'):
-                    selection=DOWNSELECT;
+                    selection=PLAYERS_2;
                     break;
 
                 default:
@@ -41,11 +40,6 @@ uint8_t snakeScreen(){
         //cambiamos  la apariencia segun la selection
         selectHover(selection);
     }
-
-    uint32_t c1=0;
-    uint32_t c2=0;
-
-    selectColor(selection, &c1, &c2);
 
     return selection;
 }

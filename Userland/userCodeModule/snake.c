@@ -13,6 +13,7 @@
 //================================================================================================================================
 #define MIN_DIM 5//contempla dim_snake_start=3 con 2 de margen
 #define START_MARGIN 2
+#define BOARD_UP_MARGIN 3
 
 uint8_t BOARD_H=20; //basandonos en las dimensiones del de maps
 uint8_t BOARD_W=20;
@@ -30,11 +31,18 @@ uint8_t board_start_x, board_start_y;
 
 uint8_t middleBoard_y;
 
+//players stuff
+uint16_t player1Points=0;
+uint16_t player2Points=0;
+
+uint32_t snakecolor1=0x00;
+uint32_t snakecolor2=0x00;
+
 uint8_t initGame(){
     getScreenData(&screenHeight,&screenWidth,&fontSize,&drawSize);
     dibSpaceHeight=(dibHeight*drawSize);
     dibSpaceWidth=(dibWidth*drawSize);
-    BOARD_H= BOARD_H>(screenHeight/dibSpaceHeight)?  (screenHeight/dibSpaceHeight) : BOARD_H;    //buscamos la menor dimension
+    BOARD_H= BOARD_H>((screenHeight/dibSpaceHeight)-BOARD_UP_MARGIN)?  ((screenHeight/dibSpaceHeight)-BOARD_UP_MARGIN) : BOARD_H;    //buscamos la menor dimension
     BOARD_W= BOARD_W>(screenWidth/dibSpaceWidth)?  (screenWidth/dibSpaceWidth) : BOARD_W;
     BOARD_H>BOARD_W? (BOARD_H=BOARD_W) : (BOARD_W=BOARD_H);//nos aseguramos de que el tablero sea cuadrado
     if(BOARD_H<MIN_DIM) return 1;
@@ -44,9 +52,35 @@ uint8_t initGame(){
         }
     }
     board_start_x=(screenWidth-(BOARD_W*dibSpaceWidth))/2;
-    board_start_y=(screenHeight-(BOARD_H*dibSpaceHeight))/2;
+    board_start_y=(BOARD_UP_MARGIN*dibSpaceHeight);
     middleBoard_y=BOARD_H/2;
+
     return 0;
+}
+
+void printPoints(uint8_t snake){
+    uint64_t startXPlayer1Points=((dibSpaceWidth*8)/2)-(dibSpaceHeight*3)/2;//8 as in strlen(PLAYER N)
+    uint64_t startXPlayer2Points=screenWidth-(((dibSpaceWidth*8)/2)+(dibSpaceHeight*3)/2);
+    //primero impimimos sobre lo que haya y luego imprimimos los nuevos puntos
+    //contemplamos solo hasta 3 cifras los puntos
+    if(snake==SNAKE1){
+        for(int i=0; i<3; i++){
+            draw(square[0], SCREEN_BG_MARGIN, dibHeight, startXPlayer1Points + i*(dibSpaceWidth), dibSpaceHeight);
+        }
+
+        draw(points_digits[(player1Points%1000)/100], WHITETEXT, dibHeight, startXPlayer1Points, dibSpaceHeight);
+        draw(points_digits[(player1Points%100)/10], WHITETEXT, dibHeight, startXPlayer1Points + dibSpaceWidth, dibSpaceHeight);
+        draw(points_digits[player1Points%10], WHITETEXT, dibHeight, startXPlayer1Points + dibSpaceWidth*2, dibSpaceHeight);
+    }
+    else{
+        for(int i=0; i<3; i++){
+            draw(square[0], SCREEN_BG_MARGIN, dibHeight, startXPlayer2Points + i*(dibSpaceWidth), dibSpaceHeight);
+        }
+        
+        draw(points_digits[(player2Points%1000)/100], WHITETEXT, dibHeight, startXPlayer2Points, dibSpaceHeight);
+        draw(points_digits[(player2Points%100)/10], WHITETEXT, dibHeight, startXPlayer2Points + dibSpaceWidth, dibSpaceHeight);
+        draw(points_digits[player2Points%10], WHITETEXT, dibHeight, startXPlayer2Points + dibSpaceWidth*2, dibSpaceHeight);
+    }
 }
 
 void tablero(){
@@ -71,7 +105,7 @@ void addApple(){
         row = (uint8_t) (rand()%BOARD_H);
         column = (uint8_t) (rand()%BOARD_W);
     }
-    while(board[row][column]);//espero a una casilla no ocupada
+    while(board[column][row]);//espero a una casilla no ocupada
     board[column][row]=1;//guardo manzana
 }
 
@@ -85,12 +119,7 @@ void addSnake(uint8_t row, uint8_t column, uint8_t elem, enum Direction dir){
 // Logic Stuff
 //================================================================================================================================
 //================================================================================================================================
-//players stuff
-uint16_t player1Points=0;
-uint16_t player2Points=0;
 
-uint32_t snakecolor1=0x00;
-uint32_t snakecolor2=0x00;
 
 //directions stuff
 
@@ -131,15 +160,19 @@ uint8_t slither(enum Direction dir, uint8_t snake){
         return 2;//snakes colision
     }
     if((board[newHeadCol][newHeadRow] & 0x0F)==APPLE){//apple saves points
+        //TODO beeps here
         (snake==SNAKE1)? player1Points++ : player2Points++;
         board[column][row]=snake + (board[column][row]&0xF0);
+        board[newHeadCol][newHeadRow]=snake + dir;
         addApple();
+        //imprimimos puntajes
+        printPoints(snake);
     }
     else{
+        board[newHeadCol][newHeadRow]=snake + dir;
         changePosition(column,row,dir,snake);
     }
     saveHeadPosition(snake,newHeadCol,newHeadRow);
-    board[newHeadCol][newHeadRow]=snake + dir;
     
     return 0;
 }
@@ -362,10 +395,33 @@ void Snake(uint8_t players, uint32_t color1, uint32_t color2){
         return;
     }
 
-    snakeSetup(SNAKE1);    
-    if(players==2) snakeSetup(SNAKE2);
+    //bg margins
+    for(int i=0; i<(screenWidth/dibSpaceWidth)+1; i++){
+        for(int j=0; j<(screenHeight/dibSpaceHeight)+1; j++){
+            draw(square[0], SCREEN_BG_MARGIN, dibHeight, i*dibSpaceWidth, j*dibSpaceHeight);
+        }
+    }
+
+    //imprimimos puntajes y seteamos snakes
+    for(int i=0; i<6; i++){
+        draw(select_player[i], WHITETEXT, dibHeight, i*dibSpaceWidth, 0);
+
+        if(players) draw(select_player[i], WHITETEXT, dibHeight, screenWidth-(dibSpaceWidth*(8-i)), 0);
+    }
+    draw(points_digits[1], WHITETEXT, dibHeight, dibSpaceWidth*7, 0);
+    
+    snakeSetup(SNAKE1);
+    printPoints(SNAKE1);
+
+    if(players){
+        draw(points_digits[2], WHITETEXT, dibHeight, screenWidth-(dibSpaceWidth), 0);
+
+        snakeSetup(SNAKE2);
+        printPoints(SNAKE2);
+    }
 
     addApple();//colocamos la primer manzana
+
 
     while(!exit && !error){
         if(readLast(keypressed, 1)>0){
@@ -433,8 +489,21 @@ void Snake(uint8_t players, uint32_t color1, uint32_t color2){
         tablero();
         sleep_once();
     }
+    //TODO beep
+    sleep(1,0);
 
-    print("BYE!");
+    //GAME OVER message
+    for(int i=0; i<(screenWidth/dibSpaceWidth)+1; i++){
+        for(int j=0; j<(screenHeight/dibSpaceHeight)+1; j++){
+            draw(square[0], SCREEN_BG_MARGIN, dibHeight, i*dibSpaceWidth, j*dibSpaceHeight);
+        }
+    }
+
+    for(int i=0; i<9; i++){
+        draw(gameover_text[i], WHITETEXT, dibHeight, (screenWidth/2)-((dibSpaceWidth*9)/2)+(i*dibSpaceWidth), (screenHeight/2)-(dibSpaceHeight/2));
+    }
+    //TODO final beep here
+    sleep(2,0);
 
     return;
 }
