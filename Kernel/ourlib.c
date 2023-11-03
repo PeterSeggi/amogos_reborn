@@ -171,4 +171,46 @@ void printTime(){
 //================================================================================================================================
 //================================================================================================================================
 
+// operando + space + [+-*/] + space + operando  ONLY 1 igit numbers (for now??)
+void miniCalcu(char * string){
+	int flag=0;
+	for(int i=0; !flag && string[i]!=0; i++) if(i==6) flag=1;
+	if(flag){
+		ncPrint("Not appropiate string!");
+		return;
+	}
+	else{
+		int res;
+		switch(string[2]){
+			case('+'):
+				res = asciiToNum(string[0]) + asciiToNum(string[4]);
+				break;
 
+			case('-'):
+				res = asciiToNum(string[0]) - asciiToNum(string[4]);
+				break;
+
+			case('*'):
+				res = asciiToNum(string[0]) * asciiToNum(string[4]);
+				break;
+
+			case('/'):
+				if(string[4]=='0'){
+					_divzero();
+					return;
+				}
+				res = asciiToNum(string[0]) / asciiToNum(string[4]);
+				break;
+
+			default:
+				ncPrint("Not appropiate operator!");
+				return;
+		}
+		ncPrintDec(res);
+	}
+	
+}
+
+uint8_t asciiToNum(char ascii){
+	return ascii-'0';
+}

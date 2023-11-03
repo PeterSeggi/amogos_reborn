@@ -25,6 +25,8 @@ GLOBAL _talk
 GLOBAL _shutup
 GLOBAL _PITsetup
 
+GLOBAL _divzero
+
 ;================================================================================================================================
 ;_getDateTimeFormat devuelve el formato del RTC
 ;en al retorna 0x00000xy0  donde y indica si es 24hs(1) o no(0) y x indica si es binario(1) o BCD(0)
@@ -437,3 +439,15 @@ _PITsetup:
 	pop rbp
 	ret
 
+_divzero:
+	push rbp
+	mov rbp, rsp
+	pushf
+
+	int 0x00
+
+.end:
+	popf
+	mov rsp, rbp
+	pop rbp
+	ret

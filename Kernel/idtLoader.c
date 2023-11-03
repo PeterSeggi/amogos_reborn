@@ -32,6 +32,7 @@ void load_idt() {
   setup_IDT_entry (0x80, (uint64_t)&_irq80Handler);
 
   setup_IDT_entry (0x00, (uint64_t)&_exception0Handler);
+  setup_IDT_entry (0x06, (uint64_t)&_exception6Handler);
 
 
 	//actuan como mascara para abilitar que int leer

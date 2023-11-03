@@ -115,19 +115,41 @@ int main()
 
 	//bokita code (funca en video mode, no textmode)
 
-	draw_rectangle(300,35,0x000000FF,0,0);
-	draw_rectangle(300,30,0x00FFFF00,0,35);
-	draw_rectangle(300,35,0x000000FF,0,65);
+	//draw_rectangle(300,35,0x000000FF,0,0);
+	//draw_rectangle(300,30,0x00FFFF00,0,35);
+	//draw_rectangle(300,35,0x000000FF,0,65);
 
-	writeSky();
-	writeStar();
+	//writeSky();
+	//writeStar();
 
 	//sleep(5);
 	
-	//ncClear();
+	ncClear();
 
-	//ncPrint("Welcome Back!");
-	//ncNewline();
+	ncPrint("Welcome Back!");
+	ncNewline();
+	ncPrint("1 - 1");
+	ncNewline();
+	miniCalcu("1 - 1");
+	ncNewline();
+	ncPrint("2 + 2");
+	ncNewline();
+	miniCalcu("2 + 2");
+	ncNewline();
+	ncPrint("5 * 3");
+	ncNewline();
+	miniCalcu("5 * 3");
+	ncNewline();
+	ncPrint("4 / 2");
+	ncNewline();
+	miniCalcu("4 / 2");
+	ncNewline();
+	ncPrint("1 / 0");
+	ncNewline();
+	miniCalcu("1 / 0");
+	ncNewline();
+
+
 	//ncPrint("Pooling: Presione una tecla para ver su scancode");
 	//ncNewline();
 	//ncPrintHex(_getKey());
