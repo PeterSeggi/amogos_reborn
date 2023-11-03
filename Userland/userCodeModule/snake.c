@@ -487,7 +487,7 @@ void Snake(uint8_t players, uint32_t color1, uint32_t color2){
         tablero();
         if(lastdir2!=NONE && !error) error += slither(lastdir2,SNAKE2);
         tablero();
-        sleep_once();
+        sleep(15, 1);
     }
     //TODO beep
     sleep(1,0);
@@ -502,6 +502,9 @@ void Snake(uint8_t players, uint32_t color1, uint32_t color2){
     for(int i=0; i<9; i++){
         draw(gameover_text[i], WHITETEXT, dibHeight, (screenWidth/2)-((dibSpaceWidth*9)/2)+(i*dibSpaceWidth), (screenHeight/2)-(dibSpaceHeight/2));
     }
+    printPoints(SNAKE1);
+    if(players)
+        printPoints(SNAKE2);
     //TODO final beep here
     sleep(2,0);
 
