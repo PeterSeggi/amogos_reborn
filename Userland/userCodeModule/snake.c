@@ -39,6 +39,7 @@ uint32_t snakecolor1=0x00;
 uint32_t snakecolor2=0x00;
 
 uint8_t initGame(){
+    changeDrawSize(3);
     getScreenData(&screenHeight,&screenWidth,&fontSize,&drawSize);
     dibSpaceHeight=(dibHeight*drawSize);
     dibSpaceWidth=(dibWidth*drawSize);
