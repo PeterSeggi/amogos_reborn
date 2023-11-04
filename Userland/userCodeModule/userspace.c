@@ -12,8 +12,5 @@ int main(){
     print(greeting);
 
     shell();
-
-    print("Bye now!");
-
     return 0;
 }

@@ -3,7 +3,7 @@
 #include "include/userlibasm.h"
 #include <stdint.h>
 
-#define COMMANDS 11
+#define COMMANDS 12
 #define VERT_SIZE 32
 #define LINE_SIZE 63
 #define BUFFER_SIZE 128
@@ -14,7 +14,7 @@
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registros"};
+static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registros", "test-div"};
 char char_buffer[1];
 
 // Cursors & flags
@@ -194,7 +194,12 @@ void process_command(char* buffer){
                             write_out("\n-");
                         }
                     }
-         
+                case 11:
+                    write_out("Vamos a testear dividir 1 por 0");
+                    int a = 1;
+                    int b = 0;
+                    int c = a/b;
+                    break;
             }   
             return;
         }

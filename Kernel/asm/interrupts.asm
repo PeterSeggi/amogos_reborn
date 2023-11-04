@@ -78,6 +78,25 @@ SECTION .text
 
 
 %macro exceptionHandler 1
+
+    call _regsInterrupt     ; guardo los regs
+
+
+    mov rax, userland_direc 
+    mov [rsp], rax          ; hard-code goes brrrrrr
+
+    mov rax, 0x8
+    mov [rsp + 8], rax      ; CS de userland
+
+    mov rax, 0x202
+    mov [rsp + 8*2], rax    ; RFLAGS
+
+    call getStackBase       
+    mov [rsp + 8*3], rax    ; sp ahora esta en la base 
+
+    mov rax, 0x0
+    mov [rsp + 8*4], rax    ; SS de userland
+
 	pushState
 
 	mov rdi, %1 ; pasaje de parametro
@@ -151,6 +170,7 @@ _irq77Handler:
 _irq128Handler:
     mov r9, rax
     call syscall_handler
+    iretq
 	; irqHandlerMaster 128
 
 
@@ -182,18 +202,12 @@ _regsInterrupt:
 	mov [regsBuf+8*13], r13
 	mov [regsBuf+8*14], r14
 	mov [regsBuf+8*15], r15
-
-	push rbp
-	mov rbp, rsp
-
 	mov rax, [rsp]			; RIP
 	mov [regsBuf+8*16], rax			
 	mov rax, [rsp+8*2]		; RFLAGS
 	mov [regsBuf+8*17], rax
 	mov rax, regsBuf
 
-	mov rsp, rbp
-	pop rbp
 	ret 
 	    
     ;mov [rsp], userland_direc

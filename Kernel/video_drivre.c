@@ -6,6 +6,8 @@
 #define DEFAULT_FONT 0xDADADA
 #define DEFAULT_BACK 0X01233E
 
+#define ERROR_FONT 0xDADADA
+#define ERROR_BACK 0xa70000
 
 typedef struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
@@ -91,6 +93,7 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y){
 		framebuffer[offset]=(hexColor) & 0x000000FF;	//agarro la parte baja del hexColor que es el azul
 		framebuffer[offset+1]=(hexColor >> 8) & 0x0000FF;
 		framebuffer[offset+2]=(hexColor >> 16) & 0x00FF;
+        
 	}
 }
 
@@ -177,15 +180,20 @@ void printCant(const uint8_t * string, uint64_t cant){
 }
 
 void printColor(const uint8_t * string, uint32_t fontColor, uint32_t bgColor){
-	for(int i=0; string[i]!=0; i++)
-		printCharColor(string[i],fontColor,bgColor);
+	for(int i=0; string[i]!=0;)
+		i = process_input(string, i, fontColor, bgColor);
 }
 
 void printColorCant(const uint8_t * string, uint64_t cant, uint32_t fontColor, uint32_t bgColor){
-	for(int i=0; string[i]!=0 && i<cant; i++)
-		printCharColor(string[i],fontColor,bgColor);
+	for(int i=0; string[i]!=0 && i<cant;)
+		i = process_input(string, i, fontColor, bgColor);
 }
 
+
+void printError(const uint8_t * string){
+	for(int i=0; string[i]!=0;)
+        i = process_input(string, i, ERROR_FONT, ERROR_BACK); 
+}
 
 // Number stuff
 void printBase(uint64_t value, uint32_t base){
