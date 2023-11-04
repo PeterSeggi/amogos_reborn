@@ -108,7 +108,7 @@ void process_command(char* buffer){
             switch (i) {
                 case 0:
                     exit_command = 1;
-                    write_out("Bye! Hope you find your dad!");
+                    write_out("Bye now! Hope you enjoyed your stay!");
                     sleep(2, 0);
                     break;
                 case 1:
