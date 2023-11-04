@@ -142,4 +142,3 @@ _screenData:
 
 section .bss
     newLineString db "hello" 
-    
