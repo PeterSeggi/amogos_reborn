@@ -17,7 +17,7 @@ uint8_t snakeScreen(){
     uint8_t selected=0, selection=PLAYERS_1;
 
     while(!selected){
-        if(readLast(keypressed,1)>0){
+        if(read(keypressed,1)>0){
             switch(keypressed[0]){
                 case('\n'):
                     selected=1;

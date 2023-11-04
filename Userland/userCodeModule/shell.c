@@ -1,9 +1,11 @@
 #include "include/userlib.h"
 #include "include/shell.h"
 #include "include/userlibasm.h"
+#include "include/snake.h"
+#include "include/snakeModule.h"
 #include <stdint.h>
 
-#define COMMANDS 11
+#define COMMANDS 12
 #define VERT_SIZE 32
 #define LINE_SIZE 63
 #define BUFFER_SIZE 128
@@ -14,7 +16,7 @@
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registros"};
+static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registros", "snake"};
 char char_buffer[1];
 
 // Cursors & flags
@@ -168,7 +170,7 @@ void process_command(char* buffer){
                     write_out("Voce quer usar o nosso sleep??\nVoce deve nos passar dois parametros\no primeiro e a quantidade de segundos/milissegundos/nanosegundoso segundo sera 0=segundos, 1=milissegundos e 2=nanosegundos\n");
                     break;
                 case 7:
-                    write_out("Los comandos existentes son:");
+                    write_out("Los comandos existentes son:\n");
                     for(int i=0; i<COMMANDS; i++){
                         write_out(commands[i]);
                         write_out("\n");
@@ -195,6 +197,10 @@ void process_command(char* buffer){
                         }
                     }
          
+                case 11:
+                    Snake(snakeScreen(),PLAYER1_DEFAULT_COLOR,PLAYER2_DEFAULT_COLOR);
+                    break;
+                    
             }   
             return;
         }
