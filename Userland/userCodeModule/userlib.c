@@ -162,7 +162,7 @@ int getFontSize(){
     uint16_t bufferHeight = 0;
     uint16_t bufferWeight = 0;
     uint8_t bufferDraw = 0;
-    _screenData(&bufferHeight, &bufferWeight, char_buffer,&bufferDraw);
+    _screenData(&bufferHeight, &bufferWeight, (uint8_t*) char_buffer,&bufferDraw);
     return (int) char_buffer[0];
 }
 

@@ -1,4 +1,4 @@
-void shell();
+int shell();
 void process_key(char key);
 void process_command(char* buffer);
 void shift();
