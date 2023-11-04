@@ -197,9 +197,12 @@ void process_command(char* buffer){
                             write_out(regsNames[i]);
                             uintToBase(regs[i], aux, 10);
                             write_out(aux);
-                            write_out("\n-");
+                            write_out("\n");
+                            if (i != cantRegs - 1)
+                                write_out("-");
                         }
                     }
+                    break;
          
                 case 11:
                     Snake(snakeScreen(),PLAYER1_DEFAULT_COLOR,PLAYER2_DEFAULT_COLOR);

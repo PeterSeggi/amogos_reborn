@@ -4,9 +4,10 @@ long registros[18];
 int saved=0;
 
 int getRegs(long regs[]){
-    if(saved!=1){
+    if(!saved){
         return 0;
     }
+
     for (int i=0; i<18; i++) {
         regs[i]=registros[i];
     }

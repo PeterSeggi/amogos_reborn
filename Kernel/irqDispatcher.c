@@ -8,7 +8,7 @@
 static void int_20();
 static void int_21();
 static void int_48();
-static void int_77();
+static int  int_77();
 static void int_80();
 
 void irqDispatcher(uint64_t irq) {
@@ -50,6 +50,6 @@ void int_80() {
     syscall_handler();
 }
 
-void int_77(){
-    regs_handler();
+int int_77(){
+    return regs_handler();
 }

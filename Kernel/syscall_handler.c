@@ -41,6 +41,7 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
 
   case (0x78):
     sys_registers(rdi);
+    break;
 
   case (0x93):
     sys_changeSize(rdi, rsi);
@@ -103,7 +104,8 @@ void sys_gettimeofday(int *hrs, int *min, int *seg){
  }
 
 int sys_registers(long regs[]){
-    return getRegs(regs);
+    int retVal = getRegs(regs);
+    return retVal; 
 }
 
 void sys_changeSize(uint8_t newSize, uint8_t fd){

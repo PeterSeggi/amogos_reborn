@@ -191,18 +191,12 @@ _regsInterrupt:
 	mov [regsBuf+8*13], r13
 	mov [regsBuf+8*14], r14
 	mov [regsBuf+8*15], r15
-
-	push rbp
-	mov rbp, rsp
-
 	mov rax, [rsp]			; RIP
 	mov [regsBuf+8*16], rax			
 	mov rax, [rsp+8*2]		; RFLAGS
 	mov [regsBuf+8*17], rax
 	mov rax, regsBuf
 
-	mov rsp, rbp
-	pop rbp
 	ret 
 	    
     ;mov [rsp], userland_direc
