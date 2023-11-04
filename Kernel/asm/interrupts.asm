@@ -209,11 +209,6 @@ _regsInterrupt:
 	mov rax, regsBuf
 
 	ret 
-	    
-    ;mov [rsp], userland_direc
-    ;call getStackBase
-    ;mov [rsp+24], rax   	;acomodo el valor de retorno
-	;iretq
 
 SECTION .bss
 	aux resq 1
