@@ -7,6 +7,7 @@ GLOBAL _sleep
 GLOBAL _halt
 GLOBAL _getClock
 GLOBAL _getRegs
+GLOBAL _opError 
 
 section .text
 
@@ -139,6 +140,11 @@ _screenData:
     pop rbp
     ret
 ;================================================================================================================================
+
+_opError:
+    mov cr6, rax
+    ret         ; nunca sobra, como boca 
+
 
 section .bss
     newLineString db "hello" 

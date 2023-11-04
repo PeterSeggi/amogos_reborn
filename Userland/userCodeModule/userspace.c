@@ -5,12 +5,6 @@
 
 int main(){
     // esto se core
-
-    char* greeting = "Hello amogOS!\n";
-    char buffer_space[1];
-
-    print(greeting);
-
     shell();
     return 0;
 }

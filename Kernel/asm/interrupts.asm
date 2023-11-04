@@ -16,6 +16,7 @@ GLOBAL _irq77Handler
 GLOBAL _irq128Handler
 
 GLOBAL _exception0Handler
+GLOBAL _exception6Handler
 GLOBAL _regsInterrupt
 
 EXTERN irqDispatcher
@@ -166,18 +167,19 @@ _irq05Handler:
 _irq77Handler:
 	irqHandlerMaster 0x77
 
-;syscall
+;Syscall
 _irq128Handler:
     mov r9, rax
     call syscall_handler
     iretq
-	; irqHandlerMaster 128
-
-
 
 ;Zero Division Exception
 _exception0Handler:
 	exceptionHandler 0
+
+;Invalid Op Code Exception
+_exception6Handler:
+	exceptionHandler 6
 
 haltcpu:
 	cli

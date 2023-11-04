@@ -3,7 +3,7 @@
 #include "include/userlibasm.h"
 #include <stdint.h>
 
-#define COMMANDS 12
+#define COMMANDS 13
 #define VERT_SIZE 32
 #define LINE_SIZE 63
 #define BUFFER_SIZE 128
@@ -14,7 +14,7 @@
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registros", "test-div"};
+static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registros", "test-div", "test-invalid"};
 char char_buffer[1];
 
 // Cursors & flags
@@ -200,6 +200,12 @@ void process_command(char* buffer){
                     int b = 0;
                     int c = a/b;
                     break;
+
+                case 12:
+                    write_out("Vamos a tratar de desafiar al runtime de asm");
+                    _opError();    
+                    break;
+                    
             }   
             return;
         }
