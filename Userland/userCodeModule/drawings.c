@@ -2583,7 +2583,7 @@ uint8_t mainMenu(){
     uint8_t selected=0, shell_option=1, snake_option=2, selection=shell_option;
     char keypressed[1]={0};
     while(!selected){
-        if(readLast(keypressed,1)>0){
+        if(read(keypressed,1)>0){
             switch(keypressed[0]){
                 case('\n'):
                     selected=1;

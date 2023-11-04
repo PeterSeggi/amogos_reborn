@@ -10,7 +10,7 @@
 int main(){    
     
     while(1){
-        uint8_t selection= mainMenu();
+        uint8_t selection = mainMenu();
 
         if(selection==1){
             shell();
