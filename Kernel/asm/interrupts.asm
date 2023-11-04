@@ -83,7 +83,11 @@ SECTION .text
 	mov rdi, %1 ; pasaje de parametro
 	call exceptionDispatcher
 
-	popState
+	call getStackBase
+	mov [rsp+24], rax
+	mov rax, userland
+	mov [rsp], rax
+
 	iretq
 %endmacro
 
@@ -151,6 +155,7 @@ _irq77Handler:
 _irq128Handler:
     mov r9, rax
     call syscall_handler
+	iretq
 	; irqHandlerMaster 128
 
 
@@ -158,6 +163,10 @@ _irq128Handler:
 ;Zero Division Exception
 _exception0Handler:
 	exceptionHandler 0
+
+;Invalid Opcode Exception
+_exception6Handler:
+	exceptionHandler 6
 
 haltcpu:
 	cli
@@ -207,3 +216,6 @@ SECTION .bss
 
 section .rodata
 	userland_direc equ 0x400000
+
+section .rodata
+	userland equ 0x400000

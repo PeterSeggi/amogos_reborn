@@ -3,6 +3,11 @@
 
 #include <stdint.h>
 
+#define DEFAULT_FONT 0xDADADA
+#define DEFAULT_BACK 0X01233E
+#define ERRCOLORFONT 0xFF0000 // texto rojo, bg gris;
+#define ERRCOLORBACK 0xDADADA // texto rojo, bg gris;
+
 
 uint16_t getScreenHeight();
 uint16_t getScreenWidth();

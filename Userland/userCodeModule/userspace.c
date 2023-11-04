@@ -7,13 +7,20 @@
 #include "include/rand.h"
 
 
-int main(){
-    // esto se core
+int main(){    
+    
+    while(1){
+        uint8_t selection = mainMenu();
 
-    char* greeting = "Hello amogOS!\n";
-    print(greeting);
-    char buffer_space[1];
+        if(selection==1){
+            shell();
+        }
+        else{
+            uint8_t amountPlayers=snakeScreen();
+            Snake(amountPlayers,PLAYER1_DEFAULT_COLOR,PLAYER2_DEFAULT_COLOR);
+        }
+    }
+    
 
-    shell();
     return 0;
 }

@@ -10,8 +10,7 @@
 #define STDOUT 1
 #define STDERR 2
 
-#define ERRCOLORFONT 0xFF0000 // texto rojo, bg gris;
-#define ERRCOLORBACK 0xDADADA // texto rojo, bg gris;
+
 
 void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t rax) {
   switch (rax) {
@@ -42,6 +41,10 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
 
   case (0x78):
     sys_registers(rdi);
+
+  case (0x93):
+    sys_changeSize(rdi, rsi);
+    break;
   }
 }
 
@@ -77,7 +80,6 @@ int read_chars(int fd, char *buffer, int length) {
 }
 
 void sys_draw(uint64_t bitmap, uint64_t hexColor, uint64_t height, uint64_t init_x, uint64_t init_y){
-  changeDrawSize(3);
   printBitmap(bitmap, hexColor, height, init_x, init_y);
 }
 
@@ -102,4 +104,19 @@ void sys_gettimeofday(int *hrs, int *min, int *seg){
 
 int sys_registers(long regs[]){
     return getRegs(regs);
+}
+
+void sys_changeSize(uint8_t newSize, uint8_t fd){
+  switch(fd){
+    case(1):
+      changeFontSize(newSize);
+      break;
+
+    case(2):
+      changeDrawSize(newSize);
+      break;
+      
+    default:
+      break;
+  }
 }

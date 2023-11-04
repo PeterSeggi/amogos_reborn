@@ -76,24 +76,8 @@ int main()
     load_idt();
     flush_buffer();
 
-    //printColorCant("bokesooooooo",5,0x07B0CA,0xB0CA07);
-	//printColor("holiwiws",0x07B0CA,0xB0CA07);
-    
-	loadKernelScreen();
 
-	clear();
-	changeDrawSize(3);
     ((EntryPoint) userspaceAddress)();
-    
-    /*
-	ncPrint("  Sample data module at 0x");
-	ncPrintHex((uint64_t)dataspaceAddress);
-	ncNewline();
-	ncPrint("  Sample data module contents: ");
-	ncPrint((char*)dataspaceAddress);
-	ncNewline();
-
-    */
     
 	return 0;
 

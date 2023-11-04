@@ -3,8 +3,7 @@
 #include <lib.h>
 #include <stdint.h>
 
-#define DEFAULT_FONT 0xDADADA
-#define DEFAULT_BACK 0X01233E
+
 
 
 typedef struct vbe_mode_info_structure {

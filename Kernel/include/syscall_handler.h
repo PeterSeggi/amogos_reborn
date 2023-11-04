@@ -17,3 +17,4 @@ void sys_gettimeofday(int *hrs, int *min, int *seg);
 
 int sys_registers(long regs[]);
 void getScreenData(uint16_t * screenHeight, uint16_t * screenWidth, uint8_t * fontSize, uint8_t * drawSize);
+void sys_changeSize(uint8_t newSize, uint8_t fd);

@@ -47,6 +47,8 @@ int shell(){
     init_shell();
     write_out(PROMPT_START);
 
+    exit_command = 0;
+
     while(!exit_command){
         if (read(char_buffer, 1) == 1){
             process_key(char_buffer[0]);
@@ -106,6 +108,8 @@ void process_command(char* buffer){
             switch (i) {
                 case 0:
                     exit_command = 1;
+                    write_out("Bye! Hope you find your dad!");
+                    sleep(2, 0);
                     break;
                 case 1:
                     clearScreen(); 
