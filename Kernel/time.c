@@ -2,6 +2,7 @@
 #include <naiveConsole.h>
 #include <stdint.h>
 #include <time.h>
+#include <interrupts.h>
 
 #define MILLENIUM 2000 // cambiarlo si llega a ser necesario
 #define CENTURY 0      // lo usamos para calcular la fecha completa
@@ -10,6 +11,23 @@ static unsigned long ticks = 0;
 uint8_t *clockLocation = (uint8_t *)0xB808E;
 
 char *dayNames[] = {"Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"};
+
+void timer_handler() {
+  ticks++;
+  update_clock();
+}
+
+unsigned long ticks_elapsed() { return ticks; }
+
+long long nanos_elapsed(){
+  return ((long long)ticks*1000000000/18);
+}
+
+long long milis_elapsed(){
+  return ((long long)ticks*1000/18);
+}
+
+unsigned long seconds_elapsed() { return ticks / 18; }
 
 void update_clock() {
   if (ticks % 18 == 0) {
@@ -22,8 +40,6 @@ void update_clock() {
 }
 
 void set_clock_location(uint8_t *location) { clockLocation = location; }
-
-int seconds_elapsed() { return ticks / 18; }
 
 void formatTime(uint8_t *hour, uint8_t *min, uint8_t *sec) {
   *sec = _getSeconds();
@@ -155,4 +171,3 @@ void my_ints(){
 	if(ticks%18 == 0){
 	}
 }
-

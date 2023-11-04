@@ -4,8 +4,12 @@
 #include <stdint.h>
 
 void timer_handler();
-int ticks_elapsed();
-int seconds_elapsed();
+
+unsigned long ticks_elapsed();
+unsigned long seconds_elapsed();
+long long milis_elapsed();
+long long nanos_elapsed();
+
 void update_clock();
 void set_clock_location(uint8_t *location);
 void formatTime(uint8_t *hour, uint8_t *min, uint8_t *sec);

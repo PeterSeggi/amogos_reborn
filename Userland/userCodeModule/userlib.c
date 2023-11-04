@@ -1,6 +1,7 @@
 #include "include/userlib.h"
 #include "include/userlibasm.h"
 #include "include/file_descriptors.h"
+#include <stdint.h>
 
 static char buffer[64] = {'0'};
 static char* char_buffer = " ";
@@ -30,12 +31,22 @@ void clearScreen(){
     _print(STDOUT, "\033[J", 3);
 }
 
+void change_font(int size){
+    char* msg = "\033[nF";
+    msg[2] = size + '0';
+    print(msg);
+}
+
 int read(char* buffer, int length){
     return _read(STDIN, buffer, length);
 }
 
 int readRaw(char* buffer, int length){
     return _read(STDKEYS, buffer, length);
+}
+
+int readLast(char* buffer, int length){
+    return _read(STDLAST, buffer, length);
 }
 
 void printBase(uint64_t value, uint32_t base){
@@ -114,10 +125,6 @@ void strcpy(char *destination, const char *source) {
 }
 
 
-void halt(){
-    _halt();
-}
-
 int mod(int val, int base){
     if (val < 0) return (val + base) % base;
     return val % base;
@@ -131,9 +138,35 @@ void sleep(uint32_t cant, uint32_t unidad){
 	_sleep(cant, unidad);
 }
 
+void sleep_once(){
+    _sleep(0, 1);
+}
+
 //================================================================================================================================
 // Clock
 //================================================================================================================================
 void getClock(int *hrs, int *min, int *seg){
 	_getClock(hrs, min, seg);
+}
+
+//================================================================================================================================
+// Drawing
+//================================================================================================================================
+//================================================================================================================================
+void getScreenData(uint16_t * screenHeight, uint16_t * screenWidth, uint8_t * fontSize, uint8_t * drawSize){
+	_screenData(screenHeight,screenWidth,fontSize,drawSize);
+}
+
+int getFontSize(){
+    // estos estan inicializados porq sino se rompe la funcion al querer escribir vacio
+    uint16_t bufferHeight = 0;
+    uint16_t bufferWeight = 0;
+    uint8_t bufferDraw = 0;
+    _screenData(&bufferHeight, &bufferWeight, char_buffer,&bufferDraw);
+    return (int) char_buffer[0];
+}
+
+
+void draw(uint16_t * bitmap, uint32_t color, uint16_t height, uint64_t x, uint64_t y){
+	_draw(bitmap, color, height, x, y);
 }

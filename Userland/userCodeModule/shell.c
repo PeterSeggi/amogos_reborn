@@ -1,19 +1,19 @@
 #include "include/userlib.h"
 #include "include/userlibasm.h"
+#include <stdint.h>
 
-#define COMMANDS 6
+#define COMMANDS 8
 #define VERT_SIZE 32
 #define LINE_SIZE 63
 #define BUFFER_SIZE 128
-#define FONT_SIZE 1
 
-#define PROMPT_START "$ "
+#define PROMPT_START ">"
 #define ERROR_PROMPT "Unknown command: "
 
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear", "time", "sleep", "infoSleep", "help"};
+static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help"};
 char char_buffer[1];
 
 // Cursors & flags
@@ -22,9 +22,11 @@ int cursor_y = 0;
 int cursor_x = 0;
 int exit_command = 0;
 
-// Important indexes
+// Important values
+uint8_t font_size;
+int rows_to_show;
 int limit_index = VERT_SIZE - 1;
-int rows_to_show = VERT_SIZE / FONT_SIZE;
+int line_size = LINE_SIZE;
 
 int *hrs, *min, *sec;
 char *tiempos[3];
@@ -34,13 +36,14 @@ char *tiempos[3];
 
 int shell(){
     clearScreen();
-    print(PROMPT_START);
+    init_shell();
+    write_out(PROMPT_START);
 
     while(!exit_command){
         if (read(char_buffer, 1) == 1){
             process_key(char_buffer[0]);
         }
-        halt();
+        sleep_once();
     }
 
     clearScreen();
@@ -51,18 +54,6 @@ int shell(){
 
 void process_key(char key){
     if (key == '\n'){
-
-        /*
-        En orden quiero:
-        - Agregar \0 a ambos buffers
-        - Shift 
-            + check si esta en el limit
-            + reescribo desde limit - rows_shown y cambio el limite a uno para abajo
-        - cursor_y va para abajo o loopea (es circular) 
-        - Meto un enter
-        - proceso el comando 
-        - copio y printeo el start 
-         */
 
         command_buffer[command_cursor] = '\0';
 
@@ -80,7 +71,7 @@ void process_key(char key){
             return;
 
         command_cursor--;
-        cursor_x = mod(cursor_x - 1, LINE_SIZE);
+        cursor_x = mod(cursor_x - 1, line_size);
 
         // aca va printChar y no write_out porq es un caso especial
         printChar(key);
@@ -101,6 +92,7 @@ void process_command(char* buffer){
    if (buffer[0] == '\0'){
         return;
     }
+
    for(int i = 0; i < COMMANDS; i++){
         if (!strcmp(buffer, commands[i])){
             switch (i) {
@@ -111,9 +103,28 @@ void process_command(char* buffer){
                     clearScreen(); 
                     cursor_y = 0;
                     cursor_x = 0;
-                    limit_index = VERT_SIZE/FONT_SIZE - 1;
+                    limit_index = VERT_SIZE/font_size - 1;
                     break;
                 case 2:
+                    if (font_size == 2){
+                        write_out("Font size max!\n");
+                    }
+                    else {
+                        change_font(++font_size);
+                        resize();
+                    }
+                    break;
+                
+                case 3:
+                    if (font_size == 1){
+                        write_out("Font size minimum!\n");
+                    }
+                    else {
+                        change_font(--font_size);
+                        desize();
+                    }
+                    break;
+                case 4:
                     getClock(&hrs, &min, &sec);
                     write_out("La hora es...");
                     uintToBase(hrs, tiempos, 10);
@@ -144,18 +155,23 @@ void process_command(char* buffer){
                     }
                     write_out("\n");
                     break;
-                case 3:
+                case 5:
                     sleep(4, 0); //todo borrar los printe de "Antes" y "Dsp"
                     break;
-                case 4:
+                case 6:
                     write_out("Voce quer usar o nosso sleep??\nVoce deve nos passar dois parametros\no primeiro e a quantidade de segundos/milissegundos/nanosegundoso segundo sera 0=segundos, 1=milissegundos e 2=nanosegundos\n");
                     break;
-                case 5:
+                case 7:
                     write_out("Los comandos existentes son: \n- exit\n- clear\n- time\n- infoSleep\n- sleep\n");
                     break;
             }
             return;
         }
+    }
+
+    if (strlen(buffer) == BUFFER_SIZE){
+        write_out("Buenas... una poesia?\n");
+        return;
     }
 
     // En caso de no encontrar hacemos esto
@@ -172,8 +188,6 @@ void shift(){
     for (int i = 1; i < rows_to_show; i++){
         
         int line_number = mod(i + (limit_index - rows_to_show + 1), VERT_SIZE);
-
-
         print(screen_buffer[line_number]);
         if (i != rows_to_show - 1)
             print("\n");
@@ -195,8 +209,8 @@ int check_shift(){
 
 void write_out(char* string){
     for (int c = 0; c < strlen(string)-1; c++){
-        // if line es mas largo que size hago un coso extra aquip 
-        if (cursor_x == LINE_SIZE - 1 || string[c] == '\n'){
+        // el menos 1 es porq line_size es 1 mas que el maximo indice
+        if (cursor_x == line_size - 1|| string[c] == '\n'){
             if (string[c] == '\n') 
                 screen_buffer[cursor_y][cursor_x] = '\0'; // null terminate en caso de print
             else
@@ -211,4 +225,56 @@ void write_out(char* string){
     }
 
     print(string);
+}
+
+
+void init_shell(){
+    font_size = getFontSize();
+    rows_to_show = VERT_SIZE/font_size;
+    line_size = LINE_SIZE/font_size;
+}
+
+
+void resize(){
+    init_shell();
+
+    int from = mod(cursor_y - rows_to_show, VERT_SIZE);
+    int offset = 0;
+
+    // voy a hacer un for auxiliar para no tener que shiftear mil veces
+    for (int i = 0; i < rows_to_show; i++){
+        int line_len = strlen(screen_buffer[(from + i) % VERT_SIZE]);
+        if (screen_buffer[(from + i) % VERT_SIZE][0] == 0 || line_len > line_size)
+
+            // si esto cambia a dejar size mas grande de 2 tendria que validar ese caso pero como es un desproposito la letra tan grande no lo implemente
+            offset++; 
+    }
+
+    limit_index = (cursor_y + rows_to_show - 1) % VERT_SIZE;
+
+    clearScreen();
+
+    for (int i = 0; i < rows_to_show - offset; i++){
+        write_out(screen_buffer[(offset + from + i) % VERT_SIZE]);
+        write_out("\n");
+    }
+
+}
+
+void desize(){
+
+    // El from va antes del init_shell para no agarrar cosas de mas cunado cambia r_t_s
+    clearScreen();
+
+    int from = mod(limit_index - rows_to_show + 1, VERT_SIZE);
+    int until = mod(cursor_y - from, VERT_SIZE);
+    init_shell();
+
+    limit_index = (cursor_y + rows_to_show - 1) % VERT_SIZE;
+
+    for (int i = 0; i < until && screen_buffer[(from + i) % VERT_SIZE][0] != '\0'; i++){
+        write_out(screen_buffer[(from + i) % VERT_SIZE]);
+        write_out("\n");
+    }
+
 }

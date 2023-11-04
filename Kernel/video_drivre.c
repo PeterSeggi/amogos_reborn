@@ -1,7 +1,7 @@
 #include <videoDriver.h>
-#include <stdint.h>
 #include <fonts.h>
 #include <lib.h>
+#include <stdint.h>
 
 #define DEFAULT_FONT 0xDADADA
 #define DEFAULT_BACK 0X01233E
@@ -58,30 +58,75 @@ static char buffer[64] = {'0'};
 uint16_t cursor_location_x = 0x0000;
 uint16_t cursor_location_y = 0x0000;
 
+//================================================================================================================================
+// Getters for videoMode
+//================================================================================================================================
+//================================================================================================================================
+uint16_t getScreenHeight(){
+	return VBE_mode_info->height;
+}
 
+uint16_t getScreenWidth(){
+	return VBE_mode_info->width;
+}
+
+//================================================================================================================================
+// Draw for videoMode
+//================================================================================================================================
+//================================================================================================================================
+uint8_t DRAW_SIZE = 3; //size for bitmaps
+
+void changeDrawSize(uint8_t size){
+	DRAW_SIZE = size;
+}
+
+uint8_t getDrawSize(){
+	return DRAW_SIZE;
+}
 
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y){
-	uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
-	uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch); //3 ya que son RGB(3) (24bits)
-	framebuffer[offset]=(hexColor) & 0x000000FF;	//agarro la parte baja del hexColor que es el azul
-	framebuffer[offset+1]=(hexColor >> 8) & 0x0000FF;
-	framebuffer[offset+2]=(hexColor >> 16) & 0x00FF;
+	if( (x < getScreenWidth()) && (y < getScreenHeight())){
+		uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
+		uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch); //3 ya que son RGB(3) (24bits)
+		framebuffer[offset]=(hexColor) & 0x000000FF;	//agarro la parte baja del hexColor que es el azul
+		framebuffer[offset+1]=(hexColor >> 8) & 0x0000FF;
+		framebuffer[offset+2]=(hexColor >> 16) & 0x00FF;
+	}
 }
 
 void draw_rectangle(uint64_t ancho, uint64_t alto, uint32_t color, uint64_t init_x, uint64_t init_y){
-	for(uint64_t i=0; i<ancho; i++){
-		for(uint64_t j=0;j<alto;j++){
-			putPixel(color,i+init_x,j+init_y);
+	for(uint64_t i=0; i<alto; i++){
+		for(uint64_t j=0;j<ancho;j++){
+			putPixel(color,j+init_x,i+init_y);
 		}
 	}
 }
+
+void printBitmap(uint16_t * bitmap, uint32_t color, uint16_t alto ,uint64_t x, uint64_t y){
+	for(uint64_t i=0; i<(alto*DRAW_SIZE); i++){
+		for(uint64_t j=0; j<(16*DRAW_SIZE); j++){//16 is because of the bitmap datasize (uint16_t)
+			if( ((bitmap[(i/DRAW_SIZE)]<<(j/DRAW_SIZE)) & (1<<(15))) ){// 1<<charWidth permite leer de a un bit de izq a der del row de la font (fixed in 15 in this implementation)
+				putPixel(color,x+j,y+i);
+			}
+		}
+	}
+}
+
 
 //================================================================================================================================
 // Text for videoMode
 //================================================================================================================================
 //================================================================================================================================
 
-#define SCALE 1
+uint8_t SCALE = 1;	//size variable
+
+void changeFontSize(uint8_t size){
+	SCALE = size;
+}
+
+uint8_t getFontSize(){
+	return SCALE;
+}
 
 void putChar(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t init_x, uint64_t init_y){
 	for(uint64_t i=0; i<(charHeight*SCALE); i++){
@@ -210,16 +255,19 @@ int process_input(char* string, int index, uint32_t fontColor, uint32_t bgColor)
         if (string[index + 1] != '[')
             return index + 1;
 
-        switch (string[index + 2]) {
-            case 'J':
+        if (string[index + 2] >= '0' && string[index + 2] <= '9'){
+            if (string[index + 3] == 'F'){
+                changeFontSize(string[index + 2] - '0');
+                return index + 4;
+            }
+        }
+
+        else if (string[index + 2] == 'J') {
                 clear();
                 return index + 3;
-                break;
-
-            default:
-                return index + 1;
-                break;
         }
+        else
+            return index + 1;
     }
 
     else {

@@ -1,12 +1,13 @@
+#include <keyboard.h>
 #include <lib.h>
 #include <naiveConsole.h>
 #include <stdint.h>
 #include <videoDriver.h>
-#include <keyboard.h>
 
 #define KEY_BUF_SIZE 16
 #define STDIN 0
 #define STDKEYS 3
+#define STDLAST 4
 
 const unsigned char scan_chars[128] = {
     0,    27,   '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-',  '=',
@@ -40,12 +41,25 @@ int to_read = 0;
 int ascii_buf[KEY_BUF_SIZE];
 int shifted = 0;
 int caps = 0;
+int control = 0;
 int ascii_insert_index = 0;
 int ascii_read_index = 0;
 int ascii_to_read = 0;
 
-
-void key_handler() { insert_key(_getKey()); }
+void key_handler() {
+  int key = _getKey();
+  insert_key(key);
+  switch (key) {
+  case (0x9A):
+    if (control)
+      changeFontSize(getFontSize() + 1);
+    break;
+  case (0x9B):
+    if (control && getFontSize() > 1)
+      changeFontSize(getFontSize() - 1);
+    break;
+  }
+}
 
 void insert_key(int key) {
 
@@ -53,9 +67,9 @@ void insert_key(int key) {
 
   if (key <= 0x52 && scan_chars[key] != 0) {
     if (shifted || (caps && key >= 0x10))
-        ascii_buf[ascii_insert_index++] = scan_chars_shift[key];
+      ascii_buf[ascii_insert_index++] = scan_chars_shift[key];
     else
-        ascii_buf[ascii_insert_index++] = scan_chars[key];
+      ascii_buf[ascii_insert_index++] = scan_chars[key];
     if (ascii_insert_index == KEY_BUF_SIZE)
       ascii_insert_index = 0;
 
@@ -95,10 +109,13 @@ int read_key(int fd) {
 
     if (read_index == insert_index)
       to_read = 0;
-
   }
 
-  return (int) toRet;
+  else if (fd == STDLAST) {
+    toRet = ascii_buf[ascii_insert_index - 1];
+  }
+
+  return toRet;
 }
 
 // flush the input buffer
@@ -109,10 +126,19 @@ void flush_buffer() {
 }
 
 void checkShift(int key) {
+  // shift
   if (key == 0x2A || key == 0x37)
     shifted = 1;
   if (key == 0xAA || key == 0xB6)
     shifted = 0;
+
+  // caps
   if (key == 0x3A)
     caps = !caps;
+
+  // control
+  if (key == 0x1D)
+    control = 1;
+  if (key == 0x9D)
+    control = 0;
 }
