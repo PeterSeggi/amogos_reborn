@@ -49,10 +49,6 @@ int readLast(char* buffer, int length){
     return _read(STDLAST, buffer, length);
 }
 
-int readLast(char* buffer, int length){
-    return _read(STDLAST, buffer, length);
-}
-
 void printBase(uint64_t value, uint32_t base){
     uintToBase(value, buffer, base);
     print(buffer);
