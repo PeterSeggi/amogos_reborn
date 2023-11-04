@@ -105,7 +105,7 @@ void process_command(char* buffer){
                     limit_index = VERT_SIZE/font_size - 1;
                     break;
                 case 2:
-                    if (font_size == 3){
+                    if (font_size == 2){
                         write_out("Font size max!\n");
                     }
                     else {
@@ -205,7 +205,9 @@ void resize(){
     for (int i = 0; i < rows_to_show; i++){
         int line_len = strlen(screen_buffer[(from + i) % VERT_SIZE]);
         if (screen_buffer[(from + i) % VERT_SIZE][0] == 0 || line_len > line_size)
-            offset += line_len/line_size; 
+
+            // si esto cambia a dejar size mas grande de 2 tendria que validar ese caso pero como es un desproposito la letra tan grande no lo implemente
+            offset++; 
     }
 
     limit_index = (cursor_y + rows_to_show - 1) % VERT_SIZE;
