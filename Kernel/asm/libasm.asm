@@ -21,6 +21,8 @@ GLOBAL _getBReg
 GLOBAL _getCReg
 GLOBAL _getDReg
 
+GLOBAL _saveRegs
+
 section .text
 	
 cpuVendor:
@@ -402,3 +404,13 @@ _getDReg:
 	ret
 
 ;================================================================================================================================
+
+_saveRegs:
+	push rbp
+	mov rbp, rsp
+
+	int 77h
+
+	mov rsp, rbp
+	pop rbp
+	ret

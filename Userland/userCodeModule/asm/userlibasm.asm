@@ -6,6 +6,7 @@ GLOBAL _screenData
 GLOBAL _sleep
 GLOBAL _halt
 GLOBAL _getClock
+GLOBAL _getRegs
 
 section .text
 
@@ -108,6 +109,16 @@ _sleep:
     ret
 ;================================================================================================================================
 
+
+_getRegs:
+	push rbp
+	mov rbp, rsp
+
+    mov rax, 0x78
+    int 80h;
+	mov rsp, rbp
+	pop rbp
+	ret
 
 ;================================================================================================================================
 ;_screenData devuelve informacion del videoDriver

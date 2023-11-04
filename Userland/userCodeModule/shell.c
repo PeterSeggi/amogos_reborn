@@ -3,7 +3,7 @@
 #include "include/userlibasm.h"
 #include <stdint.h>
 
-#define COMMANDS 8
+#define COMMANDS 11
 #define VERT_SIZE 32
 #define LINE_SIZE 63
 #define BUFFER_SIZE 128
@@ -14,7 +14,7 @@
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help"};
+static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registros"};
 char char_buffer[1];
 
 // Cursors & flags
@@ -30,7 +30,12 @@ int limit_index = VERT_SIZE - 1;
 int line_size = LINE_SIZE;
 
 int *hrs, *min, *sec;
-char *tiempos[3];
+char* aux;
+int cantRegs = 18;
+long regs[18];
+char* regsNames[18] = {"rax:", "rbx:", "rcx:", "rdx:", "rsi:", "rdi:", "rbp:", "rsp:", "r8:", "r9:",
+                       "r10:", "r11:", "r12:", "r13:", "r14:", "r15:", "rip:", "rflags:"};
+
 // commands to do: help, resize, time, registers
 // commands to shitpost: cowsay, ls, amogus?
 
@@ -128,44 +133,69 @@ void process_command(char* buffer){
                 case 4:
                     getClock(&hrs, &min, &sec);
                     write_out("La hora es...");
-                    uintToBase(hrs, tiempos, 10);
+                    uintToBase(hrs, aux, 10);
                     if(hrs<10){
                         write_out("0");
-                        write_out(tiempos);
+                        write_out(aux);
                     }
                     else{
-                        write_out(tiempos);
+                        write_out(aux);
                     }
                     write_out(":");
-                    uintToBase(min, tiempos, 10);
+                    uintToBase(min, aux, 10);
                     if(min<10){
                         write_out("0");
-                        write_out(tiempos);
+                        write_out(aux);
                     }
                     else{
-                        write_out(tiempos);
+                        write_out(aux);
                     }
                     write_out(":");
-                    uintToBase(sec, tiempos, 10);
+                    uintToBase(sec, aux, 10);
                     if(sec<10){
                         write_out("0");
-                        write_out(tiempos);
+                        write_out(aux);
                     }
                     else{
-                        write_out(tiempos);
+                        write_out(aux);
                     }
                     write_out("\n");
                     break;
                 case 5:
-                    sleep(4, 0); //todo borrar los printe de "Antes" y "Dsp"
+                    sleep(4, 0);
                     break;
                 case 6:
                     write_out("Voce quer usar o nosso sleep??\nVoce deve nos passar dois parametros\no primeiro e a quantidade de segundos/milissegundos/nanosegundoso segundo sera 0=segundos, 1=milissegundos e 2=nanosegundos\n");
                     break;
                 case 7:
-                    write_out("Los comandos existentes son: \n- exit\n- clear\n- time\n- infoSleep\n- sleep\n");
+                    write_out("Los comandos existentes son:");
+                    for(int i=0; i<COMMANDS; i++){
+                        write_out(commands[i]);
+                        write_out("\n");
+                    }
                     break;
-            }
+                
+                case 8:
+                    sleep(3000, 1);
+                    break;
+
+                case 9:
+                    sleep(3000000, 2);
+                    break;
+                case 10:
+                    if(getRegs(regs)==0){
+                        write_out("Antes de pedir los registros debe apretar la tecla alt izquierda para que los mismos se guarden\n");
+                    }
+                    else{
+                        for(int i=0; i<cantRegs; i++){
+                            write_out(regsNames[i]);
+                            uintToBase(regs[i], aux, 10);
+                            write_out(aux);
+                            write_out("\n-");
+                        }
+                    }
+         
+            }   
             return;
         }
     }

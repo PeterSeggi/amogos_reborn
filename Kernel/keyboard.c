@@ -46,24 +46,12 @@ int ascii_insert_index = 0;
 int ascii_read_index = 0;
 int ascii_to_read = 0;
 
-void key_handler() {
-  int key = _getKey();
-  insert_key(key);
-  switch (key) {
-  case (0x9A):
-    if (control)
-      changeFontSize(getFontSize() + 1);
-    break;
-  case (0x9B):
-    if (control && getFontSize() > 1)
-      changeFontSize(getFontSize() - 1);
-    break;
-  }
-}
+void key_handler() { insert_key(_getKey()); }
 
 void insert_key(int key) {
 
   checkShift(key);
+  checkRegs(key);
 
   if (key <= 0x52 && scan_chars[key] != 0) {
     if (shifted || (caps && key >= 0x10))
@@ -141,4 +129,10 @@ void checkShift(int key) {
     control = 1;
   if (key == 0x9D)
     control = 0;
+}
+
+void checkRegs(int key){
+  if(key==0x38){
+    _saveRegs();
+  }
 }

@@ -12,13 +12,16 @@ GLOBAL _irq02Handler
 GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler
+GLOBAL _irq77Handler
 GLOBAL _irq128Handler
 
 GLOBAL _exception0Handler
+GLOBAL _regsInterrupt
 
 EXTERN irqDispatcher
 EXTERN syscall_handler
 EXTERN exceptionDispatcher
+EXTERN getStackBase
 
 SECTION .text
 
@@ -140,6 +143,10 @@ _irq04Handler:
 _irq05Handler:
 	irqHandlerMaster 5
 
+;Registers
+_irq77Handler:
+	irqHandlerMaster 0x77
+
 ;syscall
 _irq128Handler:
     mov r9, rax
@@ -157,7 +164,46 @@ haltcpu:
 	hlt
 	ret
 
+	
+_regsInterrupt:
+	mov [regsBuf], rax 	
+	mov [regsBuf+8], rbx
+	mov [regsBuf+8*2], rcx
+	mov [regsBuf+8*3], rdx
+	mov [regsBuf+8*4], rsi
+	mov [regsBuf+8*5], rdi
+	mov [regsBuf+8*6], rbp
+	mov [regsBuf+8*7], rsp
+	mov [regsBuf+8*8], r8
+	mov [regsBuf+8*9], r9 
+	mov [regsBuf+8*10], r10
+	mov [regsBuf+8*11], r11
+	mov [regsBuf+8*12], r12
+	mov [regsBuf+8*13], r13
+	mov [regsBuf+8*14], r14
+	mov [regsBuf+8*15], r15
 
+	push rbp
+	mov rbp, rsp
+
+	mov rax, [rsp]			; RIP
+	mov [regsBuf+8*16], rax			
+	mov rax, [rsp+8*2]		; RFLAGS
+	mov [regsBuf+8*17], rax
+	mov rax, regsBuf
+
+	mov rsp, rbp
+	pop rbp
+	ret 
+	    
+    ;mov [rsp], userland_direc
+    ;call getStackBase
+    ;mov [rsp+24], rax   	;acomodo el valor de retorno
+	;iretq
 
 SECTION .bss
 	aux resq 1
+	regsBuf resq 18
+
+section .rodata
+	userland_direc equ 0x400000
