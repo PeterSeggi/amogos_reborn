@@ -20,7 +20,6 @@ int main(){
             Snake(amountPlayers,PLAYER1_DEFAULT_COLOR,PLAYER2_DEFAULT_COLOR);
         }
     }
-    
 
     return 0;
 }
