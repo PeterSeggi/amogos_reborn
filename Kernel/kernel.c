@@ -7,6 +7,7 @@
 #include <naiveConsole.h>
 #include <idtLoader.h>
 #include <keyboard.h>
+#include <drawings.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -77,7 +78,11 @@ int main()
 
     //printColorCant("bokesooooooo",5,0x07B0CA,0xB0CA07);
 	//printColor("holiwiws",0x07B0CA,0xB0CA07);
-    clear();
+    
+	loadKernelScreen();
+
+	clear();
+	changeDrawSize(3);
     ((EntryPoint) userspaceAddress)();
     
     /*

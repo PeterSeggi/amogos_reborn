@@ -3,7 +3,10 @@ GLOBAL _print
 GLOBAL _read
 GLOBAL _draw
 GLOBAL _screenData
+GLOBAL _draw
+GLOBAL _screenData
 GLOBAL _sleep
+GLOBAL _halt
 GLOBAL _halt
 GLOBAL _getClock
 GLOBAL _getRegs
@@ -58,6 +61,9 @@ int_test:
     mov rsp, rbp
     pop rbp
     ret
+    mov rsp, rbp
+    pop rbp
+    ret
 
 _getClock:
 	push rbp
@@ -66,6 +72,47 @@ _getClock:
     mov rax, 0x4e
     int 80h;
 
+	mov rsp, rbp
+	pop rbp
+	ret
+;================================================================================================================================
+;_draw dibuja en pantalla un bitmap (uint16_t width)
+;int 80h para usar la syscall
+;IN: rdi=bitmap; rsi=color; rdx: bitmap height; rcx: init_x position; r8: init_y position
+;================================================================================================================================
+;================================================================================================================================
+_draw:
+    push rbp
+    mov rbp, rsp
+
+    mov rax, 0x77   ;sys_draw ID
+
+    int 80h     ;syscall 
+
+.end:
+    mov rsp, rbp
+    pop rbp
+    ret
+;================================================================================================================================
+
+;================================================================================================================================
+;_sleep duerme
+;int 80h para usar la syscall
+;IN: rdi=amount
+;================================================================================================================================
+;================================================================================================================================
+_sleep:
+    push rbp
+    mov rbp, rsp
+
+    mov rax, 0x23   ;sys_sleep ID
+
+    int 80h     ;syscall 
+
+.end:
+    mov rsp, rbp
+    pop rbp
+    ret
 	mov rsp, rbp
 	pop rbp
 	ret

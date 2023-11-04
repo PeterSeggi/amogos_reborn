@@ -83,8 +83,40 @@ void changeDrawSize(uint8_t size){
 uint8_t getDrawSize(){
 	return DRAW_SIZE;
 }
+//================================================================================================================================
+// Getters for videoMode
+//================================================================================================================================
+//================================================================================================================================
+uint16_t getScreenHeight(){
+	return VBE_mode_info->height;
+}
+
+uint16_t getScreenWidth(){
+	return VBE_mode_info->width;
+}
+
+//================================================================================================================================
+// Draw for videoMode
+//================================================================================================================================
+//================================================================================================================================
+uint8_t DRAW_SIZE = 3; //size for bitmaps
+
+void changeDrawSize(uint8_t size){
+	DRAW_SIZE = size;
+}
+
+uint8_t getDrawSize(){
+	return DRAW_SIZE;
+}
 
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y){
+	if( (x < getScreenWidth()) && (y < getScreenHeight())){
+		uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
+		uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch); //3 ya que son RGB(3) (24bits)
+		framebuffer[offset]=(hexColor) & 0x000000FF;	//agarro la parte baja del hexColor que es el azul
+		framebuffer[offset+1]=(hexColor >> 8) & 0x0000FF;
+		framebuffer[offset+2]=(hexColor >> 16) & 0x00FF;
+	}
 	if( (x < getScreenWidth()) && (y < getScreenHeight())){
 		uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
 		uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch); //3 ya que son RGB(3) (24bits)
@@ -112,12 +144,38 @@ void printBitmap(uint16_t * bitmap, uint32_t color, uint16_t alto ,uint64_t x, u
 	}
 }
 
+	for(uint64_t i=0; i<alto; i++){
+		for(uint64_t j=0;j<ancho;j++){
+			putPixel(color,j+init_x,i+init_y);
+		}
+	}
+}
+
+void printBitmap(uint16_t * bitmap, uint32_t color, uint16_t alto ,uint64_t x, uint64_t y){
+	for(uint64_t i=0; i<(alto*DRAW_SIZE); i++){
+		for(uint64_t j=0; j<(16*DRAW_SIZE); j++){//16 is because of the bitmap datasize (uint16_t)
+			if( ((bitmap[(i/DRAW_SIZE)]<<(j/DRAW_SIZE)) & (1<<(15))) ){// 1<<charWidth permite leer de a un bit de izq a der del row de la font (fixed in 15 in this implementation)
+				putPixel(color,x+j,y+i);
+			}
+		}
+	}
+}
+
 
 //================================================================================================================================
 // Text for videoMode
 //================================================================================================================================
 //================================================================================================================================
 
+uint8_t SCALE = 1;	//size variable
+
+void changeFontSize(uint8_t size){
+	SCALE = size;
+}
+
+uint8_t getFontSize(){
+	return SCALE;
+}
 uint8_t SCALE = 1;	//size variable
 
 void changeFontSize(uint8_t size){

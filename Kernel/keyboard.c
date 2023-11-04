@@ -46,6 +46,7 @@ int ascii_insert_index = 0;
 int ascii_read_index = 0;
 int ascii_to_read = 0;
 
+
 void key_handler() { insert_key(_getKey()); }
 
 void insert_key(int key) {
