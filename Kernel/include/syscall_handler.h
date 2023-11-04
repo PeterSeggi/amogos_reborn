@@ -14,3 +14,4 @@ void getScreenData(uint16_t * screenHeight, uint16_t * screenWidth, uint8_t * fo
 void sys_sleep(uint32_t cant, uint32_t unidad);
 
 void sys_gettimeofday(int *hrs, int *min, int *seg);
+void sys_changeSize(uint8_t newSize, uint8_t fd);

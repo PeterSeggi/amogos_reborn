@@ -155,3 +155,7 @@ void getScreenData(uint16_t * screenHeight, uint16_t * screenWidth, uint8_t * fo
 void draw(uint16_t * bitmap, uint32_t color, uint16_t height, uint64_t x, uint64_t y){
 	_draw(bitmap, color, height, x, y);
 }
+
+void changeDrawSize(uint8_t newSize){
+	_changeSize(newSize, 2);
+}

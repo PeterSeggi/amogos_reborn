@@ -89,4 +89,8 @@ void putBg(uint8_t width, uint8_t height, uint64_t bg_initialx, uint64_t bg_init
 
 void selectColor(uint8_t selection, uint32_t* color1, uint32_t* color2);
 
+extern uint16_t star[][dibHeight];
+
+uint8_t mainMenu();
+
 #endif

@@ -36,6 +36,10 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
   case (0x83):
     sys_screenData(rdi, rsi, rdx, rcx);
     break;
+
+  case (0x93):
+    sys_changeSize(rdi, rsi);
+    break;
   }
 }
 
@@ -79,7 +83,6 @@ void sys_gettimeofday(int *hrs, int *min, int *seg){
  }
 
 void sys_draw(uint64_t bitmap, uint64_t hexColor, uint64_t height, uint64_t init_x, uint64_t init_y){
-  changeDrawSize(3);
   printBitmap(bitmap, hexColor, height, init_x, init_y);
 }
 
@@ -92,4 +95,19 @@ void getScreenData(uint16_t * screenHeight, uint16_t * screenWidth, uint8_t * fo
   *screenWidth=getScreenWidth();
   *fontSize=getFontSize();
   *drawSize=getDrawSize();
+}
+
+void sys_changeSize(uint8_t newSize, uint8_t fd){
+  switch(fd){
+    case(1):
+      changeFontSize(newSize);
+      break;
+
+    case(2):
+      changeDrawSize(newSize);
+      break;
+      
+    default:
+      break;
+  }
 }
