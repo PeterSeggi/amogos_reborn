@@ -14,11 +14,9 @@ int main(){
     //print(greeting);
     //char buffer_space[1];
     
-    print("holi\n");
+    
 
-    print("plis funciona bien\n");
-
-    //uint8_t amountPlayers=snakeScreen();
-    //Snake(amountPlayers,PLAYER1_DEFAULT_COLOR,PLAYER2_DEFAULT_COLOR);
+    uint8_t amountPlayers=snakeScreen();
+    Snake(amountPlayers,PLAYER1_DEFAULT_COLOR,PLAYER2_DEFAULT_COLOR);
     return 0;
 }
