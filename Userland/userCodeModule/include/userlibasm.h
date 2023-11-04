@@ -9,3 +9,4 @@ void _draw(uint16_t * bitmap, uint32_t color, uint16_t height, uint64_t x, uint6
 void _screenData(uint16_t * screenHeight, uint16_t * screenWidth, uint8_t * fontSize, uint8_t * drawSize);
 void _changeSize(uint8_t newSize, uint8_t fd);
 int _getRegs(long regs[]);
+void _opError();

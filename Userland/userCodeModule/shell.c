@@ -5,7 +5,7 @@
 #include "include/snakeModule.h"
 #include <stdint.h>
 
-#define COMMANDS 12
+#define COMMANDS 14
 #define VERT_SIZE 32
 #define LINE_SIZE 63
 #define BUFFER_SIZE 128
@@ -16,7 +16,7 @@
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registros", "snake"};
+static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registros", "snake", "test-div", "test-invalid"};
 char char_buffer[1];
 
 // Cursors & flags
@@ -206,6 +206,18 @@ void process_command(char* buffer){
          
                 case 11:
                     Snake(snakeScreen(),PLAYER1_DEFAULT_COLOR,PLAYER2_DEFAULT_COLOR);
+                    break;
+
+                case 12:
+                    write_out("Vamos a testear dividir 1 por 0");
+                    int a = 1;
+                    int b = 0;
+                    int c = a/b;
+                    break;
+
+                case 13:
+                    write_out("Vamos a tratar de desafiar al runtime de asm");
+                    _opError();    
                     break;
                     
             }   

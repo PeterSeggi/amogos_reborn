@@ -16,6 +16,7 @@ GLOBAL _irq77Handler
 GLOBAL _irq128Handler
 
 GLOBAL _exception0Handler
+GLOBAL _exception6Handler
 GLOBAL _regsInterrupt
 
 EXTERN irqDispatcher
@@ -78,6 +79,25 @@ SECTION .text
 
 
 %macro exceptionHandler 1
+
+    call _regsInterrupt     ; guardo los regs
+
+
+    mov rax, userland_direc 
+    mov [rsp], rax          ; hard-code goes brrrrrr
+
+    mov rax, 0x8
+    mov [rsp + 8], rax      ; CS de userland
+
+    mov rax, 0x202
+    mov [rsp + 8*2], rax    ; RFLAGS
+
+    call getStackBase       
+    mov [rsp + 8*3], rax    ; sp ahora esta en la base 
+
+    mov rax, 0x0
+    mov [rsp + 8*4], rax    ; SS de userland
+
 	pushState
 
 	mov rdi, %1 ; pasaje de parametro
@@ -151,20 +171,17 @@ _irq05Handler:
 _irq77Handler:
 	irqHandlerMaster 0x77
 
-;syscall
+;Syscall
 _irq128Handler:
     mov r9, rax
     call syscall_handler
-	iretq
-	; irqHandlerMaster 128
-
-
+    iretq
 
 ;Zero Division Exception
 _exception0Handler:
 	exceptionHandler 0
 
-;Invalid Opcode Exception
+;Invalid Op Code Exception
 _exception6Handler:
 	exceptionHandler 6
 
@@ -198,11 +215,6 @@ _regsInterrupt:
 	mov rax, regsBuf
 
 	ret 
-	    
-    ;mov [rsp], userland_direc
-    ;call getStackBase
-    ;mov [rsp+24], rax   	;acomodo el valor de retorno
-	;iretq
 
 SECTION .bss
 	aux resq 1

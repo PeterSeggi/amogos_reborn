@@ -8,6 +8,7 @@ GLOBAL _halt
 GLOBAL _getClock
 GLOBAL _getRegs
 GLOBAL _changeSize
+GLOBAL _opError 
 
 section .text
 
@@ -24,7 +25,7 @@ _print:
 	mov rbp, rsp
 
     mov rax, 1
-    int 80h;
+    int 80h
 
 	mov rsp, rbp
 	pop rbp
@@ -164,6 +165,11 @@ _changeSize:
     pop rbp
     ret
 ;================================================================================================================================
+
+
+_opError:
+    mov cr6, rax
+    ret         ; nunca sobra, como boca 
 
 
 section .bss
