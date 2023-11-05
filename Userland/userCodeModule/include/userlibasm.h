@@ -10,3 +10,4 @@ void _screenData(uint16_t * screenHeight, uint16_t * screenWidth, uint8_t * font
 void _changeSize(uint8_t newSize, uint8_t fd);
 int _getRegs(long regs[]);
 void _opError();
+void _beep(uint32_t frequency, int duration);

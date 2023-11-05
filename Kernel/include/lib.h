@@ -12,6 +12,8 @@ int rtcInfo(int value);
 int _getKey();
 long* _regsInterrupt();
 void _saveRegs();
+void _outb();
+uint8_t _inb();
 
 // base changing
 uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);

@@ -5,7 +5,7 @@
 #include "include/snakeModule.h"
 #include <stdint.h>
 
-#define COMMANDS 14
+#define COMMANDS 15
 #define VERT_SIZE 32
 #define LINE_SIZE 63
 #define BUFFER_SIZE 128
@@ -16,14 +16,14 @@
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registros", "snake", "test-div", "test-invalid"};
+static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registros", "snake", "test-div", "test-invalid", "speak"};
 char char_buffer[1];
 
 // Cursors & flags
 int command_cursor = 0;
-int cursor_y = 0;
-int cursor_x = 0;
-int exit_command = 0;
+int cursor_y;
+int cursor_x;
+int exit_command;
 
 // Important values
 uint8_t font_size;
@@ -43,11 +43,14 @@ char* regsNames[18] = {"rax:", "rbx:", "rcx:", "rdx:", "rsi:", "rdi:", "rbp:", "
 
 
 int shell(){
+    cursor_x = 0;
+    cursor_y = 0;
+    exit_command = 0;
+
     clearScreen();
     init_shell();
     write_out(PROMPT_START);
 
-    exit_command = 0;
 
     while(!exit_command){
         if (read(char_buffer, 1) == 1){
@@ -218,6 +221,10 @@ void process_command(char* buffer){
                 case 13:
                     write_out("Vamos a tratar de desafiar al runtime de asm");
                     _opError();    
+                    break;
+
+                case 14:
+                    _beep(1000, 50);
                     break;
                     
             }   

@@ -5,6 +5,7 @@
 #include <videoDriver.h>
 #include <time.h>
 #include <registers.h>
+#include <sound.h>
 
 #define STDIN 0
 #define STDOUT 1
@@ -45,6 +46,10 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
 
   case (0x93):
     sys_changeSize(rdi, rsi);
+    break;
+
+  case (0x84):
+    sys_speak(rdi, rsi);
     break;
   }
 }
@@ -121,4 +126,8 @@ void sys_changeSize(uint8_t newSize, uint8_t fd){
     default:
       break;
   }
+}
+
+void sys_speak(uint32_t frequence, int duration){
+    beep(frequence, duration);
 }

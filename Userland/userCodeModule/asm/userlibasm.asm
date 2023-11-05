@@ -9,6 +9,7 @@ GLOBAL _getClock
 GLOBAL _getRegs
 GLOBAL _changeSize
 GLOBAL _opError 
+GLOBAL _beep
 
 section .text
 
@@ -166,10 +167,35 @@ _changeSize:
     ret
 ;================================================================================================================================
 
+;================================================================================================================================
+;_beep hace ruido!
+; param 1 es frecuencia
+; param 2 es duracion en milisegundos
+;================================================================================================================================
+
+_beep:
+    push rbp
+    mov rbp, rsp
+
+    mov rax, 0x84   ;sys_speak ID
+
+    int 80h         ;syscall 
+
+.end:
+    mov rsp, rbp
+    pop rbp
+    ret
+    
+
+;================================================================================================================================
+
+
+
+
 
 _opError:
     mov cr6, rax
-    ret         ; nunca sobra, como boca 
+    ret         ; ironico que este ese ret pero bueno, nunca sobra 
 
 
 section .bss

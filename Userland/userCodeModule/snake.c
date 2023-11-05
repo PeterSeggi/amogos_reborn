@@ -161,7 +161,7 @@ uint8_t slither(enum Direction dir, uint8_t snake){
         return 2;//snakes colision
     }
     if((board[newHeadCol][newHeadRow] & 0x0F)==APPLE){//apple saves points
-        //TODO beeps here
+        _beep(1000, 30);
         (snake==SNAKE1)? player1Points++ : player2Points++;
         board[column][row]=snake + (board[column][row]&0xF0);
         board[newHeadCol][newHeadRow]=snake + dir;
@@ -490,8 +490,6 @@ void Snake(uint8_t players, uint32_t color1, uint32_t color2){
         tablero();
         sleep_once();
     }
-    //TODO beep
-    sleep(1,0);
 
     //GAME OVER message
     for(int i=0; i<(screenWidth/dibSpaceWidth)+1; i++){
@@ -503,8 +501,13 @@ void Snake(uint8_t players, uint32_t color1, uint32_t color2){
     for(int i=0; i<9; i++){
         draw(gameover_text[i], WHITETEXT, dibHeight, (screenWidth/2)-((dibSpaceWidth*9)/2)+(i*dibSpaceWidth), (screenHeight/2)-(dibSpaceHeight/2));
     }
-    //TODO final beep here
-    sleep(2,0);
+    _beep(1000, 100);
+    sleep(100, 1);
+    _beep(800, 100);
+    sleep(100, 1);
+    _beep(600, 100);
+    sleep(100, 1);
+
 
     return;
 }
