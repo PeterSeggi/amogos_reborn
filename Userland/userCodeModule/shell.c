@@ -10,13 +10,13 @@
 #define LINE_SIZE 63
 #define BUFFER_SIZE 128
 
-#define PROMPT_START ">"
+int PROMPT_START[] = {128, 0};
 #define ERROR_PROMPT "Unknown command: "
 
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registros", "snake", "test-div", "test-invalid", "speak"};
+static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak"};
 char char_buffer[1];
 
 // Cursors & flags
@@ -191,10 +191,12 @@ void process_command(char* buffer){
                 case 9:
                     sleep(3000000, 2);
                     break;
+
                 case 10:
                     if(getRegs(regs)==0){
                         write_out("Antes de pedir los registros debe apretar la tecla alt izquierda para que los mismos se guarden\n");
                     }
+
                     else{
                         for(int i=0; i<cantRegs; i++){
                             write_out(regsNames[i]);
@@ -209,6 +211,9 @@ void process_command(char* buffer){
          
                 case 11:
                     Snake(snakeScreen(),PLAYER1_DEFAULT_COLOR,PLAYER2_DEFAULT_COLOR);
+                    cursor_y = 0;
+                    cursor_x = 0;
+                    limit_index = VERT_SIZE/font_size - 1;
                     flushBuffer();
                     clearScreen();
                     break;

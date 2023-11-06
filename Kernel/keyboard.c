@@ -42,6 +42,7 @@ int ascii_buf[KEY_BUF_SIZE];
 int shifted = 0;
 int caps = 0;
 int control = 0;
+int saved = 0;
 int ascii_insert_index = 0;
 int ascii_read_index = 0;
 int ascii_to_read = 0;
@@ -52,7 +53,6 @@ void key_handler() { insert_key(_getKey()); }
 void insert_key(int key) {
 
   checkShift(key);
-  checkRegs(key);
 
   if (key <= 0x52 && scan_chars[key] != 0) {
     if (shifted || (caps && key >= 0x10))
@@ -138,10 +138,14 @@ void checkShift(int key) {
     control = 1;
   if (key == 0x9D)
     control = 0;
+
+
+  if (key = 0x38)
+    saved = 1;
 }
 
-void checkRegs(int key){
-  if(key==0x38){
-    _saveRegs();
-  }
+
+int altPressed(){
+    return saved;
 }
+

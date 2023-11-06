@@ -109,8 +109,7 @@ void sys_gettimeofday(int *hrs, int *min, int *seg){
  }
 
 int sys_registers(long regs[]){
-    int retVal = getRegs(regs);
-    return retVal; 
+    return getRegs(regs);
 }
 
 void sys_changeSize(uint8_t newSize, uint8_t fd){

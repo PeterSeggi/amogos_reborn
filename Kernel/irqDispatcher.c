@@ -8,7 +8,6 @@
 static void int_20();
 static void int_21();
 static void int_48();
-static int  int_77();
 static void int_80();
 
 void irqDispatcher(uint64_t irq) {
@@ -22,10 +21,6 @@ void irqDispatcher(uint64_t irq) {
 
         case 0x48:
             int_48();
-            break;
-
-        case 0x77:
-            int_77();
             break;
 
         case 0x80:
@@ -48,8 +43,4 @@ void int_48(){
 
 void int_80() {
     syscall_handler();
-}
-
-int int_77(){
-    return regs_handler();
 }

@@ -12,13 +12,14 @@ GLOBAL _irq02Handler
 GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler
-GLOBAL _irq77Handler
 GLOBAL _irq128Handler
 
 GLOBAL _exception0Handler
 GLOBAL _exception6Handler
 GLOBAL _regsInterrupt
-GLOBAL _getRip
+
+GLOBAL regsBuf
+GLOBAL regs_saved
 
 EXTERN irqDispatcher
 EXTERN syscall_handler
@@ -80,9 +81,10 @@ SECTION .text
 
 
 %macro exceptionHandler 1
-
-    call _regsInterrupt     ; guardo los regs
-
+    push rax
+    saveRegs
+    pop rax
+    mov [regsBuf], rax
 
     mov rax, userland_direc 
     mov [rsp], rax          ; hard-code goes brrrrrr
@@ -109,6 +111,30 @@ SECTION .text
 	iretq
 %endmacro
 
+
+%macro saveRegs 0
+	mov [regsBuf+8], rbx
+	mov [regsBuf+8*2], rcx
+	mov [regsBuf+8*3], rdx
+	mov [regsBuf+8*4], rsi
+	mov [regsBuf+8*5], rdi
+	mov [regsBuf+8*6], rbp
+	mov [regsBuf+8*7], rsp
+	mov [regsBuf+8*8], r8
+	mov [regsBuf+8*9], r9 
+	mov [regsBuf+8*10], r10
+	mov [regsBuf+8*11], r11
+	mov [regsBuf+8*12], r12
+	mov [regsBuf+8*13], r13
+	mov [regsBuf+8*14], r14
+	mov [regsBuf+8*15], r15
+
+	mov rax, [rsp + 8]			; RIP
+	mov [regsBuf+8*16], rax			
+
+	mov rax, [rsp+8*3]		; RFLAGS
+	mov [regsBuf+8*17], rax
+%endmacro
 
 _hlt:
 	sti
@@ -147,6 +173,21 @@ _irq00Handler:
 
 ;Keyboard
 _irq01Handler:
+    push rax
+
+    mov rax, 0
+    in al, 60h 
+    cmp al, 0x38
+    jne .label1
+
+    ; Aca llego si toque el alt
+    saveRegs
+    mov rax, [rsp]
+    mov [regsBuf], rax
+
+; handle as usual
+.label1
+    pop rax 
 	irqHandlerMaster 1
 
 ;Cascade pic never called
@@ -164,10 +205,6 @@ _irq04Handler:
 ;USB
 _irq05Handler:
 	irqHandlerMaster 5
-
-;Registers
-_irq77Handler:
-	irqHandlerMaster 0x77
 
 ;Syscall
 _irq128Handler:
@@ -188,35 +225,17 @@ haltcpu:
 	hlt
 	ret
 
-	
-_regsInterrupt:
-	mov [regsBuf], rax 	
-	mov [regsBuf+8], rbx
-	mov [regsBuf+8*2], rcx
-	mov [regsBuf+8*3], rdx
-	mov [regsBuf+8*4], rsi
-	mov [regsBuf+8*5], rdi
-	mov [regsBuf+8*6], rbp
-	mov [regsBuf+8*7], rsp
-	mov [regsBuf+8*8], r8
-	mov [regsBuf+8*9], r9 
-	mov [regsBuf+8*10], r10
-	mov [regsBuf+8*11], r11
-	mov [regsBuf+8*12], r12
-	mov [regsBuf+8*13], r13
-	mov [regsBuf+8*14], r14
-	mov [regsBuf+8*15], r15
-	mov rax, [rsp]			; RIP
-	mov [regsBuf+8*16], rax			
-	mov rax, [rsp+8*2]		; RFLAGS
-	mov [regsBuf+8*17], rax
-	mov rax, regsBuf
 
+_regsInterrupt:
+    mov rax, regsBuf
 	ret 
 
 _getRip:
     mov rax, [regsBuf + 8*16]
     ret
+
+SECTION .data
+    regs_saved db 0
 
 SECTION .bss
 	aux resq 1
