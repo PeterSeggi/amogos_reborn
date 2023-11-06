@@ -109,9 +109,17 @@ int read_key(int fd) {
 
 // flush the input buffer
 void flush_buffer() {
+
+  // scan codes
   read_index = 0;
   insert_index = 0;
   to_read = 0;
+
+  // ascii
+  ascii_insert_index = 0;
+  ascii_read_index = 0;
+  ascii_to_read = 0;
+  
 }
 
 void checkShift(int key) {

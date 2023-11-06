@@ -13,6 +13,7 @@ void printDec(uint64_t value);
 void printHex(uint64_t value);
 void clearScreen();
 void change_font(int size);
+void flushBuffer();
 
 //wait
 void miliSleep(uint64_t milis);

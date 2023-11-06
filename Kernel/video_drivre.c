@@ -288,6 +288,11 @@ int process_input(char* string, int index, uint32_t fontColor, uint32_t bgColor)
                 clear();
                 return index + 3;
         }
+
+        else if (string[index + 2] == 'C') {
+                flush_buffer();
+                return index + 3;
+        }
         else
             return index + 1;
     }

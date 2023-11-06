@@ -209,6 +209,8 @@ void process_command(char* buffer){
          
                 case 11:
                     Snake(snakeScreen(),PLAYER1_DEFAULT_COLOR,PLAYER2_DEFAULT_COLOR);
+                    flushBuffer();
+                    clearScreen();
                     break;
 
                 case 12:

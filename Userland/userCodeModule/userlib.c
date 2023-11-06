@@ -31,6 +31,10 @@ void clearScreen(){
     _print(STDOUT, "\033[J", 3);
 }
 
+void flushBuffer(){
+    _print(STDOUT, "\033[C", 3);
+}
+
 void change_font(int size){
     char* msg = "\033[nF";
     msg[2] = size + '0';

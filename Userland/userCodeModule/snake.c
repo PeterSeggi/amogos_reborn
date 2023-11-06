@@ -498,15 +498,32 @@ void Snake(uint8_t players, uint32_t color1, uint32_t color2){
         }
     }
 
+
     for(int i=0; i<9; i++){
         draw(gameover_text[i], WHITETEXT, dibHeight, (screenWidth/2)-((dibSpaceWidth*9)/2)+(i*dibSpaceWidth), (screenHeight/2)-(dibSpaceHeight/2));
     }
+
+    for(int i=0; i<6; i++){
+        draw(select_player[i], WHITETEXT, dibHeight, i*dibSpaceWidth, 0);
+
+        if(players) draw(select_player[i], WHITETEXT, dibHeight, screenWidth-(dibSpaceWidth*(8-i)), 0);
+    }
+
+    draw(points_digits[1], WHITETEXT, dibHeight, dibSpaceWidth*7, 0);
+    
+
+    printPoints(SNAKE1);
+    if(players){
+        draw(points_digits[2], WHITETEXT, dibHeight, screenWidth-(dibSpaceWidth), 0);
+        printPoints(SNAKE2);
+    }
+    
     _beep(1000, 100);
     sleep(100, 1);
     _beep(800, 100);
     sleep(100, 1);
     _beep(600, 100);
-    sleep(100, 1);
+    sleep(3, 0);
 
 
     return;
