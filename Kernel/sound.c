@@ -34,3 +34,7 @@
  	 nosound();
           //set_PIT_2(old_frequency);
  }
+
+void beep_asm(){
+    beep(1000, 1);
+}

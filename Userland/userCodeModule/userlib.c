@@ -183,6 +183,6 @@ void changeDrawSize(uint8_t newSize){
 // Registers
 //================================================================================================================================
 
-int getRegs(long regs[]){
+int getRegs(uint64_t regs[]){
     return _getRegs(regs);
 }

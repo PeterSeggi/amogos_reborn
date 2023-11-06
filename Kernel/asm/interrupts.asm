@@ -1,3 +1,4 @@
+EXTERN beep_asm
 
 GLOBAL _cli
 GLOBAL _sti
@@ -78,40 +79,6 @@ SECTION .text
 	iretq
 %endmacro
 
-
-
-%macro exceptionHandler 1
-    push rax
-    saveRegs
-    pop rax
-    mov [regsBuf], rax
-
-    mov rax, userland_direc 
-    mov [rsp], rax          ; hard-code goes brrrrrr
-
-    mov rax, 0x8
-    mov [rsp + 8], rax      ; CS de userland
-
-    mov rax, 0x202
-    mov [rsp + 8*2], rax    ; RFLAGS
-
-    call getStackBase       
-    mov [rsp + 8*3], rax    ; sp ahora esta en la base 
-
-    mov rax, 0x0
-    mov [rsp + 8*4], rax    ; SS de userland
-
-	pushState
-
-	mov rdi, %1 ; pasaje de parametro
-	call exceptionDispatcher
-
-    popState
-
-	iretq
-%endmacro
-
-
 %macro saveRegs 0
 	mov [regsBuf+8], rbx
 	mov [regsBuf+8*2], rcx
@@ -135,6 +102,42 @@ SECTION .text
 	mov rax, [rsp+8*3]		; RFLAGS
 	mov [regsBuf+8*17], rax
 %endmacro
+
+
+%macro exceptionHandler 1
+
+    call beep_asm
+    push rax
+    saveRegs
+    pop rax
+    mov [regsBuf], rax
+
+    mov rax, userland_direc 
+    mov [rsp], rax          ; hard-code goes brrrrrr
+
+    mov rax, 0x8
+    mov [rsp + 8], rax      ; CS de userland
+
+    mov rax, 0x202
+    mov [rsp + 8*2], rax    ; RFLAGS
+
+    call getStackBase       
+    mov [rsp + 8*3], rax    ; sp ahora esta en la base 
+
+    mov rax, 0x0
+    mov [rsp + 8*4], rax    ; SS de userland
+
+	pushState
+
+	mov rdi, %1              ; pasaje de parametro
+	call exceptionDispatcher
+
+    popState
+
+	iretq
+%endmacro
+
+
 
 _hlt:
 	sti
@@ -178,15 +181,16 @@ _irq01Handler:
     mov rax, 0
     in al, 60h 
     cmp al, 0x38
-    jne .label1
+    jne .handle
 
     ; Aca llego si toque el alt
     saveRegs
+    mov [regs_saved], byte 1
     mov rax, [rsp]
     mov [regsBuf], rax
 
 ; handle as usual
-.label1
+.handle:
     pop rax 
 	irqHandlerMaster 1
 
@@ -229,10 +233,6 @@ haltcpu:
 _regsInterrupt:
     mov rax, regsBuf
 	ret 
-
-_getRip:
-    mov rax, [regsBuf + 8*16]
-    ret
 
 SECTION .data
     regs_saved db 0

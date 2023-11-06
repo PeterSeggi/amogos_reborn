@@ -32,9 +32,9 @@ int limit_index = VERT_SIZE - 1;
 int line_size = LINE_SIZE;
 
 int *hrs, *min, *sec;
-char* aux;
+char aux[128];
 int cantRegs = 18;
-long regs[18];
+uint64_t regs[18];
 char* regsNames[18] = {"rax:", "rbx:", "rcx:", "rdx:", "rsi:", "rdi:", "rbp:", "rsp:", "r8:", "r9:",
                        "r10:", "r11:", "r12:", "r13:", "r14:", "r15:", "rip:", "rflags:"};
 
@@ -199,12 +199,12 @@ void process_command(char* buffer){
 
                     else{
                         for(int i=0; i<cantRegs; i++){
-                            write_out(regsNames[i]);
-                            uintToBase(regs[i], aux, 10);
-                            write_out(aux);
-                            write_out("\n");
                             if (i != cantRegs - 1)
                                 write_out("-");
+                            write_out(regsNames[i]);
+                            uintToBase(regs[i], aux, 16);
+                            write_out(aux);
+                            write_out("\n");
                         }
                     }
                     break;

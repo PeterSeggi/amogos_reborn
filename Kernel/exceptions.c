@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <videoDriver.h>
+#include <sound.h>
 #include <keyboard.h>
 
 #define ZERO_EXCEPTION_ID  0
@@ -17,24 +18,25 @@ char escape[1];
 
 
 void exceptionDispatcher(int exception) {
+    beep(1000, 1);
+    clear();
 	if (exception == ZERO_EXCEPTION_ID){
-        clear();
-		zero_division();
+        zero_division();
     }
 
     else if (exception == INVALID_OP_CODE_ID){
-        clear();
 		invalid_op_code();
     }
 }
 
 static void zero_division() {
-    printError("Oh no! Al parecer trataste de desafiar la matematica y saliste perdiendo.Te dejo los registros de cuando el programa exploto:\n");
+    printError("Oh no! Al parecer trataste de enfrentarte a la matematica y el universo se opuso. Te dejamos los registros aca de antes de la tragedia:\n");
     showRegs();
     printError("Cuando estes listo y preparado para volver al main (altamente recomendable) presiona cualquier tecla.");
     while(read_key(0) == 0){
         sleep(0,0);
     }
+
 }
 
 static void invalid_op_code(){

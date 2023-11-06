@@ -51,5 +51,5 @@ void sleep(uint32_t cant, uint32_t unidad);
 void getClock(int *hrs, int *min, int *seg);
 
 //Registers
-int getRegs(long regs[]);
+int getRegs(uint64_t regs[]);
 #endif

@@ -9,6 +9,7 @@ GLOBAL _getClock
 GLOBAL _getRegs
 GLOBAL _changeSize
 GLOBAL _opError 
+GLOBAL _divError
 GLOBAL _beep
 
 section .text
@@ -191,6 +192,9 @@ _beep:
 
 
 
+_divError
+    int 0
+    ret
 
 
 _opError:
