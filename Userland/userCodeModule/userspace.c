@@ -3,7 +3,6 @@
 #include "include/userlibasm.h"
 #include "include/drawings.h"
 #include "include/snake.h"
-#include "include/snakeModule.h"
 #include "include/rand.h"
 
 
@@ -16,8 +15,7 @@ int main(){
             shell();
         }
         else{
-            uint8_t amountPlayers=snakeScreen();
-            Snake(amountPlayers,PLAYER1_DEFAULT_COLOR,PLAYER2_DEFAULT_COLOR);
+            Snake();
         }
     }
 
