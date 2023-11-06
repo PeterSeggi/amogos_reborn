@@ -18,6 +18,7 @@ GLOBAL _irq128Handler
 GLOBAL _exception0Handler
 GLOBAL _exception6Handler
 GLOBAL _regsInterrupt
+GLOBAL _getRip
 
 EXTERN irqDispatcher
 EXTERN syscall_handler
@@ -213,12 +214,13 @@ _regsInterrupt:
 
 	ret 
 
+_getRip:
+    mov rax, [regsBuf + 8*16]
+    ret
+
 SECTION .bss
 	aux resq 1
 	regsBuf resq 18
 
 section .rodata
 	userland_direc equ 0x400000
-
-section .rodata
-	userland equ 0x400000

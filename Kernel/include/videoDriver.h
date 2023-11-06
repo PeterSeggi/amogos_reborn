@@ -40,7 +40,9 @@ void repoCursor();
 int process_input(char* string, int index, uint32_t frontColor, uint32_t bgColor);
 
 void printBase(uint64_t value, uint32_t base);
+void printBaseError(uint64_t value, uint32_t base);
 void printDec(uint64_t value);
+void printDecError(uint64_t value);
 void printHex(uint64_t value);
 
 #endif

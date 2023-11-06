@@ -201,6 +201,11 @@ void printError(const uint8_t * string){
 }
 
 // Number stuff
+void printBaseError(uint64_t value, uint32_t base){
+    uintToBase(value, buffer, base);
+    printColor(buffer, ERROR_FONT, ERROR_BACK);
+}
+
 void printBase(uint64_t value, uint32_t base){
     uintToBase(value, buffer, base);
     print(buffer);
@@ -208,6 +213,10 @@ void printBase(uint64_t value, uint32_t base){
 
 void printDec(uint64_t value){
     printBase(value, 10);
+}
+
+void printDecError(uint64_t value){
+    printBaseError(value, 10);
 }
 
 void printHex(uint64_t value){
