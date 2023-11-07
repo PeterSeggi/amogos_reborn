@@ -136,10 +136,10 @@ uint8_t getFontSize(){
 	return SCALE;
 }
 
-void putChar(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t init_x, uint64_t init_y){
+void putChar(char character, uint32_t colorFont, uint32_t colorBg, uint64_t init_x, uint64_t init_y){
 	for(uint64_t i=0; i<(charHeight*SCALE); i++){
 		for(uint64_t j=0; j<(charWidth*SCALE); j++){
-			if( ((font[character][(i/SCALE)]<<(j/SCALE)) & (1<<(charWidth-1))) ){// 1<<charWidth permite leer de a un bit de izq a der del row de la font
+			if( ((font[(int) character][(i/SCALE)]<<(j/SCALE)) & (1<<(charWidth-1))) ){// 1<<charWidth permite leer de a un bit de izq a der del row de la font
 				putPixel(colorFont,init_x+j,init_y+i);
 			}
 			else{
@@ -150,11 +150,11 @@ void putChar(uint8_t character, uint32_t colorFont, uint32_t colorBg, uint64_t i
 	}
 }
 
-void printChar(uint8_t character){
+void printChar(char character){
     printCharColor(character, DEFAULT_FONT, DEFAULT_BACK);
 }
 
-void printCharColor(uint8_t character, uint32_t fontColor, uint32_t bgColor){
+void printCharColor(char character, uint32_t fontColor, uint32_t bgColor){
     if (character == 0XA){
         newLine();
     }
@@ -174,28 +174,28 @@ void printCharColor(uint8_t character, uint32_t fontColor, uint32_t bgColor){
     }
 }
 
-void print(const uint8_t * string){
+void print(const char * string){
 	for(int i=0; string[i]!=0;)
         i = process_input(string, i, DEFAULT_FONT, DEFAULT_BACK); 
 }
 
-void printCant(const uint8_t * string, uint64_t cant){
+void printCant(const char * string, uint64_t cant){
 	for(int i=0; string[i]!=0 && i<cant;)
         i = process_input(string, i, DEFAULT_FONT, DEFAULT_BACK); 
 }
 
-void printColor(const uint8_t * string, uint32_t fontColor, uint32_t bgColor){
+void printColor(const char * string, uint32_t fontColor, uint32_t bgColor){
 	for(int i=0; string[i]!=0;)
 		i = process_input(string, i, fontColor, bgColor);
 }
 
-void printColorCant(const uint8_t * string, uint64_t cant, uint32_t fontColor, uint32_t bgColor){
+void printColorCant(const char * string, uint64_t cant, uint32_t fontColor, uint32_t bgColor){
 	for(int i=0; string[i]!=0 && i<cant;)
 		i = process_input(string, i, fontColor, bgColor);
 }
 
 
-void printError(const uint8_t * string){
+void printError(const char * string){
 	for(int i=0; string[i]!=0;)
         i = process_input(string, i, ERROR_FONT, ERROR_BACK); 
 }
@@ -260,7 +260,7 @@ void clear(){
 //================================================================================================================================
 //========= INPUT PROCESSING
 //================================================================================================================================
-int process_input(char* string, int index, uint32_t fontColor, uint32_t bgColor){
+int process_input(const char* string, int index, uint32_t fontColor, uint32_t bgColor){
     char to_process = string[index];
 
     if (to_process == '\n'){
@@ -299,8 +299,9 @@ int process_input(char* string, int index, uint32_t fontColor, uint32_t bgColor)
 
     else {
         printCharColor(string[index], fontColor, bgColor);
-        return index + 1;
     }
+
+	return index + 1;
 }
 
 //================================================================================================================================

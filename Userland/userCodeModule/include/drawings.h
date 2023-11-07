@@ -131,5 +131,6 @@ void selectColor(uint8_t selection, uint32_t* color1, uint32_t* color2);
 extern uint16_t star[][dibHeight];
 
 uint8_t mainMenu();
+void menuHover(uint8_t selection, int optionX1, int optionX2, int optionsY);
 
 #endif

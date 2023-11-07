@@ -140,7 +140,7 @@ void checkShift(int key) {
     control = 0;
 
 
-  if (key = 0x38)
+  if (key == 0x38)
     saved = 1;
 }
 

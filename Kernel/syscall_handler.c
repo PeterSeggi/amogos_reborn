@@ -57,11 +57,11 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
 void sys_write(uint64_t fd, uint64_t message, uint64_t length) {
   switch (fd) {
       case (STDOUT):
-        printCant((uint8_t *)message, length);
+        printCant((char *)message, length);
         break;
 
       case (STDERR):
-        printColorCant((uint8_t *)message, length, ERRCOLORFONT, ERRCOLORBACK);
+        printColorCant((char *)message, length, ERRCOLORFONT, ERRCOLORBACK);
         break;
       }
 }
@@ -86,7 +86,7 @@ int read_chars(int fd, char *buffer, int length) {
 }
 
 void sys_draw(uint64_t bitmap, uint64_t hexColor, uint64_t height, uint64_t init_x, uint64_t init_y){
-  printBitmap(bitmap, hexColor, height, init_x, init_y);
+  printBitmap((uint16_t *) bitmap, hexColor, height, init_x, init_y);
 }
 
 void sys_screenData(uint64_t screenHeight, uint64_t screenWidth, uint64_t fontSize, uint64_t drawSize){
@@ -104,12 +104,12 @@ void sys_sleep(uint32_t  cant,uint32_t  unidad){
   sleep(cant, unidad); 
 }
 
-void sys_gettimeofday(int *hrs, int *min, int *seg){
-  printTime(hrs, min, seg);
+void sys_gettimeofday(uint64_t hrs, uint64_t min, uint64_t seg){
+  printTime((int*) hrs, (int*)min, (int *)seg);
  }
 
-int sys_registers(long regs[]){
-    return getRegs(regs);
+int sys_registers(uint64_t regs){
+    return getRegs((uint64_t*) regs);
 }
 
 void sys_changeSize(uint8_t newSize, uint8_t fd){
@@ -127,6 +127,6 @@ void sys_changeSize(uint8_t newSize, uint8_t fd){
   }
 }
 
-void sys_speak(uint32_t frequence, int duration){
-    beep(frequence, duration);
+void sys_speak(uint64_t frequence, uint64_t duration){
+    beep((uint32_t) frequence, (int) duration);
 }

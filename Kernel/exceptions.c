@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <videoDriver.h>
 #include <sound.h>
+#include <time.h>
 #include <keyboard.h>
 
 #define ZERO_EXCEPTION_ID  0

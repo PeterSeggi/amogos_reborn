@@ -8,7 +8,6 @@
 #include <naiveConsole.h>
 #include <idtLoader.h>
 #include <keyboard.h>
-#include <drawings.h>
 #include <interrupts.h>
 
 extern uint8_t text;

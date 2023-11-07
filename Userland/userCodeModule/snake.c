@@ -213,7 +213,7 @@ uint8_t slither(enum Direction dir, uint8_t snake){
         return 2;//snakes colision
     }
     if((board[newHeadCol][newHeadRow] & 0x0F)==APPLE){//apple saves points
-        _beep(1000, 30);
+        beep(1000, 30);
         (snake==SNAKE1)? player1Points++ : player2Points++;
         board[column][row]=snake + (board[column][row]&0xF0);
         board[newHeadCol][newHeadRow]=snake + dir;
@@ -551,11 +551,11 @@ void Snake(){
         printPoints(SNAKE2);
     }
     
-    _beep(1000, 100);
+    beep(1000, 100);
     sleep(100, 1);
-    _beep(800, 100);
+    beep(800, 100);
     sleep(100, 1);
-    _beep(600, 100);
+    beep(600, 100);
     sleep(3, 0);
 
 

@@ -10,7 +10,7 @@
 #define BUFFER_SIZE 128
 
 // Esto es un "string" manual para poder imprimir el caracter 128 de nuestro font de kernel usando lsa funciones estandar
-int PROMPT_START[] = {128, 0};
+char PROMPT_START[] = {127, 0};
 #define ERROR_PROMPT "Unknown command: "
 
 // Buffers
@@ -31,7 +31,10 @@ int rows_to_show;
 int limit_index = VERT_SIZE - 1;
 int line_size = LINE_SIZE;
 
-int *hrs, *min, *sec;
+int hrs = 0;
+int min = 0; 
+int sec = 0;
+
 char aux[128];
 int cantRegs = 18;
 uint64_t regs[18];
@@ -208,7 +211,7 @@ void process_command(char* buffer){
                     break;
          
                 case 11:
-                    Snake(snakeScreen(),PLAYER1_DEFAULT_COLOR,PLAYER2_DEFAULT_COLOR);
+                    Snake();
                     cursor_y = 0;
                     cursor_x = 0;
                     limit_index = VERT_SIZE/font_size - 1;
@@ -226,7 +229,8 @@ void process_command(char* buffer){
                     sleep(1, 0);
                     int a = 1;
                     int b = 0;
-                    int c = a/b;
+                    if (a/b ==1)
+                        write_out("You really shouldnt be here chief... medio que rompiste la matematica\n");
                     break;
 
                 case 13:
@@ -241,7 +245,7 @@ void process_command(char* buffer){
                     break;
 
                 case 14:
-                    _beep(1000, 50);
+                    beep(1000, 50);
                     break;
                     
             }   

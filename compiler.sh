@@ -5,4 +5,4 @@ docker exec -it BOX make -C/root/Toolchain
 docker exec -ti BOX make -C/root/
 docker stop BOX
 
-./run.sh
+# ./run.sh

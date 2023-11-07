@@ -15,6 +15,19 @@ void _saveRegs();
 void _outb();
 uint8_t _inb();
 
+
+// asm time functions
+int _getSeconds();
+int _getMinutes();
+int _getHours();
+int _getDay();
+int _getMonth();
+int _getYear();
+
+int _getDayWeek();
+int _getDayMonth();
+int _getDateTimeFormat();
+
 // base changing
 uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
