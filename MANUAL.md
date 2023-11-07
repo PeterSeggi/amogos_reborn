@@ -11,7 +11,7 @@
 .. `cd .. && make clean all`
 .. `exit`
 * Ejecutar el sistema operativo con `./run.sh` 
-
+---
 ## Dentro del sistema
 ### Menu Principal
 Se pueden usar las teclas `A/D` o `J/L` para seleccionar una de las opciones y la tecla `Enter` para seleccionarla.
@@ -23,5 +23,5 @@ El teclado predeterminado es el de formato qwerty estandar de estados unidos. Lo
 ### Snake
 Se pueden usar las teclas `W/S` o `I/K` para seleccionar entre 1 o 2 jugadores y seleccionar con `Enter`. Una vez jugando los controles son:
 * Jugador 1: `WASD`
-* Jugador 2: `IJKL` 
+* Jugador 2: `IJKL` \
 Una vez finalizado el programa este vuelve a la pantalla principal
