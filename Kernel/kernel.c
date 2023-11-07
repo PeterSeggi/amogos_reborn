@@ -9,6 +9,7 @@
 #include <idtLoader.h>
 #include <keyboard.h>
 #include <drawings.h>
+#include <interrupts.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -75,6 +76,7 @@ void * initializeKernelBinary()
 int main()
 {	
     load_idt();
+	_setUser();
     flush_buffer();
 
     ((EntryPoint) userspaceAddress)();
