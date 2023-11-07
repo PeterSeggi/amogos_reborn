@@ -201,7 +201,7 @@ void process_command(char* buffer){
                             if (i != cantRegs - 1)
                                 write_out("-");
                             write_out(regsNames[i]);
-                            uintToBase(regs[i], aux, 16);
+                            uintToBase(regs[i], aux, 10);
                             write_out(aux);
                             write_out("\n");
                         }
