@@ -10,6 +10,7 @@
 #define LINE_SIZE 63
 #define BUFFER_SIZE 128
 
+// Esto es un "string" manual para poder imprimir el caracter 128 de nuestro font de kernel usando lsa funciones estandar
 int PROMPT_START[] = {128, 0};
 #define ERROR_PROMPT "Unknown command: "
 
@@ -37,10 +38,6 @@ int cantRegs = 18;
 uint64_t regs[18];
 char* regsNames[18] = {"rax:", "rbx:", "rcx:", "rdx:", "rsi:", "rdi:", "rbp:", "rsp:", "r8:", "r9:",
                        "r10:", "r11:", "r12:", "r13:", "r14:", "r15:", "rip:", "rflags:"};
-
-// commands to do: help, resize, time, registers
-// commands to shitpost: cowsay, ls, amogus?
-
 
 int shell(){
     cursor_x = 0;
@@ -141,7 +138,7 @@ void process_command(char* buffer){
                     break;
                 case 4:
                     getClock(&hrs, &min, &sec);
-                    write_out("La hora es...");
+                    write_out("La hora es: ");
                     uintToBase(hrs, aux, 10);
                     if(hrs<10){
                         write_out("0");
@@ -171,10 +168,12 @@ void process_command(char* buffer){
                     write_out("\n");
                     break;
                 case 5:
+                    write_out("Vamos a esperar 4 segundos... ");
                     sleep(4, 0);
+                    write_out("Listo!\n");
                     break;
                 case 6:
-                    write_out("Voce quer usar o nosso sleep??\nVoce deve nos passar dois parametros\no primeiro e a quantidade de segundos/milissegundos/nanosegundoso segundo sera 0=segundos, 1=milissegundos e 2=nanosegundos\n");
+                    write_out("El comando sleep efectuara una espera de 4 segundos para demostrar el funcionamiento de la syscall\n");
                     break;
                 case 7:
                     write_out("Los comandos existentes son:\n");
