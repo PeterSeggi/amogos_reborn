@@ -490,25 +490,25 @@ void Snake(){
                     break;
 
                 case ('j'):
-                    if(lastdir2!=RIGHT){//illegal dir
+                    if(players == 2 && lastdir2!=RIGHT){//illegal dir
                         lastdir2=LEFT ;
                     }
                     break;
 
                 case ('k'):
-                    if(lastdir2!=UP){//illegal dir
+                    if(players == 2 && lastdir2!=UP){//illegal dir
                         lastdir2=DOWN;
                     }
                     break;
 
                 case ('l'):
-                    if(lastdir2!=LEFT){//illegal dir
+                    if(players == 2 && lastdir2!=LEFT){//illegal dir
                         lastdir2= (lastdir2==NONE)? LEFT : RIGHT ;
                     }
                     break;
 
                 case ('i'):
-                    if(lastdir2!=DOWN){// illegal dir
+                    if(players == 2 && lastdir2!=DOWN){// illegal dir
                         lastdir2=UP;
                     }
                     break;
@@ -519,7 +519,7 @@ void Snake(){
         }
         if(lastdir1!=NONE) error += slither(lastdir1,SNAKE1);
         tablero();
-        if(lastdir2!=NONE && !error) error += slither(lastdir2,SNAKE2);
+        if(players == 2 && lastdir2!=NONE && !error) error += slither(lastdir2,SNAKE2);
         tablero();
         sleep_once();
     }

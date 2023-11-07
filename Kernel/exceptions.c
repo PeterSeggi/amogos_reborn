@@ -40,7 +40,7 @@ static void zero_division() {
 }
 
 static void invalid_op_code(){
-    printError("Oh no! Al parecer trataste de reescribir asm y te diste cuenta que no le pinto nada a la compu. Te dejo los regs de cuando el programa hizo rip:\n");
+    printError("Oh no! Al parecer trataste de reescribir asm y te diste cuenta que no le pinto nada a la compu. Te dejo los regs de cuando el programa murio:\n");
     showRegs();
     printError("Cuando estes listo y preparado para volver al main (altamente recomendable) presiona cualquier tecla.");
     while(read_key(0) == 0){

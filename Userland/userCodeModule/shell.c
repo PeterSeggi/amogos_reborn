@@ -172,7 +172,7 @@ void process_command(char* buffer){
                     write_out("Listo!\n");
                     break;
                 case 6:
-                    write_out("El comando sleep efectuara una espera de 4 segundos para demostrar el funcionamiento de la syscall\n");
+                    write_out("El comando sleep efectuara una espera de 4 segundos para demostrar el funcionamiento de la syscall. Los comandos milisleep y nanosleep haran algo equivalente pero con sus respectivas unidades\n");
                     break;
                 case 7:
                     write_out("Los comandos existentes son:\n");
@@ -217,14 +217,26 @@ void process_command(char* buffer){
                     break;
 
                 case 12:
-                    write_out("Vamos a testear dividir 1 por 0");
+                    write_out("Vamos a testear dividir 1 por 0 en:\n");
+                    write_out("3...\n");
+                    sleep(1, 0);
+                    write_out("2...\n");
+                    sleep(1, 0);
+                    write_out("1...\n");
+                    sleep(1, 0);
                     int a = 1;
                     int b = 0;
                     int c = a/b;
                     break;
 
                 case 13:
-                    write_out("Vamos a tratar de desafiar al runtime de asm");
+                    write_out("Vamos a tratar de desafiar al runtime de asm en:\n");
+                    write_out("3...\n");
+                    sleep(1, 0);
+                    write_out("2...\n");
+                    sleep(1, 0);
+                    write_out("1...\n");
+                    sleep(1, 0);
                     _opError();    
                     break;
 

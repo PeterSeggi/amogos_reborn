@@ -139,15 +139,15 @@ SECTION .text
 %endmacro
 
 ;================================================================================================================================
-;_setUser realiza el seteo de entorno
+;_setUser realiza el seteo de entorno y salta a userland
 ;================================================================================================================================
 ;================================================================================================================================
 _setUser:
- 
-	add rsp, 32
 
-	mov rax, userland_direc
-    mov [rsp], rax          ; hard-code goes brrrrrr
+	add rsp, 32             ; no hace falta esto pero es buena practica
+
+    mov rax, userland_direc 
+    mov [rsp], rax          ; preparo el salto a userland 
 
     mov rax, 0x8
     mov [rsp + 8], rax      ; CS de userland

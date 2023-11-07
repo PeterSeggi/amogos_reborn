@@ -50,24 +50,6 @@ void * initializeKernelBinary()
 	loadModules(&endOfKernelBinary, moduleAddresses);
 
 	clearBSS(&bss, &endOfKernel - &bss);
-    
-    /* 
-    // no borro esto porlas por si necesitamos para debugging later
-	ncPrint("  text: 0x");
-	ncPrintHex((uint64_t)&text);
-	ncNewline();
-	ncPrint("  rodata: 0x");
-	ncPrintHex((uint64_t)&rodata);
-	ncNewline();
-	ncPrint("  data: 0x");
-	ncPrintHex((uint64_t)&data);
-	ncNewline();
-	ncPrint("  bss: 0x");
-	ncPrintHex((uint64_t)&bss);
-	ncNewline();
-
-	ncPrint("[Done]");
-    */
 
     ncClear();
 	return getStackBase();
@@ -76,10 +58,11 @@ void * initializeKernelBinary()
 int main()
 {	
     load_idt();
-	_setUser();
     flush_buffer();
+	_setUser();
 
-    ((EntryPoint) userspaceAddress)();
+//    Esto no hace falta porque el salto se hace en set user
+//    ((EntryPoint) userspaceAddress)();
     
 	return 0;
 
