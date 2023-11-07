@@ -8,6 +8,48 @@
 #define SNAKE2  8
 
 //================================================================================================================================
+// Main Screen Stuff
+//================================================================================================================================
+//================================================================================================================================
+uint8_t snakeScreen(){
+    //title
+    putSnakeTitle();
+
+    #define PLAYERS_1 0
+    #define PLAYERS_2 1
+
+    char keypressed[1]={0};
+    uint8_t selected=0, selection=PLAYERS_1;
+
+    while(!selected){
+        if(read(keypressed,1)>0){
+            switch(keypressed[0]){
+                case('\n'):
+                    selected=1;
+                    break;
+
+                case('w'):
+                case('i'):
+                    selection=PLAYERS_1;
+                    break;
+
+                case('s'):
+                case('k'):
+                    selection=PLAYERS_2;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        //cambiamos  la apariencia segun la selection
+        selectHover(selection);
+    }
+
+    return selection;
+}
+
+//================================================================================================================================
 // Board Stuff
 //================================================================================================================================
 //================================================================================================================================
@@ -31,6 +73,7 @@ uint8_t board_start_x, board_start_y;
 
 uint8_t middleBoard_y;
 
+//================================================================================================================================
 //players stuff
 uint16_t player1Points=0;
 uint16_t player2Points=0;
@@ -38,6 +81,8 @@ uint16_t player2Points=0;
 uint32_t snakecolor1=0x00;
 uint32_t snakecolor2=0x00;
 
+//================================================================================================================================
+//setup
 uint8_t initGame(){
     changeDrawSize(3);
     getScreenData(&screenHeight,&screenWidth,&fontSize,&drawSize);
@@ -59,6 +104,9 @@ uint8_t initGame(){
     return 0;
 }
 
+
+//================================================================================================================================
+//refresh screen value
 void printPoints(uint8_t snake){
     uint64_t startXPlayer1Points=((dibSpaceWidth*8)/2)-(dibSpaceHeight*3)/2;//8 as in strlen(PLAYER N)
     uint64_t startXPlayer2Points=screenWidth-(((dibSpaceWidth*8)/2)+(dibSpaceHeight*3)/2);
@@ -100,6 +148,14 @@ void tablero(){
     }
 }
 
+
+//================================================================================================================================
+// Logic Stuff
+//================================================================================================================================
+//================================================================================================================================
+
+//================================================================================================================================
+//adders
 void addApple(){
     uint8_t row, column;
     do{
@@ -114,20 +170,16 @@ void addSnake(uint8_t row, uint8_t column, uint8_t elem, enum Direction dir){
     board[column][row]=elem + dir;
 }
 
-
-
 //================================================================================================================================
-// Logic Stuff
-//================================================================================================================================
-//================================================================================================================================
-
-
 //directions stuff
 
 uint8_t snake1_head_row=0, snake1_head_column=0;
 uint8_t snake2_head_row=0, snake2_head_column=0;
 uint8_t snake1_tail_row=0, snake1_tail_column=0;
 uint8_t snake2_tail_row=0, snake2_tail_column=0;
+
+//================================================================================================================================
+//movement
 
 uint8_t slither(enum Direction dir, uint8_t snake){
     uint8_t column=getSnakeHeadCol(snake), row=getSnakeHeadRow(snake);
@@ -329,30 +381,8 @@ void putSnake(uint8_t row, uint8_t column, uint8_t snake){
     }
 }
 
-
-//getting info from board
-enum Direction getDirection(int row, int column){
-    if(row<0 || row>=BOARD_H || column<0 || column>=BOARD_W) return NONE;//out of bounds
-    uint8_t caso = board[column][row] & 0xF0;//me quedo con los bits superiores, la direccion
-    switch(caso){
-        case (UP):
-            return UP;
-
-        case (DOWN):
-            return DOWN;
-
-        case (RIGHT):
-            return RIGHT;
-
-        case (LEFT):
-            return LEFT;
-
-        default:
-            return NONE;
-    }
-}
-
-//boolean
+//================================================================================================================================
+//checkers
 uint8_t checkUp(uint8_t row, uint8_t column, uint8_t value){
     return (row==0)? 0 : ((board[column][row-1] & 0x0F)==value);
 }
@@ -375,7 +405,10 @@ uint8_t checkRight(uint8_t row, uint8_t column, uint8_t value){
 //================================================================================================================================
 #define EXIT_KEY 'q'
 
-void Snake(uint8_t players, uint32_t color1, uint32_t color2){
+void Snake(){
+    //imprimimos menu principal y se selecciona cant de jugadores.
+    uint8_t players=snakeScreen();
+    
     //rand init
     srand(time());
 
@@ -384,8 +417,8 @@ void Snake(uint8_t players, uint32_t color1, uint32_t color2){
     player1Points=0;
     player2Points=0;
 
-    snakecolor1=color1;
-    snakecolor2=color2;
+    snakecolor1=PLAYER1_DEFAULT_COLOR;
+    snakecolor2=PLAYER2_DEFAULT_COLOR;
 
     char keypressed[1]={0};
 
@@ -529,6 +562,7 @@ void Snake(uint8_t players, uint32_t color1, uint32_t color2){
     return;
 }
 
+//================================================================================================================================
 //setup
 
 void snakeSetup(uint8_t snake){
@@ -554,6 +588,9 @@ void snakeSetup(uint8_t snake){
     tablero();//print the starting board
 }
 
+//================================================================================================================================
+//setters
+
 void saveHeadPosition(uint8_t snake, uint8_t column, uint8_t row){
     if(snake==SNAKE1){
         snake1_head_column=column;
@@ -572,6 +609,30 @@ void saveTailPosition(uint8_t snake, uint8_t column, uint8_t row){
     else{
         snake2_tail_column=column;
         snake2_tail_row=row;
+    }
+}
+
+//================================================================================================================================
+//getters
+
+enum Direction getDirection(int row, int column){
+    if(row<0 || row>=BOARD_H || column<0 || column>=BOARD_W) return NONE;//out of bounds
+    uint8_t caso = board[column][row] & 0xF0;//me quedo con los bits superiores, la direccion
+    switch(caso){
+        case (UP):
+            return UP;
+
+        case (DOWN):
+            return DOWN;
+
+        case (RIGHT):
+            return RIGHT;
+
+        case (LEFT):
+            return LEFT;
+
+        default:
+            return NONE;
     }
 }
 

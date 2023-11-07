@@ -4,6 +4,11 @@
 //OBS! first layer must be the one you want to be able to
 //asign color, the rest will follow the given array
 
+//================================================================================================================================
+// Snake Drawing Stuff
+//================================================================================================================================
+
+
 uint16_t square[][dibHeight]={
     {0b1111111111111111,
      0b1111111111111111,
@@ -1424,6 +1429,11 @@ void draw_manzana(uint64_t init_x, uint64_t init_y){
     draw(apple[0],0x00FFFFFF,dibHeight,init_x,init_y);
 }
 
+//================================================================================================================================
+// Snake Game Title Drawing Stuff
+//================================================================================================================================
+
+
 //a lot of logic specific for this font effect
 #define SNAKE_TITLE_LAYERS 5
 uint16_t snake_title[][dibHeight]={
@@ -1616,12 +1626,6 @@ void draw_snake_letter(uint16_t bitmap[][dibHeight], uint64_t init_x, uint64_t i
     draw(bitmap[1], color, dibHeight, init_x, init_y);
 }
 
-//title colors
-#define S_COLOR 0x00FF0000
-#define N_COLOR 0x000000FF
-#define A_COLOR 0x00FF8900
-#define K_COLOR 0x00FFF300
-#define E_COLOR 0x0000FF00
 
 uint32_t snake_title_colors[]={S_COLOR, N_COLOR, A_COLOR, K_COLOR, E_COLOR};
 
@@ -2245,6 +2249,11 @@ uint16_t star[][dibHeight]={
      0b1111100000011111}
 };
 
+//================================================================================================================================
+// Title Drawing Stuff
+//================================================================================================================================
+
+
 #define AMOGOS_LEN 6
 uint16_t amogos[][dibHeight]={
     {0b0000000000000000,
@@ -2524,8 +2533,7 @@ uint16_t snake_op[][dibHeight]={
      0b0000000000000000}
 };
 
-#define SKYBLUE 0x00010053
-#define TITLEGOLD 0x00FAEF02
+
 uint8_t mainMenu(){
     changeDrawSize(10);
     
