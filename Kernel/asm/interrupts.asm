@@ -144,7 +144,7 @@ SECTION .text
 ;================================================================================================================================
 _setUser:
 
-	add rsp, 32             ; no hace falta esto pero es buena practica
+	sub rsp, 32             ; no hace falta esto pero es buena practica
 
     mov rax, userland_direc 
     mov [rsp], rax          ; preparo el salto a userland 
