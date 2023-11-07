@@ -82,3 +82,7 @@ cd Userland/
 cd userCodeModule/
 ls
 exit
+make clean 
+cd Toolchain
+make clean
+exit
