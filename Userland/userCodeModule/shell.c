@@ -2,7 +2,6 @@
 #include "include/shell.h"
 #include "include/userlibasm.h"
 #include "include/snake.h"
-#include "include/snakeModule.h"
 #include <stdint.h>
 
 #define COMMANDS 15
