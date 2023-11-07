@@ -21,6 +21,7 @@ GLOBAL _regsInterrupt
 
 GLOBAL regsBuf
 GLOBAL regs_saved
+GLOBAL _setUser
 
 EXTERN irqDispatcher
 EXTERN syscall_handler
@@ -105,13 +106,12 @@ SECTION .text
 
 
 %macro exceptionHandler 1
-
-    call beep_asm
     push rax
     saveRegs
     pop rax
     mov [regsBuf], rax
 
+	call beep_asm
     mov rax, userland_direc 
     mov [rsp], rax          ; hard-code goes brrrrrr
 
@@ -135,9 +135,33 @@ SECTION .text
     popState
 
 	iretq
+	
 %endmacro
 
+;================================================================================================================================
+;_setUser realiza el seteo de entorno
+;================================================================================================================================
+;================================================================================================================================
+_setUser:
+ 
+	add rsp, 32
 
+	mov rax, userland_direc
+    mov [rsp], rax          ; hard-code goes brrrrrr
+
+    mov rax, 0x8
+    mov [rsp + 8], rax      ; CS de userland
+
+    mov rax, 0x202
+    mov [rsp + 8*2], rax    ; RFLAGS
+
+    call getStackBase       
+    mov [rsp + 8*3], rax    ; sp ahora esta en la base 
+
+    mov rax, 0x0
+    mov [rsp + 8*4], rax    ; SS de userland
+	
+	iretq
 
 _hlt:
 	sti
