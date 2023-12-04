@@ -2621,3 +2621,8 @@ void menuHover(uint8_t selection, int optionX1, int optionX2, int optionsY){
     draw(select_player[SELECT_PLAYER_LAYERS+2], SKYBLUE, dibHeight, selection==1? optionX2 : optionX1, optionsY);
     draw(select_player[SELECT_PLAYER_LAYERS+2], TITLEGOLD, dibHeight, selection==1? optionX1 : optionX2, optionsY);
 }
+
+
+//================================================================================================================================
+// Minesweeper Drawing Stuff
+//================================================================================================================================
