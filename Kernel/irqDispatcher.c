@@ -8,7 +8,7 @@
 
 static void int_20();
 static void int_21();
-static void int_2C();
+static void int_25();
 static void int_48();
 static void int_80();
 
@@ -21,8 +21,9 @@ void irqDispatcher(uint64_t irq) {
             int_21();
             break;
 
-        case 0xC:
-            int_2C();
+        case 5:
+        case 12:
+            int_25();
             break;
 
         case 0x48:
@@ -44,7 +45,7 @@ void int_21() {
     key_handler();
 }
 
-void int_2C(){
+void int_25(){
     mouse_handler();
 }
 
