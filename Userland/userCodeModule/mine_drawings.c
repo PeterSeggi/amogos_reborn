@@ -569,11 +569,20 @@ void draw_pressed_box(uint64_t init_x, uint64_t init_y){
     draw_minebox(pressed_box,PRESSED_BOX_LAYERS,pressed_box_colors,init_x,init_y);
 }
 
+void draw_proximity(uint64_t init_x, uint64_t init_y, uint8_t amount){
+    draw_pressed_box(init_x,init_y);
+    if(amount!=0){
+        changeDrawSize(1);
+        draw(numbers[amount-1], numbers_colors[amount-1], boxHeight, init_x+boxHeight/2, init_y+boxHeight/2);
+    }
+}
+
 void draw_flag(uint64_t init_x, uint64_t init_y){
     draw_minebox(flag,FLAG_LAYERS,flag_colors,init_x,init_y);
 }
 
 void draw_bomb(uint64_t init_x, uint64_t init_y){
+    draw_pressed_box(init_x,init_y);
     changeDrawSize(1);
     for(int i=0; i<BOMB_LAYERS; i++){
         draw(bomb[i], bomb_colors[i], boxHeight*2, init_x, init_y);

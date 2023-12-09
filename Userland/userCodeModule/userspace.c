@@ -9,8 +9,8 @@
 
 int main(){    
 
-    //Minesweeper();
-    
+    Minesweeper();
+    /*
     while(1){
         uint8_t selection = mainMenu();
 
@@ -20,7 +20,7 @@ int main(){
         else{
             Snake();
         }
-    }
+    }*/
 
     return 0;
 }

@@ -44,6 +44,8 @@ extern uint16_t numbers[][boxHeight];
 void draw_box(uint64_t init_x, uint64_t init_y);
 void draw_pressed_box(uint64_t init_x, uint64_t init_y);
 void draw_flag(uint64_t init_x, uint64_t init_y);
+void draw_bomb(uint64_t init_x, uint64_t init_y);
 void draw_minebox(uint16_t bitmap[][boxHeight], uint16_t layers, uint32_t colors[], uint64_t init_x, uint64_t init_y);
+void draw_proximity(uint64_t init_x, uint64_t init_y, uint8_t amount);
 
 #endif
