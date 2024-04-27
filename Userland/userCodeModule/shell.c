@@ -4,7 +4,9 @@
 #include "include/snake.h"
 #include <stdint.h>
 
-#define COMMANDS 15
+#define COMMANDS 16 //AGREGUE UNO TODO: VOLVER A 15
+extern endOfBinary;//ESTO TMB
+extern bss;//ESTO TMB
 #define VERT_SIZE 32
 #define LINE_SIZE 63
 #define BUFFER_SIZE 128
@@ -16,7 +18,7 @@ char PROMPT_START[] = {127, 0};
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak"};
+static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak", "mem"};
 char char_buffer[1];
 
 // Cursors & flags
@@ -40,6 +42,9 @@ int cantRegs = 18;
 uint64_t regs[18];
 char* regsNames[18] = {"rax:", "rbx:", "rcx:", "rdx:", "rsi:", "rdi:", "rbp:", "rsp:", "r8:", "r9:",
                        "r10:", "r11:", "r12:", "r13:", "r14:", "r15:", "rip:", "rflags:"};
+
+                       
+uint64_t aux_mem_state[3];
 
 int shell(){
     cursor_x = 0;
@@ -247,7 +252,31 @@ void process_command(char* buffer){
                 case 14:
                     beep(1000, 50);
                     break;
-                    
+
+                case 15://TODO: AYUDAME LOCO
+                    write_out("holi:)\n");
+                    write_out("endOfBinary\n");
+                    uintToBase(&endOfBinary, aux, 16);
+                    write_out(aux);
+                    write_out("\n");
+                    write_out("bss\n");
+                    uintToBase(&bss, aux, 16);
+                    write_out(aux);
+                    write_out("\n");
+                    getMemState(aux_mem_state);
+                    write_out("Total: ");
+                    uintToBase(aux_mem_state[0], aux, 10);
+                    write_out(aux);
+                    write_out("\n");
+                    write_out("Disponible: ");
+                    uintToBase(aux_mem_state[1], aux, 10);
+                    write_out(aux);
+                    write_out("\n");
+                    write_out("Ocupada: ");
+                    uintToBase(aux_mem_state[2], aux, 10);
+                    write_out(aux);
+                    write_out("\n");
+                    break;
             }   
             return;
         }
