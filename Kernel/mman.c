@@ -5,7 +5,7 @@
 #define FREE_MEM_START 0x600000
 #define FREE_MEM_END 0x20000000
 
-uint64_t * header = NULL;
+char * header = NULL;
 
 uint64_t total_mem = 0;
 uint64_t vacant_mem = 0;
@@ -23,7 +23,7 @@ void mm_init(){
 void * my_malloc(uint64_t size){
     void *to_ret = NULL;
 
-    if(get_mem_vacant() >= size){//TODO: race condition (thread safe? in case multiple assign mem?)
+    if(size && (get_mem_vacant() >= size)){//TODO: race condition (thread safe? in case multiple assign mem?)
         to_ret = (void *) assign_mem(size);
     }
 
@@ -48,10 +48,10 @@ void * assign_mem(uint64_t size){
     if(set){
         uint64_t j = 0;
         while(j<size){
-            *(header+idx+j) = 1;
+            *(header + idx + j) = 1;
             j++;
         }
-        *(header+idx) = size;
+        *(header + idx) = size;
         to_ret = FREE_MEM_START + idx;
 
         vacant_mem-=size;
@@ -62,16 +62,16 @@ void * assign_mem(uint64_t size){
 }
 
 void my_free(void * addr_to_free){
-    uint64_t aux_idx = (addr_to_free-FREE_MEM_START);
-    uint64_t aux_size = *(header+aux_idx);
-    //if(aux_size) TODO:error check
+    if(!addr_to_free) return;
+    uint64_t aux_idx = ((void *)addr_to_free - FREE_MEM_START);
+    uint64_t aux_size = *(header + aux_idx);
     while(aux_size){
-        *(header+aux_idx+aux_size-1) = 0;
+        *(header + aux_idx + aux_size - 1) = 0;
         aux_size--;
     }
 
-    vacant_mem+=aux_size;
-    occupied_mem-=aux_size;
+    vacant_mem += aux_size;
+    occupied_mem -= aux_size;
 
     addr_to_free = NULL;
 
