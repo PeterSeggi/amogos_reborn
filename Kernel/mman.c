@@ -2,7 +2,7 @@
 
 //asumimos mem libre a partir de 0x600000
 #define FREE_MEM_START 0x600000
-#define FREE_MEM_END 0xFFFFFFFFFFFFFFFF
+#define FREE_MEM_END 0x20000000
 
 uint64_t current = 0;
 

@@ -201,3 +201,27 @@ void beep(uint32_t frequency, int duration){
 void getMemState(uint64_t * states){
     _getMemState(states);
 }
+
+char byteConverter(uint64_t * amount){
+    uint64_t aux = (((((*amount)/1024)/1024)/1024)/1024);
+    if(aux){
+        *amount = aux;
+        return 'T';
+    }
+    aux = (((((*amount)/1024)/1024)/1024));
+    if(aux){
+        *amount = aux;
+        return 'G';
+    }
+    aux = (((*amount)/1024)/1024);
+    if(aux){
+        *amount = aux;
+        return 'M';
+    }
+    aux = ((*amount)/1024);
+    if(aux){
+        *amount = aux;
+        return 'K';
+    }
+    else return '\0';
+}

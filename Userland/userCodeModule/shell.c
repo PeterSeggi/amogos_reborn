@@ -45,6 +45,7 @@ char* regsNames[18] = {"rax:", "rbx:", "rcx:", "rdx:", "rsi:", "rdi:", "rbp:", "
 
                        
 uint64_t aux_mem_state[3];
+char byteUnit[2]={0};
 
 int shell(){
     cursor_x = 0;
@@ -254,28 +255,33 @@ void process_command(char* buffer){
                     break;
 
                 case 15://TODO: AYUDAME LOCO
-                    write_out("holi:)\n");
-                    write_out("endOfBinary\n");
+                    write_out("endOfBinary: ");
                     uintToBase(&endOfBinary, aux, 16);
                     write_out(aux);
                     write_out("\n");
-                    write_out("bss\n");
+                    write_out("bss: ");
                     uintToBase(&bss, aux, 16);
                     write_out(aux);
                     write_out("\n");
                     getMemState(aux_mem_state);
                     write_out("Total: ");
+                    byteUnit[0] = byteConverter(aux_mem_state);
                     uintToBase(aux_mem_state[0], aux, 10);
                     write_out(aux);
-                    write_out("\n");
+                    write_out(byteUnit);
+                    write_out("B\n");
                     write_out("Disponible: ");
+                    byteUnit[0] = byteConverter(aux_mem_state+1);
                     uintToBase(aux_mem_state[1], aux, 10);
                     write_out(aux);
-                    write_out("\n");
+                    write_out(byteUnit);
+                    write_out("B\n");
                     write_out("Ocupada: ");
+                    byteUnit[0] = byteConverter(aux_mem_state+2);
                     uintToBase(aux_mem_state[2], aux, 10);
                     write_out(aux);
-                    write_out("\n");
+                    write_out(byteUnit);
+                    write_out("B\n");
                     break;
             }   
             return;

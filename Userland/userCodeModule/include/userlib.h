@@ -190,4 +190,6 @@ void beep(uint32_t frequency, int duration);
 
 void getMemState(uint64_t * states);
 
+char byteConverter(uint64_t * amount);
+
 #endif
