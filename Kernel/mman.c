@@ -5,7 +5,17 @@
 #define FREE_MEM_START 0x600000
 #define FREE_MEM_END 0x20000000
 
-char * header = NULL;
+/*
+    start            header            end
+    |    free_mem    |manager_structure|
+
+    Relacion 1Byte de fm -> 1Byte ms
+    esto permite almacenar la cantidad reservada,
+    cosa que con un bitmap no.
+    Tradeoff ms de mas espacio -> mas eficiencia al recorrer ms
+*/
+
+int8_t * header = NULL;
 
 uint64_t total_mem = 0;
 uint64_t vacant_mem = 0;
@@ -36,14 +46,14 @@ void * assign_mem(uint64_t size){
     uint8_t set = 0;
     uint64_t idx = 0;
 
-    for(idx = 0; (idx < total_mem) && (!set);){//TODO: no i++, sino i += *(header+i) es mas eficiente
+    for(idx = 0; (idx < total_mem) && (!set);){
         if(!(*(header+idx))){
             uint64_t j = 0;
             while(!(*(header+idx+j))) j++;
             if(j == size) set = 1;
             else idx += j;
         }
-        else idx++;
+        else idx += *(header+idx);
     }
     if(set){
         uint64_t j = 0;
@@ -63,7 +73,7 @@ void * assign_mem(uint64_t size){
 
 void my_free(void * addr_to_free){
     if(!addr_to_free) return;
-    uint64_t aux_idx = ((void *)addr_to_free - FREE_MEM_START);
+    uint64_t aux_idx = ((uint64_t) addr_to_free - FREE_MEM_START);
     uint64_t aux_size = *(header + aux_idx);
     while(aux_size){
         *(header + aux_idx + aux_size - 1) = 0;
@@ -89,3 +99,27 @@ uint64_t get_mem_vacant(){
 uint64_t get_mem_occupied(){
 	return occupied_mem;
 }
+
+//TESTING
+//TODO: esto no va en la entrega final!!
+/*
+int main(){
+	mm_init();
+	int *ptr = (int *) my_malloc(sizeof(int));
+
+	if(!ptr) exit(1);
+
+	*ptr = 5;
+
+
+	int *ptr2 = (int *) my_malloc(sizeof(int));
+
+	if(!ptr2) exit(1);
+
+	*ptr2 = 7;
+
+	my_free(ptr2);
+
+    my_free(ptr);
+}
+*/
