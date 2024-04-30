@@ -23,7 +23,7 @@ uint64_t occupied_mem = 0;
 
 void * assign_mem(uint64_t size);
 
-void mm_init(){
+void mm_init(){//TODO set in 0 init values of management section
     total_mem = (FREE_MEM_END - FREE_MEM_START)/2;
     vacant_mem = total_mem;
     occupied_mem = 0;
