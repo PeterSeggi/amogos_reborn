@@ -6,31 +6,34 @@
 #define FREE_MEM_END 0x20000000
 
 /*
-    start            header            end
-    |    free_mem    |manager_structure|
+    start            header                             end
+    |    free_mem    |manager_structure                 |
 
-    Relacion 1Byte de fm -> 1Byte ms
+    Relacion 1Byte de fm -> 2Byte ms
     esto permite almacenar la cantidad reservada,
     cosa que con un bitmap no.
     Tradeoff ms de mas espacio -> mas eficiencia al recorrer ms
 */
 
-int8_t * header = NULL;
+int16_t * header = NULL;
 
 uint64_t total_mem = 0;
 uint64_t vacant_mem = 0;
 uint64_t occupied_mem = 0;
 
-void * assign_mem(uint64_t size);
+void * assign_mem(uint16_t size);
 
-void mm_init(){//TODO set in 0 init values of management section
-    total_mem = (FREE_MEM_END - FREE_MEM_START)/2;
+void mm_init(){
+    total_mem = (FREE_MEM_END - FREE_MEM_START)/3;
     vacant_mem = total_mem;
     occupied_mem = 0;
     header = FREE_MEM_START + total_mem;
+    for(int i = 0; (header+i) < FREE_MEM_END; i++){//set 0 de manager mem
+        *(header+i)=0;
+    }
 }
 
-void * my_malloc(uint64_t size){
+void * my_malloc(uint16_t size){
     void *to_ret = NULL;
 
     if(size && (get_mem_vacant() >= size)){//TODO: race condition (thread safe? in case multiple assign mem?)
@@ -40,7 +43,7 @@ void * my_malloc(uint64_t size){
     return to_ret;
 }
 
-void * assign_mem(uint64_t size){
+void * assign_mem(uint16_t size){
     void *to_ret = NULL;
 
     uint8_t set = 0;
@@ -56,11 +59,6 @@ void * assign_mem(uint64_t size){
         else idx += *(header+idx);
     }
     if(set){
-        //uint64_t j = 0;
-        //while(j<size){
-        //    *(header + idx + j) = 1;
-        //    j++;
-        //}
         *(header + idx) = size;
         to_ret = FREE_MEM_START + idx;
 
@@ -75,10 +73,6 @@ void my_free(void * addr_to_free){
     if(!addr_to_free) return;
     uint64_t aux_idx = ((uint64_t) addr_to_free - FREE_MEM_START);
     uint64_t aux_size = *(header + aux_idx);
-    //while(aux_size){
-    //    *(header + aux_idx + aux_size - 1) = 0;
-    //    aux_size--;
-    //}
 
     vacant_mem += aux_size;
     occupied_mem -= aux_size;
