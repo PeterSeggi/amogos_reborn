@@ -15,7 +15,7 @@
     Tradeoff ms de mas espacio -> mas eficiencia al recorrer ms
 */
 
-int16_t * header = NULL;
+uint16_t * header = NULL;
 
 uint64_t total_mem = 0;
 uint64_t vacant_mem = 0;
