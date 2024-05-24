@@ -6,6 +6,7 @@
 #include <time.h>
 #include <registers.h>
 #include <sound.h>
+#include <mman.h>
 
 #define STDIN 0
 #define STDOUT 1
@@ -50,6 +51,10 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
 
   case (0x84):
     sys_speak(rdi, rsi);
+    break;
+
+  case (0x88):
+    sys_memState(rdi);
     break;
   }
 }
@@ -129,4 +134,10 @@ void sys_changeSize(uint8_t newSize, uint8_t fd){
 
 void sys_speak(uint64_t frequence, uint64_t duration){
     beep((uint32_t) frequence, (int) duration);
+}
+
+void sys_memState(uint64_t * states){
+    states[0] = get_mem_total();
+    states[1] = get_mem_vacant();
+    states[2] = get_mem_occupied();
 }
