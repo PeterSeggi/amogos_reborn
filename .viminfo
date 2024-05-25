@@ -11,6 +11,8 @@
 # hlsearch on (H) or off (h):
 ~h
 # Command Line History (newest to oldest):
+:q
+|2,0,1716655571,,"q"
 :wq
 |2,0,1716637023,,"wq"
 
@@ -25,22 +27,40 @@
 # Registers:
 
 # File marks:
-'0  4  4  ~/makeador.sh
-|4,48,4,4,1716637023,"~/makeador.sh"
-'1  4  13  ~/makeador.sh
-|4,49,4,13,1716636958,"~/makeador.sh"
+'0  30  74  ~/.gdbinit
+|4,48,30,74,1716655571,"~/.gdbinit"
+'1  4  4  ~/makeador.sh
+|4,49,4,4,1716637023,"~/makeador.sh"
+'2  4  13  ~/makeador.sh
+|4,50,4,13,1716636958,"~/makeador.sh"
 
 # Jumplist (newest first):
+-'  30  74  ~/.gdbinit
+|4,39,30,74,1716655571,"~/.gdbinit"
+-'  1  0  ~/.gdbinit
+|4,39,1,0,1716655533,"~/.gdbinit"
 -'  4  4  ~/makeador.sh
 |4,39,4,4,1716637023,"~/makeador.sh"
+-'  4  4  ~/makeador.sh
+|4,39,4,4,1716637023,"~/makeador.sh"
+-'  4  13  ~/makeador.sh
+|4,39,4,13,1716636958,"~/makeador.sh"
 -'  4  13  ~/makeador.sh
 |4,39,4,13,1716636958,"~/makeador.sh"
 -'  1  0  ~/makeador.sh
 |4,39,1,0,1716636924,"~/makeador.sh"
 -'  1  0  ~/makeador.sh
 |4,39,1,0,1716636924,"~/makeador.sh"
+-'  1  0  ~/makeador.sh
+|4,39,1,0,1716636924,"~/makeador.sh"
+-'  1  0  ~/makeador.sh
+|4,39,1,0,1716636924,"~/makeador.sh"
 
 # History of marks within files (newest to oldest):
+
+> ~/.gdbinit
+	*	1716655568	0
+	"	30	74
 
 > ~/makeador.sh
 	*	1716637019	0

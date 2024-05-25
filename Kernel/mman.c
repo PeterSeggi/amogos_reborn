@@ -52,7 +52,7 @@ void * assign_mem(uint16_t size){
     for(idx = 0; (idx < total_mem) && (!set);){
         if(!(*(header+idx))){
             uint64_t j = 0;
-            while(!(*(header+idx+j))) j++;
+           while(!(*(header+idx+j)) && j<size && (idx+j) < total_mem) j++;
             if(j == size) set = 1;
             else idx += j;
         }

@@ -10,6 +10,7 @@
 #include <keyboard.h>
 #include <interrupts.h>
 #include <mman.h>
+#include <processTest.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -60,6 +61,18 @@ int main()
     load_idt();
     flush_buffer();
 	mm_init();
+
+	//pruebas de procesos
+	ProcessTable * processTable;
+	processTable = (ProcessTable *)my_malloc(sizeof(ProcessTable)); //tabla de procesos
+    processTable->size = 0;
+    Process * process1 = createProcess(processTable);
+	Process * process2 = createProcess(processTable);
+
+	executeProcess(process1);
+	
+
+	//fin pruebas
 	_setUser();
 
 //    Esto no hace falta porque el salto se hace en set user
