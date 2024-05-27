@@ -39,7 +39,7 @@ void mm_init(){
 void * my_malloc(uint16_t size){
     void *to_ret = NULL;
 
-    size += (MEM_CHUNK - size%MEM_CHUNK);
+    if(size%MEM_CHUNK)size += (MEM_CHUNK - size%MEM_CHUNK);
 
     if(size && (get_mem_vacant() >= size)){//TODO: race condition (thread safe? in case multiple assign mem?)
         to_ret = (void *) assign_mem(size/MEM_CHUNK);
