@@ -5,11 +5,13 @@
 #define FREE_MEM_START 0x600000
 #define FREE_MEM_END 0x20000000
 
+#define MEM_CHUNK 8 //queremos que de direcciones alineadas
+
 /*
     start            header                             end
     |    free_mem    |manager_structure                 |
 
-    Relacion 1Byte de fm -> 2Byte ms
+    Relacion 8Byte de fm -> 2Byte ms
     esto permite almacenar la cantidad reservada,
     cosa que con un bitmap no.
     Tradeoff ms de mas espacio -> mas eficiencia al recorrer ms
@@ -35,6 +37,8 @@ void mm_init(){
 
 void * my_malloc(uint16_t size){
     void *to_ret = NULL;
+
+    size += (MEM_CHUNK - size%MEM_CHUNK);
 
     if(size && (get_mem_vacant() >= size)){//TODO: race condition (thread safe? in case multiple assign mem?)
         to_ret = (void *) assign_mem(size);
