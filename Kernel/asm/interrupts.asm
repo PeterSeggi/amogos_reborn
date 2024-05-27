@@ -27,6 +27,7 @@ EXTERN irqDispatcher
 EXTERN syscall_handler
 EXTERN exceptionDispatcher
 EXTERN getStackBase
+EXTERN schedule
 
 SECTION .text
 
@@ -71,6 +72,10 @@ SECTION .text
 
 	mov rdi, %1 ; pasaje de parametro
 	call irqDispatcher
+
+	mov rdi, rsp
+	call schedule
+	mov rsp, rax
 
 	; signal pic EOI (End of Interrupt)
 	mov al, 20h

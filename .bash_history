@@ -86,3 +86,5 @@ make clean
 cd Toolchain
 make clean
 exit
+sexo
+dashboard memory watch $sp

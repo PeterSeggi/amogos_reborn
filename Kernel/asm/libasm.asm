@@ -28,10 +28,26 @@ GLOBAL _outb
 GLOBAL _inb
 GLOBAL initializeStack
 
-EXTERN pushState
 EXTERN popState
 section .text
 
+%macro pushState 0
+	push rax
+	push rbx
+	push rcx
+	push rdx
+	push rbp
+	push rdi
+	push rsi
+	push r8
+	push r9
+	push r10
+	push r11
+	push r12
+	push r13
+	push r14
+	push r15
+%endmacro
 
 
 
@@ -81,9 +97,7 @@ rtcInfo:
 initializeStack:
 	push rbp
 	mov rbp, rsp
-	
-
-	
+		
 	mov rsp, rdi		;me paro en el stack del proceso
 	push 0x0 ;SS
 	push rdi ;RSP
