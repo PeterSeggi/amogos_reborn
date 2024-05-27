@@ -6,6 +6,7 @@ GLOBAL _screenData
 GLOBAL _sleep
 GLOBAL _getClock
 GLOBAL _getRegs
+GLOBAL _getMemState
 GLOBAL _changeSize
 GLOBAL _opError 
 GLOBAL _divError
@@ -118,6 +119,22 @@ _getRegs:
 	mov rbp, rsp
 
     mov rax, 0x78   ;sys_getRegs ID
+    int 80h;
+	mov rsp, rbp
+	pop rbp
+	ret
+
+;================================================================================================================================
+;_getMemState 
+;int 80h para usar la syscall
+;IN: long *;
+;================================================================================================================================
+;================================================================================================================================
+_getMemState:
+	push rbp
+	mov rbp, rsp
+
+    mov rax, 0x88   ;sys_getRegs ID
     int 80h;
 	mov rsp, rbp
 	pop rbp
