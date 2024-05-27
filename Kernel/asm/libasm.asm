@@ -26,9 +26,15 @@ GLOBAL _saveRegs
 ;in/out functions
 GLOBAL _outb
 GLOBAL _inb
+GLOBAL initializeStack
 
+EXTERN pushState
+EXTERN popState
 section .text
-	
+
+
+
+
 cpuVendor:
 	push rbp
 	mov rbp, rsp
@@ -68,6 +74,31 @@ rtcInfo:
     mov rsp, rbp
     pop rbp
     ret
+
+
+
+
+initializeStack:
+	push rbp
+	mov rbp, rsp
+	
+
+	
+	mov rsp, rdi		;me paro en el stack del proceso
+	push 0x0 ;SS
+	push rdi ;RSP
+	push 0x202 ;RFLAGS
+	push 0x8   ;CS
+	push rsi ;RIP
+	pushState
+
+	mov rax, rsp
+	mov rsp, rbp
+	pop rbp
+	
+	ret
+	
+
 
 
 ;================================================================================================================================
