@@ -48,8 +48,8 @@ typedef struct ProcessList{
 typedef struct PriorityArray{
     ProcessList * list[5];
     int size;
+    int priority[10];
     int currentPriority;
-
 }PriorityArray;
 
 Process * createProcess(void * function);
@@ -69,9 +69,10 @@ void cosa22(void);
 uint64_t initializeStack(void * rsp, void * rip);
 void initializeProcessTable(void);
 void initializeScheduler(void);
-
+createProcessWithpriority(void * function, unsigned int priority);
 void _cli();
 void _sti();
+void _hlt();
 void _setUser(void);
 
 #endif

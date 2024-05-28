@@ -1,8 +1,8 @@
-target remote 192.168.130.36:1234
+target remote 172.30.85.121:1234
 add-symbol-file Kernel/kernel.elf 0x100000
 add-symbol-file Userland/0000-userCodeModule.elf 0x400000
 set auto-load safe-path /
-directory /mnt/e/ITBA4.0/Grado/1c2024/SO/TP2SO/amogos_reborn
+directory /mnt/d/amogos_reborn
 define src-prof
     dashboard -layout source expressions stack variables
     dashboard source -style height 20

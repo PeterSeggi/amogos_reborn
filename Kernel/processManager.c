@@ -52,13 +52,15 @@ void executeProcess(uint64_t rip){
 
 void initializeScheduler(){
     int size = sizeof(PriorityArray);
-    if(size%8!=0){size+=8-(size%8);}
     scheduler = my_malloc(size);
     scheduler->size = 0;
-    scheduler->currentPriority = 4;    //señalizo que no tiene procesos corriendo aun
+    scheduler->currentPriority = 0;    //señalizo que no tiene procesos corriendo aun
+    int myPriorities[10] = {4, 4, 4, 4, 3, 3, 3, 2, 2, 1};
+    for (int i = 0; i < 10; i++) {
+        scheduler->priority[i] = myPriorities[i];
+    }
     for(int i=0; i<5; i++){
         int listSize = sizeof(ProcessTable);
-        if(listSize%8!=0){listSize+=8-(listSize%8);}
         scheduler->list[i] = my_malloc(listSize);
 
         if(scheduler->list[i]!=NULL){
@@ -69,10 +71,14 @@ void initializeScheduler(){
         }
     }
     //createProcess(&_setUser);
-    createProcess(&my_main);   //proceso vigilante _hlt
+    createProcess(&my_main);   
+    createProcessWithpriority(&_hlt, 0);     //proceso vigilante _hlt
 }
 
 Process * createProcess(void * function){
+    return createProcessWithpriority(function, 4);  //por defecto se crea con prioridad 4
+}
+createProcessWithpriority(void * function, unsigned int priority){
     _cli();
     Process * process = my_malloc(INITIAL_PROCESS_SIZE);
     process->memory_size = INITIAL_PROCESS_SIZE;
@@ -83,26 +89,31 @@ Process * createProcess(void * function){
     process->registers.rsp = process->registers.rbp;        //inicialmente stack vacio
     process->registers.rip = (uint64_t)function;  //direccion de la funcion a ejecutar
     process->registers.rsp = initializeStack(process->registers.rsp, process->registers.rip); 
+    process->pid = processTable->size + 1;       //cada nuevo proceso recibe el pid siguiente en orden natural
     
-    if(processTable !=NULL){
-        process->pid = processTable->size + 1;          //cada nuevo proceso recibe el pid siguiente en orden natural
-    }
-    else{
-        process->pid = 1;
-    }    
     int result = processTableAppend(process);
     if(result == 1){    //error en la creacion del proceso
         //free(process);  //libero recursos utlizados
+        _sti();
         return NULL;
     }
 
     int size = sizeof(ProcessNode);
     if(size%8!=0){size+=8-(size%8);}
     ProcessNode * node = my_malloc(size);
-    if(node == NULL){return NULL;}
+    if(node == NULL){
+        //free(process);
+        _sti();
+        return NULL;
+    }
     node->pid = process->pid;
-    addProcess(process->pid, 4, node);  //agrega el proceso a la cola de scheduling
-    return process;                     //prioridad 4 por defecto
+    if(priority>4){
+        //free(process);
+        //free(node);
+        _sti();
+    }
+    addProcess(process->pid, priority, node);  //agrega el proceso a la cola de scheduling con la prioridad deseada
+    return process;                     
     _sti();
 }
 
@@ -165,40 +176,37 @@ void addProcess(int pid, int priority, ProcessNode * node){
     }
 }
 
-int nextProcessInList(ProcessList * list){
-    if(list!=NULL){
-        if(list->current != NULL){
-            if(list->current->next == NULL){    //ultimo proceso de esa prioridad
-                list->current = list->firstProcess;    //reseteo la lista
-                scheduler->currentPriority =  (scheduler->currentPriority - 1)%5;   //paso a la proxima prioridad
-                return nextProcessInList(scheduler->list[scheduler->currentPriority]);
-            }
-            else{
-                int toReturn = list->current->pid;
-                list->current = list->current->next;
-                return toReturn;
-            }
-        }
-        else{   //el scheduler tiene el primer proceso cargado pero no se puso en marcha
-            if(list->firstProcess != NULL){
-                list->current = list->firstProcess;
-                return list->current->pid;
-            }
-        }
-    }
-    scheduler->currentPriority =  (scheduler->currentPriority - 1)%5;   //paso a la proxima prioridad
+int nextProcess(){
     return nextProcessInList(scheduler->list[scheduler->currentPriority]);
 }
 
-int nextProcess(){
-    if(scheduler!=NULL){   
-        //si todas las listas de prioridades estan vacias, se crea un loop infinito   
-        return nextProcessInList(scheduler->list[scheduler->currentPriority]);  
+int nextProcessInList(ProcessList * list){
+    if(list->size == 0){            //si la prioridad no tiene procesos, sigue buscando
+        return nextProcessInList(scheduler->list[getNextPriority()]);
     }
-    return NULL;
+    else if(list->current == NULL){     //primera vez poniendo un proceso de la lista en marcha
+        list->current = list->firstProcess; 
+        return nextProcessInList(list);
+    }
+    else{
+        if(list->current->next == NULL){    //ultimo proceso de la lista
+            int pid = list->current->pid;
+            list->current = list->firstProcess; //reseteo la lista
+            scheduler->currentPriority =  getNextPriority();   //paso a la proxima prioridad
+            return pid;
+        }
+        else{
+            int pid = list->current->pid;
+            list->current = list->current->next;
+            return pid;
+        }
+    }
 }
 
-
+int getNextPriority(){
+    scheduler->currentPriority = (scheduler->currentPriority+1)%10;
+    return scheduler->priority[scheduler->currentPriority];
+}
 
 
 /*void destroyProcess(Process * process){
