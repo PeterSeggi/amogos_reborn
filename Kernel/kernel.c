@@ -58,11 +58,13 @@ void * initializeKernelBinary()
 
 int main()
 {	
+	_cli();
     load_idt();
     flush_buffer();
 	mm_init();
 	initializeProcessTable();
 	initializeScheduler();
+	_sti();
 	while(1){
 		_hlt();
 	}

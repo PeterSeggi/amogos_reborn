@@ -73,6 +73,7 @@ void initializeScheduler(){
 }
 
 Process * createProcess(void * function){
+    _cli();
     Process * process = my_malloc(INITIAL_PROCESS_SIZE);
     process->memory_size = INITIAL_PROCESS_SIZE;
     process->state = READY;  
@@ -102,6 +103,7 @@ Process * createProcess(void * function){
     node->pid = process->pid;
     addProcess(process->pid, 4, node);  //agrega el proceso a la cola de scheduling
     return process;                     //prioridad 4 por defecto
+    _sti();
 }
 
 int processTableAppend(Process * process){ 
@@ -114,11 +116,10 @@ int processTableAppend(Process * process){
 }
 
 void * schedule(void * rsp){
-    if(processTable==NULL || scheduler->size == 0){
-        return rsp;
-    }
-    int runningPid = scheduler->list[scheduler->currentPriority]->current->pid;
-    processTable->processes[runningPid]->registers.rsp = rsp;
+    if(scheduler->list[scheduler->currentPriority]->current != NULL){ //si estoy en el primer proceso no me guardo el stack de kernel
+        int runningPid = scheduler->list[scheduler->currentPriority]->current->pid;
+        processTable->processes[runningPid]->registers.rsp = rsp;           
+    }    
     processTable->runningPid = (uint64_t)nextProcess(); 
     return processTable->processes[processTable->runningPid]->registers.rsp;
 }
@@ -185,7 +186,7 @@ int nextProcessInList(ProcessList * list){
             }
         }
     }
-    scheduler->currentPriority =  (scheduler->currentPriority + 1)%5;   //paso a la proxima prioridad
+    scheduler->currentPriority =  (scheduler->currentPriority - 1)%5;   //paso a la proxima prioridad
     return nextProcessInList(scheduler->list[scheduler->currentPriority]);
 }
 

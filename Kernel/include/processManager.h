@@ -52,13 +52,10 @@ typedef struct PriorityArray{
 
 }PriorityArray;
 
+Process * createProcess(void * function);
 int nextProcess(void);
 void addProcess(int pid, int priority, ProcessNode * node);
 void initializeScheduler(void);
-
-
-
-
 int processTableAppend(Process * process);
 //void destroyProcess(Process * process);
 void stackTest(int myrsp);
@@ -73,9 +70,8 @@ uint64_t initializeStack(void * rsp, void * rip);
 void initializeProcessTable(void);
 void initializeScheduler(void);
 
-Process * createProcess(void * function);
-int getRSP(void);
-
+void _cli();
+void _sti();
 void _setUser(void);
 
 #endif
