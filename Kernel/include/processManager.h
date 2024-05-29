@@ -5,6 +5,7 @@
 
 #define INITIAL_PROCESS_SIZE 1000
 #define MAX_PROCESS_COUNT 100
+#define DEFAULT_PRIORITY 4
 
 typedef enum State{
     READY,

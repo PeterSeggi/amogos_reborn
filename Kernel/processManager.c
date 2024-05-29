@@ -76,7 +76,7 @@ void initializeScheduler(){
 }
 
 Process * createProcess(void * function){
-    return createProcessWithpriority(function, 4);  //por defecto se crea con prioridad 4
+    return createProcessWithpriority(function, DEFAULT_PRIORITY);  //por defecto se crea con prioridad 4
 }
 createProcessWithpriority(void * function, unsigned int priority){
     _cli();
@@ -113,8 +113,8 @@ createProcessWithpriority(void * function, unsigned int priority){
         _sti();
     }
     addProcess(process->pid, priority, node);  //agrega el proceso a la cola de scheduling con la prioridad deseada
-    return process;                     
     _sti();
+    return process;                     
 }
 
 int processTableAppend(Process * process){ 
@@ -182,6 +182,13 @@ int nextProcess(){
 
 int nextProcessInList(ProcessList * list){
     if(list->size == 0){            //si la prioridad no tiene procesos, sigue buscando
+        /**
+         * int priority = scheduler->priority[scheduler->currentPriority];
+         * int newPrior;
+         * while((newPrior=getNextPriority()) == priority){
+         *      skippeo todos los 333 si es que en la lista 3 no hay ningun proceso
+         * }
+        */
         return nextProcessInList(scheduler->list[getNextPriority()]);
     }
     else if(list->current == NULL){     //primera vez poniendo un proceso de la lista en marcha
