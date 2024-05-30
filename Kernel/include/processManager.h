@@ -50,7 +50,7 @@ typedef struct PriorityArray{
     ProcessList * list[5];
     int size;
     int priority[10];
-    int currentPriority;
+    int currentPriorityOffset;
 }PriorityArray;
 
 Process * createProcess(void * function);

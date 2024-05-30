@@ -72,7 +72,7 @@ int main()
 	
 
 	//fin pruebas
-	//_setUser();
+	_setUser();
 
 //    Esto no hace falta porque el salto se hace en set user
 //    ((EntryPoint) userspaceAddress)();

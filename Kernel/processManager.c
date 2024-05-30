@@ -12,6 +12,16 @@
 ProcessTable * processTable = NULL;
 PriorityArray * scheduler = NULL;
 
+void testNext(){
+    int firstProcess = nextProcess();
+    int secondProcess = nextProcess();
+    int firstagain = nextProcess();
+    int secondagain = nextProcess();
+    int firstoncenoceagain = nextProcess();
+    int secondoncenoceagain = nextProcess();
+}
+
+
 void cosa11(){
     int cosa = 1;
     cosa++;    
@@ -42,7 +52,7 @@ void initializeProcessTable(void){
     if(size%8!=0){size+=8-(size%8);}
     processTable = (ProcessTable *)my_malloc(size);
     processTable->size = 0;
-    processTable->runningPid = 1;
+    processTable->runningPid = 0;
     //todo: crear el proceso halt aca y que corra cuando no hay nada? kcyo maybe :D
 }
 
@@ -54,14 +64,13 @@ void initializeScheduler(){
     int size = sizeof(PriorityArray);
     scheduler = my_malloc(size);
     scheduler->size = 0;
-    scheduler->currentPriority = 0;    //señalizo que no tiene procesos corriendo aun
+    scheduler->currentPriorityOffset = 0;    //señalizo que no tiene procesos corriendo aun
     int myPriorities[10] = {4, 4, 4, 4, 3, 3, 3, 2, 2, 1};
     for (int i = 0; i < 10; i++) {
         scheduler->priority[i] = myPriorities[i];
     }
     for(int i=0; i<5; i++){
-        int listSize = sizeof(ProcessTable);
-        scheduler->list[i] = my_malloc(listSize);
+        scheduler->list[i] = my_malloc(sizeof(ProcessTable));
 
         if(scheduler->list[i]!=NULL){
             scheduler->list[i]->firstProcess=NULL;
@@ -70,9 +79,10 @@ void initializeScheduler(){
             scheduler->list[i]->size=0;
         }
     }
-    //createProcess(&_setUser);
-    createProcess(&my_main);   
-    createProcessWithpriority(&_hlt, 0);     //proceso vigilante _hlt
+    createProcess(&testNext);
+    int esteseraelprimero_vamoavelpapaito = nextProcess();
+    //createProcess(&my_main);   
+    //createProcessWithpriority(&_hlt, 0);     //proceso vigilante _hlt
 }
 
 Process * createProcess(void * function){
@@ -118,7 +128,8 @@ createProcessWithpriority(void * function, unsigned int priority){
 }
 
 int processTableAppend(Process * process){ 
-    if(processTable->size >= MAX_PROCESS_COUNT || process==NULL){
+    
+    if(processTable->size+1 >= MAX_PROCESS_COUNT || process==NULL){
         return 1;
     }
     processTable->processes[process->pid] = process;
@@ -127,12 +138,13 @@ int processTableAppend(Process * process){
 }
 
 void * schedule(void * rsp){
-    if(scheduler->list[scheduler->currentPriority]->current != NULL){ //si estoy en el primer proceso no me guardo el stack de kernel
-        int runningPid = scheduler->list[scheduler->currentPriority]->current->pid;
+    /*if(scheduler->list[scheduler->currentPriorityOffset]->current != NULL){ //si estoy en el primer proceso no me guardo el stack de kernel
+        int runningPid = scheduler->list[scheduler->currentPriorityOffset]->current->pid;
         processTable->processes[runningPid]->registers.rsp = rsp;           
     }    
-    processTable->runningPid = (uint64_t)nextProcess(); 
-    return processTable->processes[processTable->runningPid]->registers.rsp;
+    processTable->runningPid = nextProcess(); 
+    return processTable->processes[processTable->runningPid]->registers.rsp;*/
+    return rsp;
 }
 
 void listInsert(ProcessList * list, ProcessNode * process){
@@ -159,7 +171,7 @@ void listInsert(ProcessList * list, ProcessNode * process){
 }
 
 /*void firstInsert(ProcessNode * node){
-    scheduler->currentPriority = 4;     //ejecuta procesos con mas prioridad primero
+    scheduler->currentPriorityOffset = 4;     //ejecuta procesos con mas prioridad primero
     scheduler->list[4]->firstProcess = node;
     scheduler->list[4]->firstProcess->next = NULL;
     scheduler->list[4]->last = node;
@@ -177,13 +189,14 @@ void addProcess(int pid, int priority, ProcessNode * node){
 }
 
 int nextProcess(){
-    return nextProcessInList(scheduler->list[scheduler->currentPriority]);
+    int priority = scheduler->priority[scheduler->currentPriorityOffset];
+    return nextProcessInList(scheduler->list[priority]);
 }
 
 int nextProcessInList(ProcessList * list){
     if(list->size == 0){            //si la prioridad no tiene procesos, sigue buscando
         /**
-         * int priority = scheduler->priority[scheduler->currentPriority];
+         * int priority = scheduler->priority[scheduler->currentPriorityOffset];
          * int newPrior;
          * while((newPrior=getNextPriority()) == priority){
          *      skippeo todos los 333 si es que en la lista 3 no hay ningun proceso
@@ -193,16 +206,24 @@ int nextProcessInList(ProcessList * list){
     }
     else if(list->current == NULL){     //primera vez poniendo un proceso de la lista en marcha
         list->current = list->firstProcess; 
-        return nextProcessInList(list);
+        processTable->runningPid = list->current->pid;
+        return list->current->pid;
     }
     else{
         if(list->current->next == NULL){    //ultimo proceso de la lista
-            int pid = list->current->pid;
+
+            //el current es el que esta corriendo y quiero que deje de estarlo cuando llamo a next
+            //por ende quiero que enxt retorne el pid del PROXIMO PROCESO
+
+            //ademas como estoy en el ultimo de la lista, quiero pasar a la siguiente lista
+            //que puede ser otra lista perectamente
+
+            //int pid = list->current->pid;
             list->current = list->firstProcess; //reseteo la lista
-            scheduler->currentPriority =  getNextPriority();   //paso a la proxima prioridad
-            return pid;
+            return nextProcessInList(scheduler->list[getNextPriority()]);
         }
         else{
+            //quiero retornar el pid del SIGUIENTE
             int pid = list->current->pid;
             list->current = list->current->next;
             return pid;
@@ -211,8 +232,8 @@ int nextProcessInList(ProcessList * list){
 }
 
 int getNextPriority(){
-    scheduler->currentPriority = (scheduler->currentPriority+1)%10;
-    return scheduler->priority[scheduler->currentPriority];
+    scheduler->currentPriorityOffset = (scheduler->currentPriorityOffset+1)%10;
+    return scheduler->priority[scheduler->currentPriorityOffset];
 }
 
 
