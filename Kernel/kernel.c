@@ -64,15 +64,15 @@ int main()
 	mm_init();
 	initializeProcessTable();
 	initializeScheduler();
-	_sti();
-	while(1){
-		_hlt();
-	}
+	//_sti();
+	//while(1){
+	//	_hlt();
+	//}
     
 	
 
 	//fin pruebas
-	_setUser();
+	//_setUser();
 
 //    Esto no hace falta porque el salto se hace en set user
 //    ((EntryPoint) userspaceAddress)();

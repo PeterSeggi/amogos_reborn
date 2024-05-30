@@ -79,8 +79,7 @@ void initializeScheduler(){
             scheduler->list[i]->size=0;
         }
     }
-    createProcess(&testNext);
-    int esteseraelprimero_vamoavelpapaito = nextProcess();
+    createProcess(0x400000);
     //createProcess(&my_main);   
     //createProcessWithpriority(&_hlt, 0);     //proceso vigilante _hlt
 }
@@ -138,13 +137,13 @@ int processTableAppend(Process * process){
 }
 
 void * schedule(void * rsp){
-    /*if(scheduler->list[scheduler->currentPriorityOffset]->current != NULL){ //si estoy en el primer proceso no me guardo el stack de kernel
-        int runningPid = scheduler->list[scheduler->currentPriorityOffset]->current->pid;
-        processTable->processes[runningPid]->registers.rsp = rsp;           
-    }    
+    int priority = scheduler->priority[scheduler->currentPriorityOffset];
+    if(scheduler->list[priority]->current != NULL){ //si estoy en el primer proceso no me guardo el stack de kernel
+        processTable->processes[processTable->runningPid]->registers.rsp = rsp;           
+    }
     processTable->runningPid = nextProcess(); 
-    return processTable->processes[processTable->runningPid]->registers.rsp;*/
-    return rsp;
+    return processTable->processes[processTable->runningPid]->registers.rsp;
+    //return rsp;
 }
 
 void listInsert(ProcessList * list, ProcessNode * process){
@@ -169,15 +168,6 @@ void listInsert(ProcessList * list, ProcessNode * process){
     }
     return;   
 }
-
-/*void firstInsert(ProcessNode * node){
-    scheduler->currentPriorityOffset = 4;     //ejecuta procesos con mas prioridad primero
-    scheduler->list[4]->firstProcess = node;
-    scheduler->list[4]->firstProcess->next = NULL;
-    scheduler->list[4]->last = node;
-    scheduler->list[4]->current = node;
-    scheduler->list[4]->size = 1; 
-}*/
 
 void addProcess(int pid, int priority, ProcessNode * node){
     if(pid<=0 || priority < 0 || priority > 4){
@@ -206,27 +196,16 @@ int nextProcessInList(ProcessList * list){
     }
     else if(list->current == NULL){     //primera vez poniendo un proceso de la lista en marcha
         list->current = list->firstProcess; 
-        processTable->runningPid = list->current->pid;
         return list->current->pid;
     }
     else{
         if(list->current->next == NULL){    //ultimo proceso de la lista
-
-            //el current es el que esta corriendo y quiero que deje de estarlo cuando llamo a next
-            //por ende quiero que enxt retorne el pid del PROXIMO PROCESO
-
-            //ademas como estoy en el ultimo de la lista, quiero pasar a la siguiente lista
-            //que puede ser otra lista perectamente
-
-            //int pid = list->current->pid;
-            list->current = list->firstProcess; //reseteo la lista
-            return nextProcessInList(scheduler->list[getNextPriority()]);
+            list->current = NULL; //reseteo la lista
+            return nextProcessInList(scheduler->list[getNextPriority()]);  //esto deja seteado
         }
         else{
-            //quiero retornar el pid del SIGUIENTE
-            int pid = list->current->pid;
-            list->current = list->current->next;
-            return pid;
+            list->current = list->current->next;    //quiero retornar el pid del SIGUIENTE
+            return list->current->pid;
         }
     }
 }

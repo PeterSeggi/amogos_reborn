@@ -117,7 +117,7 @@ void process_command(char* buffer){
                 case 0:
                     exit_command = 1;
                     write_out("Bye now! Hope you enjoyed your stay!");
-                    sleep(2, 0);
+                    //sleep(2, 0);
                     break;
                 case 1:
                     clearScreen(); 
