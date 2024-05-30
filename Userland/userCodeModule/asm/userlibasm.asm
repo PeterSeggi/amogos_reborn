@@ -1,4 +1,5 @@
-
+GLOBAL _cli
+GLOBAL _sti
 GLOBAL _print
 GLOBAL _read
 GLOBAL _draw
@@ -103,10 +104,7 @@ _sleep:
 .end:
     mov rsp, rbp
     pop rbp
-    ret
-	mov rsp, rbp
-	pop rbp
-	ret
+    ret    
 
 ;================================================================================================================================
 ;_getRegs 
@@ -218,6 +216,13 @@ _opError:
     mov cr6, rax
     ret         ; ironico que este ese ret pero bueno, nunca sobra 
 
+_cli:
+	cli
+	ret
 
+
+_sti:
+	sti
+	ret
 section .bss
     newLineString db "hello" 
