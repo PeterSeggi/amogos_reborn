@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <mman.h>
 #include <processManager.h>
+#include <interrupts.h>
 
 
 
@@ -65,6 +66,7 @@ void initializeScheduler(){
     int size = sizeof(PriorityArray);
     scheduler = my_malloc(size);
     scheduler->size = 0;
+    scheduler->runnableProcs = 0;
     scheduler->currentPriorityOffset = 0;    //señalizo que no tiene procesos corriendo aun
     int myPriorities[10] = {4, 4, 4, 4, 3, 3, 3, 2, 2, 1};
     for (int i = 0; i < 10; i++) {
@@ -186,6 +188,7 @@ void addProcess(int pid, int priority, ProcessNode * node){
     if(scheduler!=NULL){
         listInsert(scheduler->list[priority], node);  
     }
+    if (priority > 0) scheduler->runnableProcs++;
 }
 
 int nextProcess(){
@@ -194,6 +197,13 @@ int nextProcess(){
 }
 
 int nextProcessInList(ProcessList * list){
+
+    // si no tengo nada q correr voy directo a idle
+    if(scheduler->runnableProcs == 0){
+        // basically el pid del idle
+        return scheduler->list[0]->firstProcess->pid;
+    }
+
     if(list->size == 0){            //si la prioridad no tiene procesos, sigue buscando
         /**
          * int priority = scheduler->priority[scheduler->currentPriorityOffset];
@@ -206,8 +216,12 @@ int nextProcessInList(ProcessList * list){
     }
     else if(list->current == NULL){     //primera vez poniendo un proceso de la lista en marcha
         list->current = list->firstProcess; 
-        // aca tendria q hacer q si esta blocked q mande al siguiente
-        return list->current->pid;
+        if (processTable->processes[list->current->pid]->state == BLOCKED){
+            return nextProcessInList(scheduler->list[getNextPriority()]);
+        }
+        else{
+            return list->current->pid;
+        }
     }
     else{
         if(list->current->next == NULL){    //ultimo proceso de la lista
@@ -216,8 +230,12 @@ int nextProcessInList(ProcessList * list){
         }
         else{
             list->current = list->current->next;    //quiero retornar el pid del SIGUIENTE
-            // mismo aca, si el siguiente esta blocked tendria q devolver el siguiente 
-            return list->current->pid;
+            if (processTable->processes[list->current->pid]->state == BLOCKED){
+                return nextProcessInList(scheduler->list[getNextPriority()]);
+            }
+            else{
+                return list->current->pid;
+            }
         }
     }
 }
@@ -269,6 +287,8 @@ int createSleeper(unsigned long until_ticks){
     newProc->until_ticks = until_ticks;
     newProc->pid = processTable->runningPid;
     processTable->processes[processTable->runningPid]->state = BLOCKED;
+    scheduler->runnableProcs--;
+    // algo util seria llamar schedule aca si se puede
 }
 
 int check_sleepers(unsigned long current_tick){
@@ -279,6 +299,7 @@ int check_sleepers(unsigned long current_tick){
     while(current_proc != NULL){
         if (current_proc->until_ticks == current_tick){
             processTable->processes[current_proc->pid]->state = READY;
+            scheduler->runnableProcs++;
 
             // aca llego si ya tuve alguna iteracion 
             if (previous_proc != NULL){

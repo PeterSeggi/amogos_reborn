@@ -47,11 +47,11 @@ typedef struct ProcessList{
 }ProcessList;
 
 typedef struct PriorityArray{
-    // esto no tendrian que ser 4 porq solo tenemos hasta esa prioridad y no hay priori 0?
     ProcessList * list[5];
     int size;
     int priority[10];
     int currentPriorityOffset;
+    int runnableProcs;
 }PriorityArray;
 
 typedef struct SleepingProcess{
