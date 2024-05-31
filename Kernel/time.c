@@ -21,6 +21,8 @@ long long milis_elapsed() { return ((long long)ticks * 1000 / 18); }
 
 unsigned long seconds_elapsed() { return ticks / 18; }
 
+int timer_lock;
+
 void update_clock() {
   if (ticks % 18 == 0) {
 
@@ -149,6 +151,7 @@ void printDate() {
 
 void timer_handler() {
   ticks++;
+  timer_lock = 0;
   check_sleepers(ticks);
   // update_clock();
 }
@@ -157,7 +160,8 @@ void sleep(int sec, int uni) {
 
 
   unsigned long until_ticks = ticks_elapsed() + (sec * 18);
-  createSleeper(until_ticks);
+  timer_lock = 1;
+  createSleeper(until_ticks, &timer_lock);
 
     /*
   if (sec == 0) {

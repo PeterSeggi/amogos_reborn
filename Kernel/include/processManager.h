@@ -90,8 +90,10 @@ void _hlt();
 void _setUser(void);
 void initializeSleepingTable(void);
 int sleepingTableAppend(SleepingProcess * process);
-int createSleeper(unsigned long until_ticks);
+int createSleeper(unsigned long until_ticks, int* timer_lock);
 int check_sleepers(unsigned long current_tick);
-void * schedule(void * rsp);
+
+// queda comentada porq es quasi-privada
+// void * schedule(void * rsp);
 
 #endif

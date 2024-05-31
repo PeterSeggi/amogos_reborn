@@ -277,7 +277,7 @@ int sleepingTableAppend(SleepingProcess * process){
     return 0;
 }
 
-int createSleeper(unsigned long until_ticks){
+int createSleeper(unsigned long until_ticks, int* timer_lock){
     SleepingProcess* newProc = (SleepingProcess *)my_malloc(sizeof(SleepingProcess));
 
     // si no tengo lugar para mas procesos lo libero
@@ -288,7 +288,12 @@ int createSleeper(unsigned long until_ticks){
     newProc->pid = processTable->runningPid;
     processTable->processes[processTable->runningPid]->state = BLOCKED;
     scheduler->runnableProcs--;
-    // algo util seria llamar schedule aca si se puede
+    
+    // esto es para que se frene hasta que haya un timer tick
+    while(*timer_lock){
+        _hlt();
+    }
+
 }
 
 int check_sleepers(unsigned long current_tick){
