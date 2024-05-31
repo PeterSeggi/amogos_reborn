@@ -21,6 +21,26 @@ char command_buffer[BUFFER_SIZE];
 static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak", "mem"};
 char char_buffer[1];
 
+typedef enum {
+    EXIT,
+    CLEAR,
+    INC_SIZE,
+    DEC_SIZE,
+    TIME,
+    SLEEP,
+    INFO_SLEEP,
+    HELP,
+    MILISLEEP,
+    NANOSLEEP,
+    REGISTERS,
+    SNAKE,
+    TEST_DIV,
+    TEST_INVALID,
+    SPEAK,
+    MEM
+} COMMAND_TYPE;
+
+
 // Cursors & flags
 int command_cursor = 0;
 int cursor_y;
@@ -61,7 +81,7 @@ int shell(){
         if (read(char_buffer, 1) == 1){
             process_key(char_buffer[0]);
         }
-        sleep_once();
+        //sleep_once();
     }
 
     clearScreen();
@@ -117,7 +137,7 @@ void process_command(char* buffer){
                 case 0:
                     exit_command = 1;
                     write_out("Bye now! Hope you enjoyed your stay!");
-                    sleep(2, 0);
+                    //sleep(2, 0);
                     break;
                 case 1:
                     clearScreen(); 
@@ -192,7 +212,10 @@ void process_command(char* buffer){
                     break;
                 
                 case 8:
+                    _cli();
+                    write_out("saracatunga\n");
                     sleep(3000, 1);
+                    _sti();
                     break;
 
                 case 9:
@@ -228,11 +251,11 @@ void process_command(char* buffer){
                 case 12:
                     write_out("Vamos a testear dividir 1 por 0 en:\n");
                     write_out("3...\n");
-                    sleep(1, 0);
+                    //sleep(1, 0);
                     write_out("2...\n");
-                    sleep(1, 0);
+                    //sleep(1, 0);
                     write_out("1...\n");
-                    sleep(1, 0);
+                    //sleep(1, 0);
                     int a = 1;
                     int b = 0;
                     if (a/b ==1)

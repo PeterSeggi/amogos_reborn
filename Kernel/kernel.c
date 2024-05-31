@@ -10,7 +10,7 @@
 #include <keyboard.h>
 #include <interrupts.h>
 #include <mman.h>
-#include <processTest.h>
+#include <processManager.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -58,22 +58,23 @@ void * initializeKernelBinary()
 
 int main()
 {	
+	_cli();
     load_idt();
     flush_buffer();
 	mm_init();
+	initializeSleepingTable();
+	initializeProcessTable();
+	initializeScheduler();
 
-	//pruebas de procesos
-	ProcessTable * processTable;
-	processTable = (ProcessTable *)my_malloc(sizeof(ProcessTable)); //tabla de procesos
-    processTable->size = 0;
-    Process * process1 = createProcess(processTable);
-	Process * process2 = createProcess(processTable);
-
-	executeProcess(process1);
+	//_sti();
+	//while(1){
+	//	_hlt();
+	//}
+    
 	
 
 	//fin pruebas
-	_setUser();
+	//_setUser();
 
 //    Esto no hace falta porque el salto se hace en set user
 //    ((EntryPoint) userspaceAddress)();
