@@ -82,15 +82,15 @@ void stackUnprep(void);
 uint64_t initializeStack(void * rsp, void * rip);
 void initializeProcessTable(void);
 void initializeScheduler(void);
-int createProcessWithpriority(void * function, unsigned int priority);
+Process * createProcessWithpriority(void * function, unsigned int priority);
 void _cli();
 void _sti();
 void _hlt();
 void _setUser(void);
 void initializeSleepingTable(void);
 int sleepingTableAppend(SleepingProcess * process);
-int createSleeper(unsigned long until_ticks, int* timer_lock);
-int check_sleepers(unsigned long current_tick);
+void createSleeper(unsigned long until_ticks, int* timer_lock);
+void check_sleepers(unsigned long current_tick);
 
 // queda comentada porq es quasi-privada
 // void * schedule(void * rsp);

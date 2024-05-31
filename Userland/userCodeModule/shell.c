@@ -6,8 +6,8 @@
 #include <stddef.h>
 
 #define COMMANDS 19 //AGREGUE UNO TODO: VOLVER A 15
-extern endOfBinary;//ESTO TMB
-extern bss;//ESTO TMB
+extern char endOfBinary;//ESTO TMB
+extern char bss;//ESTO TMB
 #define VERT_SIZE 32
 #define LINE_SIZE 63
 #define BUFFER_SIZE 128
@@ -343,11 +343,11 @@ void process_command(char* buffer){
 
                 case 15://TODO: AYUDAME LOCO
                     write_out("endOfBinary: ");
-                    uintToBase(&endOfBinary, aux, 16);
+                    uintToBase((uint64_t) &endOfBinary, aux, 16);
                     write_out(aux);
                     write_out("\n");
                     write_out("bss: ");
-                    uintToBase(&bss, aux, 16);
+                    uintToBase((uint64_t) &bss, aux, 16);
                     write_out(aux);
                     write_out("\n");
                     getMemState(aux_mem_state);
@@ -385,7 +385,7 @@ void process_command(char* buffer){
                         else{
                             *(aux_mem_pointer)=777;
                             write_out("aux_mem_pointer = ");
-                            uintToBase(aux_mem_pointer, aux, 10);
+                            uintToBase((uint64_t) aux_mem_pointer, aux, 10);
                             write_out(aux);
                             write_out("\n");
                             write_out("*(aux_mem_pointer) = ");

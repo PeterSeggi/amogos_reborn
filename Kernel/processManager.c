@@ -4,29 +4,6 @@
 #include <interrupts.h>
 
 
-
-Process * createProcess(void * function);
-pid_t nextProcess(void);
-void scheduler_add(pid_t pid, int priority, ProcessNode * node);
-void initializeScheduler(void);
-int processTableAppend(Process * process);
-//void destroyProcess(Process * process);
-void stackTest(int myrsp);
-void createStack(void);
-void stackPrep(void);
-void stackUnprep(void);
-uint64_t initializeStack(void * rsp, void * rip);
-void initializeProcessTable(void);
-void initializeScheduler(void);
-int createProcessWithpriority(void * function, unsigned int priority);
-void _cli();
-void _sti();
-void _hlt();
-void _setUser(void);
-void initializeSleepingTable(void);
-int sleepingTableAppend(SleepingProcess * process);
-int createSleeper(unsigned long until_ticks, int* timer_lock);
-int check_sleepers(unsigned long current_tick);
 ProcessNode * deleteFromList(ProcessNode * current, pid_t pid);
 void delete_from_pcb(pid_t pid);
 void destroyProcess(Process * process);
@@ -34,6 +11,7 @@ void destroyProcess(Process * process);
 pid_t new_pid();
 void unschedule(pid_t pid);
 pid_t nextProcessInList(ProcessList * list);
+int getNextPriority();
 
 //variables globales
 ProcessTable * processTable = NULL;
@@ -91,7 +69,7 @@ Process * createProcess(void * function){
     return createProcessWithpriority(function, DEFAULT_PRIORITY);  //por defecto se crea con prioridad 4
 }
 
-int createProcessWithpriority(void * function, unsigned int priority){
+Process * createProcessWithpriority(void * function, unsigned int priority){
     _cli();
     Process * process = my_malloc(INITIAL_PROCESS_SIZE);
     process->memory_size = INITIAL_PROCESS_SIZE;
@@ -167,7 +145,13 @@ void change_priority(pid_t pid, int priority){
         
         //sacar de scheduler
         unschedule(pid);
-        scheduler_add(pid, priority, processTable->processes[pid]);
+        //TODO FREE DE ESTO??? fijarse si scheduler add toma responsabilidd
+        //lo cambiamos por un warning @juli
+        ProcessNode * node = my_malloc(sizeof(ProcessNode));
+        if(!node) return;//allocation failed
+        node->pid = pid;
+        node->next = NULL;
+        scheduler_add(pid, priority, node);
         processTable->processes[pid]->priority = priority;
     }
 
@@ -327,7 +311,7 @@ int sleepingTableAppend(SleepingProcess * process){
     return 0;
 }
 
-int createSleeper(unsigned long until_ticks, int* timer_lock){
+void createSleeper(unsigned long until_ticks, int* timer_lock){
     SleepingProcess* newProc = (SleepingProcess *)my_malloc(sizeof(SleepingProcess));
 
     // si no tengo lugar para mas procesos lo libero
@@ -346,7 +330,7 @@ int createSleeper(unsigned long until_ticks, int* timer_lock){
 
 }
 
-int check_sleepers(unsigned long current_tick){
+void check_sleepers(unsigned long current_tick){
 
     SleepingProcess* current_proc = sleepingTable->first;
     SleepingProcess* previous_proc = NULL;
