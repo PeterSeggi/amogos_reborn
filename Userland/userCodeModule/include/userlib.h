@@ -188,6 +188,10 @@ void beep(uint32_t frequency, int duration);
 // Memory
 //================================================================================================================================
 
+void * my_malloc(uint16_t size);
+
+void my_free(void * addr_to_free);
+
 void getMemState(uint64_t * states);
 
 char byteConverter(uint64_t * amount);

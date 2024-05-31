@@ -198,6 +198,14 @@ void beep(uint32_t frequency, int duration){
 // Memory
 //================================================================================================================================
 
+void * my_malloc(uint16_t size){
+    return _my_malloc(size);
+}
+
+void my_free(void * addr_to_free){
+    _my_free(addr_to_free);
+}
+
 void getMemState(uint64_t * states){
     _getMemState(states);
 }
