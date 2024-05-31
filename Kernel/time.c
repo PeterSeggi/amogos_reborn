@@ -1,8 +1,9 @@
+#include <interrupts.h>
 #include <lib.h>
 #include <naiveConsole.h>
 #include <stdint.h>
 #include <time.h>
-#include <interrupts.h>
+#include <processManager.h>
 
 #define MILLENIUM 2000 // cambiarlo si llega a ser necesario
 #define CENTURY 0      // lo usamos para calcular la fecha completa
@@ -14,22 +15,20 @@ char *dayNames[] = {"Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"};
 
 unsigned long ticks_elapsed() { return ticks; }
 
-long long nanos_elapsed(){
-  return ((long long)ticks*1000000000/18);
-}
+long long nanos_elapsed() { return ((long long)ticks * 1000000000 / 18); }
 
-long long milis_elapsed(){
-  return ((long long)ticks*1000/18);
-}
+long long milis_elapsed() { return ((long long)ticks * 1000 / 18); }
 
 unsigned long seconds_elapsed() { return ticks / 18; }
+
+int timer_lock;
 
 void update_clock() {
   if (ticks % 18 == 0) {
 
     uint8_t *current = getCurrentVideo();
     setCurrentVideo(clockLocation);
-    //printTime();
+    // printTime();
     setCurrentVideo(current);
   }
 }
@@ -114,34 +113,36 @@ uint8_t calculateMonthLastDay(uint8_t month, uint16_t year) {
   }
 }
 
-void printTime(int *hrs, int *min, int *seg){
-     
-    uint8_t segs, hrss, mins;
-    formatTime(&hrss, &mins, &segs);
-    *hrs=hrss;
-    *min=mins;
-    *seg=segs;
-    
-    //no tiene sentido, en esta linea por alguna razón solo andan bien los min
-    //formatTime((uint32_t*)hrs, (uint32_t*)min, (uint32_t*)seg);
+void printTime(int *hrs, int *min, int *seg) {
+
+  uint8_t segs, hrss, mins;
+  formatTime(&hrss, &mins, &segs);
+  *hrs = hrss;
+  *min = mins;
+  *seg = segs;
+
+  // no tiene sentido, en esta linea por alguna razón solo andan bien los min
+  // formatTime((uint32_t*)hrs, (uint32_t*)min, (uint32_t*)seg);
 }
 
-void printDate(){
-	uint8_t dayWeek, dayMonth, month;
-	uint16_t year;
-	formatDate(&dayWeek, &dayMonth, &month, &year);
+void printDate() {
+  uint8_t dayWeek, dayMonth, month;
+  uint16_t year;
+  formatDate(&dayWeek, &dayMonth, &month, &year);
 
-	ncPrint("Date: ");
-	ncPrint(dayNames[dayWeek-1]);
-	ncPrint(" ");
-	if(dayMonth<10) ncPrintDec(0);
-	ncPrintDec(dayMonth);
-	ncPrint("/");
-	if(month<10) ncPrintDec(0);
-	ncPrintDec(month);
-	ncPrint("/");
-	ncPrintDec(year);
-	ncNewline();
+  ncPrint("Date: ");
+  ncPrint(dayNames[dayWeek - 1]);
+  ncPrint(" ");
+  if (dayMonth < 10)
+    ncPrintDec(0);
+  ncPrintDec(dayMonth);
+  ncPrint("/");
+  if (month < 10)
+    ncPrintDec(0);
+  ncPrintDec(month);
+  ncPrint("/");
+  ncPrintDec(year);
+  ncNewline();
 }
 
 //================================================================================================================================
@@ -150,15 +151,27 @@ void printDate(){
 
 void timer_handler() {
   ticks++;
-  //update_clock();
+  timer_lock = 0;
+  check_sleepers(ticks);
+  // update_clock();
 }
 
-void sleep(int sec, int uni){
-  if (sec == 0){
+void sleep(int sec, int uni) {
+
+
+  unsigned long until_ticks = ticks_elapsed() + (sec * 18);
+  timer_lock = 1;
+  createSleeper(until_ticks, &timer_lock);
+
+    /*
+  if (sec == 0) {
     _hlt();
     return;
   }
-  
+
   unsigned long t0 = ticks_elapsed();
-  while(((ticks_elapsed()-t0)*pow(1000, uni))/18 < sec ) _hlt(); 
+  while (((ticks_elapsed() - t0) * pow(1000, uni)) / 18 < sec)
+    _hlt();
+
+    */
 }

@@ -88,3 +88,19 @@ make clean
 exit
 sexo
 dashboard memory watch $sp
+./makeador.sh 
+./tgdb
+./makeador.sh 
+./makeador.sh 
+./makeador.sh 
+./makeador.sh 
+cd Toolchain/
+make clean 
+clear
+cd ..
+make clean
+cd Toolchain/
+make all
+cd ..
+make all
+exit

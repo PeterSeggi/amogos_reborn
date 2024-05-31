@@ -51,7 +51,20 @@ typedef struct PriorityArray{
     int size;
     int priority[10];
     int currentPriorityOffset;
+    int runnableProcs;
 }PriorityArray;
+
+typedef struct SleepingProcess{
+    int pid;
+    unsigned long until_ticks;
+    struct SleepingProcess* next; 
+}SleepingProcess;
+
+typedef struct SleepingTable{
+    unsigned int size;
+    SleepingProcess * first;
+    SleepingProcess * last;
+}SleepingTable;
 
 Process * createProcess(void * function);
 int nextProcess(void);
@@ -70,10 +83,17 @@ void cosa22(void);
 uint64_t initializeStack(void * rsp, void * rip);
 void initializeProcessTable(void);
 void initializeScheduler(void);
-createProcessWithpriority(void * function, unsigned int priority);
+int createProcessWithpriority(void * function, unsigned int priority);
 void _cli();
 void _sti();
 void _hlt();
 void _setUser(void);
+void initializeSleepingTable(void);
+int sleepingTableAppend(SleepingProcess * process);
+int createSleeper(unsigned long until_ticks, int* timer_lock);
+int check_sleepers(unsigned long current_tick);
+
+// queda comentada porq es quasi-privada
+// void * schedule(void * rsp);
 
 #endif

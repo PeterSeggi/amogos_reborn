@@ -6,6 +6,7 @@ GLOBAL picMasterMask
 GLOBAL picSlaveMask
 GLOBAL haltcpu
 GLOBAL _hlt
+GLOBAL _idle
 
 GLOBAL _irq00Handler
 GLOBAL _irq01Handler
@@ -268,6 +269,9 @@ haltcpu:
 	hlt
 	ret
 
+_idle:
+    hlt
+    jmp _idle
 
 _regsInterrupt:
     mov rax, regsBuf

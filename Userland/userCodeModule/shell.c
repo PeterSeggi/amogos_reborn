@@ -251,11 +251,11 @@ void process_command(char* buffer){
                 case 12:
                     write_out("Vamos a testear dividir 1 por 0 en:\n");
                     write_out("3...\n");
-                    sleep(1, 0);
+                    //sleep(1, 0);
                     write_out("2...\n");
-                    sleep(1, 0);
+                    //sleep(1, 0);
                     write_out("1...\n");
-                    sleep(1, 0);
+                    //sleep(1, 0);
                     int a = 1;
                     int b = 0;
                     if (a/b ==1)
