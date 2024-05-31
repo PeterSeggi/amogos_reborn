@@ -127,6 +127,7 @@ int createProcessWithpriority(void * function, unsigned int priority){
         //free(process);
         //free(node);
         _sti();
+        return NULL;
     }
     addProcess(process->pid, priority, node);  //agrega el proceso a la cola de scheduling con la prioridad deseada
     _sti();
