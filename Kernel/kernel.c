@@ -62,6 +62,7 @@ int main()
     load_idt();
     flush_buffer();
 	mm_init();
+	initializeSleepingTable();
 	initializeProcessTable();
 	initializeScheduler();
 	//_sti();

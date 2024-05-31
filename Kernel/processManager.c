@@ -1,4 +1,3 @@
-
 #include <stdint.h>
 #include <mman.h>
 #include <processManager.h>
@@ -11,6 +10,7 @@
 //variables globales
 ProcessTable * processTable = NULL;
 PriorityArray * scheduler = NULL;
+SleepingTable * sleepingTable = NULL;
 
 void testNext(){
     int firstProcess = nextProcess();
@@ -87,7 +87,8 @@ void initializeScheduler(){
 Process * createProcess(void * function){
     return createProcessWithpriority(function, DEFAULT_PRIORITY);  //por defecto se crea con prioridad 4
 }
-createProcessWithpriority(void * function, unsigned int priority){
+
+int createProcessWithpriority(void * function, unsigned int priority){
     _cli();
     Process * process = my_malloc(INITIAL_PROCESS_SIZE);
     process->memory_size = INITIAL_PROCESS_SIZE;
@@ -214,6 +215,51 @@ int getNextPriority(){
     scheduler->currentPriorityOffset = (scheduler->currentPriorityOffset+1)%10;
     return scheduler->priority[scheduler->currentPriorityOffset];
 }
+
+void initializeSleepingTable(void){
+    int size = sizeof(SleepingTable);
+    // if(size%8!=0){size+=8-(size%8);}
+    sleepingTable = (SleepingTable*)my_malloc(size);
+    sleepingTable->size = 0;
+    sleepingTable->first = NULL;
+    sleepingTable->last = NULL;
+}
+
+
+int sleepingTableAppend(SleepingProcess * process){ 
+    
+    if(sleepingTable->size+1 >= MAX_PROCESS_COUNT || process==NULL){
+        return 1;
+    }
+
+    // aca solo entra cuando esta vacia
+    if (sleepingTable->first == NULL){
+        sleepingTable->first = process;
+        sleepingTable->last = process;
+    }
+
+    // aca le meto si ya hay algo 
+    else{
+        sleepingTable->last->next = process;
+        sleepingTable->last = process;
+    }
+
+    sleepingTable->size++;
+    return 0;
+}
+
+int createSleeper(unsigned long until_ticks){
+    SleepingProcess* newProc = (SleepingProcess *)my_malloc(sizeof(SleepingProcess));
+
+    // si no tengo lugar para mas procesos lo libero
+    if (sleepingTableAppend(newProc)){
+        my_free(newProc);
+    }
+    newProc->until_ticks = until_ticks;
+    newProc->pid = processTable->runningPid;
+    processTable->processes[processTable->runningPid]->state = BLOCKED;
+}
+
 
 
 /*void destroyProcess(Process * process){
