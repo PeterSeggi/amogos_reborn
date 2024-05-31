@@ -1,4 +1,3 @@
-#include "include/processManager.h"
 #include <stdint.h>
 #include <mman.h>
 #include <processManager.h>
@@ -12,6 +11,8 @@
 ProcessTable * processTable = NULL;
 PriorityArray * scheduler = NULL;
 SleepingTable * sleepingTable = NULL;
+
+int schedule_lock = 1;
 
 void testNext(){
     int firstProcess = nextProcess();
@@ -79,9 +80,12 @@ void initializeScheduler(){
             scheduler->list[i]->size=0;
         }
     }
-    createProcess(0x400000);
     //createProcess(&my_main);   
-    //createProcessWithpriority(&_hlt, 0);     //proceso vigilante _hlt
+    createProcessWithpriority(&_idle, 0);     //proceso vigilante _hlt
+    createProcess(0x400000);
+
+    schedule_lock = 0;
+    _idle();
 }
 
 Process * createProcess(void * function){
@@ -138,6 +142,11 @@ int processTableAppend(Process * process){
 }
 
 void * schedule(void * rsp){
+
+    if (schedule_lock == 1){
+        return rsp;
+    } 
+
     int priority = scheduler->priority[scheduler->currentPriorityOffset];
     if(scheduler->list[priority]->current != NULL){ //si estoy en el primer proceso no me guardo el stack de kernel
         processTable->processes[processTable->runningPid]->registers.rsp = rsp;           
@@ -197,6 +206,7 @@ int nextProcessInList(ProcessList * list){
     }
     else if(list->current == NULL){     //primera vez poniendo un proceso de la lista en marcha
         list->current = list->firstProcess; 
+        // aca tendria q hacer q si esta blocked q mande al siguiente
         return list->current->pid;
     }
     else{
@@ -206,6 +216,7 @@ int nextProcessInList(ProcessList * list){
         }
         else{
             list->current = list->current->next;    //quiero retornar el pid del SIGUIENTE
+            // mismo aca, si el siguiente esta blocked tendria q devolver el siguiente 
             return list->current->pid;
         }
     }

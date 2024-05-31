@@ -65,6 +65,7 @@ int main()
 	initializeSleepingTable();
 	initializeProcessTable();
 	initializeScheduler();
+
 	//_sti();
 	//while(1){
 	//	_hlt();

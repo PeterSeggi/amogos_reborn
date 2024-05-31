@@ -47,6 +47,7 @@ typedef struct ProcessList{
 }ProcessList;
 
 typedef struct PriorityArray{
+    // esto no tendrian que ser 4 porq solo tenemos hasta esa prioridad y no hay priori 0?
     ProcessList * list[5];
     int size;
     int priority[10];
@@ -91,5 +92,6 @@ void initializeSleepingTable(void);
 int sleepingTableAppend(SleepingProcess * process);
 int createSleeper(unsigned long until_ticks);
 int check_sleepers(unsigned long current_tick);
+void * schedule(void * rsp);
 
 #endif
