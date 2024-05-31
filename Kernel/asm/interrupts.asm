@@ -6,6 +6,7 @@ GLOBAL picMasterMask
 GLOBAL picSlaveMask
 GLOBAL haltcpu
 GLOBAL _hlt
+GLOBAL _idle
 
 GLOBAL _irq00Handler
 GLOBAL _irq01Handler
@@ -27,6 +28,7 @@ EXTERN irqDispatcher
 EXTERN syscall_handler
 EXTERN exceptionDispatcher
 EXTERN getStackBase
+EXTERN schedule
 
 SECTION .text
 
@@ -196,7 +198,21 @@ picSlaveMask:
 
 ;8254 Timer (Timer Tick)
 _irq00Handler:
-	irqHandlerMaster 0
+	pushState
+
+	mov rdi, 0 ; pasaje de parametro
+	call irqDispatcher
+
+	mov rdi, rsp
+	call schedule
+	mov rsp, rax
+
+	; signal pic EOI (End of Interrupt)
+	mov al, 20h
+	out 20h, al
+
+	popState
+	iretq
 
 ;Keyboard
 _irq01Handler:
@@ -253,6 +269,9 @@ haltcpu:
 	hlt
 	ret
 
+_idle:
+    hlt
+    jmp _idle
 
 _regsInterrupt:
     mov rax, regsBuf

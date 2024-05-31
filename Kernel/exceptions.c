@@ -19,7 +19,7 @@ char escape[1];
 
 
 void exceptionDispatcher(int exception) {
-    beep(1000, 1);
+ //   beep(1000, 1);
     clear();
 	if (exception == ZERO_EXCEPTION_ID){
         zero_division();
