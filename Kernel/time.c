@@ -149,9 +149,7 @@ void printDate() {
 
 void timer_handler() {
   ticks++;
-  // check_sleepers(ticks)
-    // if sleeperTable->first == NULL -> return 
-    // else check :D
+  check_sleepers(ticks);
   // update_clock();
 }
 
@@ -161,6 +159,7 @@ void sleep(int sec, int uni) {
   unsigned long until_ticks = ticks_elapsed() + (sec * 18);
   createSleeper(until_ticks);
 
+    /*
   if (sec == 0) {
     _hlt();
     return;
@@ -170,4 +169,5 @@ void sleep(int sec, int uni) {
   while (((ticks_elapsed() - t0) * pow(1000, uni)) / 18 < sec)
     _hlt();
 
+    */
 }

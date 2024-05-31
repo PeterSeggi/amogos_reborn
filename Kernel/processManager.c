@@ -1,3 +1,4 @@
+#include "include/processManager.h"
 #include <stdint.h>
 #include <mman.h>
 #include <processManager.h>
@@ -53,7 +54,6 @@ void initializeProcessTable(void){
     processTable = (ProcessTable *)my_malloc(size);
     processTable->size = 0;
     processTable->runningPid = 0;
-    //todo: crear el proceso halt aca y que corra cuando no hay nada? kcyo maybe :D
 }
 
 void executeProcess(uint64_t rip){
@@ -260,6 +260,40 @@ int createSleeper(unsigned long until_ticks){
     processTable->processes[processTable->runningPid]->state = BLOCKED;
 }
 
+int check_sleepers(unsigned long current_tick){
+
+    SleepingProcess* current_proc = sleepingTable->first;
+    SleepingProcess* previous_proc = NULL;
+
+    while(current_proc != NULL){
+        if (current_proc->until_ticks == current_tick){
+            processTable->processes[current_proc->pid]->state = READY;
+
+            // aca llego si ya tuve alguna iteracion 
+            if (previous_proc != NULL){
+                previous_proc->next = current_proc->next;
+
+                // me aseguro de cambiar el last aca 
+                if (current_proc->next == NULL){
+                    sleepingTable->last = previous_proc;
+                }
+            }
+
+            // Solo si es el primer caso
+            else{
+                sleepingTable->first = current_proc->next; 
+            }
+
+            current_proc = current_proc->next;
+            my_free(current_proc);
+        }
+
+        else{
+            previous_proc = current_proc;
+            current_proc = current_proc->next;
+        }
+    }
+}
 
 
 /*void destroyProcess(Process * process){

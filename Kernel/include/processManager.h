@@ -90,5 +90,6 @@ void _setUser(void);
 void initializeSleepingTable(void);
 int sleepingTableAppend(SleepingProcess * process);
 int createSleeper(unsigned long until_ticks);
+int check_sleepers(unsigned long current_tick);
 
 #endif
