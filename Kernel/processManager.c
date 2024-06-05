@@ -55,7 +55,10 @@ void initializeProcessTable(void){
     if(size%8!=0){size+=8-(size%8);}
     processTable = (ProcessTable *)my_malloc(size);
     processTable->size = 0;
-    processTable->runningPid = 0;
+    processTable->runningPid = 1;
+    for(int i=0; i<MAX_PROCESS_COUNT; i++){
+        processTable->processes[i] = NULL;
+    }
 }
 
 void executeProcess(uint64_t rip){
@@ -105,8 +108,13 @@ int createProcessWithpriority(void * function, unsigned int priority){
     process->registers.rsp = process->registers.rbp;        //inicialmente stack vacio
     process->registers.rip = (uint64_t)function;  //direccion de la funcion a ejecutar
     process->registers.rsp = initializeStack(process->registers.rsp, process->registers.rip); 
-    process->pid = processTable->size + 1;       //cada nuevo proceso recibe el pid siguiente en orden natural
-    
+    process->pid = new_pid();       //cada nuevo proceso recibe el pid siguiente en orden natural
+    if(process->pid == -1){
+        my_free(process);  //libero recursos utlizados
+        _sti();
+        return NULL;
+    }
+    process->priority = priority;
     int result = processTableAppend(process);
     if(result == 1){    //error en la creacion del proceso
         //free(process);  //libero recursos utlizados
@@ -130,8 +138,18 @@ int createProcessWithpriority(void * function, unsigned int priority){
         return NULL;
     }
     addProcess(process->pid, priority, node);  //agrega el proceso a la cola de scheduling con la prioridad deseada
+    
     _sti();
     return process;                     
+}
+
+int new_pid(){
+    for(int i=1;i<MAX_PROCESS_COUNT;i++){
+        if(processTable->processes[i] == NULL){
+            return i;
+        }
+    }
+    return -1;
 }
 
 int processTableAppend(Process * process){ 
@@ -144,6 +162,14 @@ int processTableAppend(Process * process){
     return 0;
 }
 
+
+Process * get_processes(){
+    return processTable->processes;
+}
+
+
+//###############################--SCHEDULING ZONE--#########################################################
+
 void * schedule(void * rsp){
 
     if (schedule_lock == 1){
@@ -154,10 +180,66 @@ void * schedule(void * rsp){
     if(scheduler->list[priority]->current != NULL){ //si estoy en el primer proceso no me guardo el stack de kernel
         processTable->processes[processTable->runningPid]->registers.rsp = rsp;           
     }
-    processTable->runningPid = nextProcess(); 
+    processTable->runningPid = nextProcess();   //next process ignora los procesos bloqueados
     return processTable->processes[processTable->runningPid]->registers.rsp;
     //return rsp;
 }
+
+int nextProcess(){
+    int priority = scheduler->priority[scheduler->currentPriorityOffset];
+    return nextProcessInList(scheduler->list[priority]);
+}
+
+int nextProcessInList(ProcessList * list){
+
+    // si no tengo nada q correr voy directo a idle
+    if(scheduler->runnableProcs == 0){
+        // basically el pid del idle
+        return scheduler->list[0]->firstProcess->pid;
+    }
+
+    if(list->size == 0){            //si la prioridad no tiene procesos, sigue buscando
+        /**
+         * int priority = scheduler->priority[scheduler->currentPriorityOffset];
+         * int newPrior;
+         * while((newPrior=getNextPriority()) == priority){
+         *      skippeo todos los 333 si es que en la lista 3 no hay ningun proceso
+         * }
+        */
+        return nextProcessInList(scheduler->list[getNextPriority()]);
+    }
+    else if(list->current == NULL){     //primera vez poniendo un proceso de la lista en marcha || reseteo lista
+        list->current = list->firstProcess; 
+        if (processTable->processes[list->current->pid]->state == BLOCKED){
+            return nextProcessInList(list); //el primero estaba bloqueado, le paso la misma lista para que tome al siguiente 
+        }
+        else{
+            return list->current->pid;
+        }
+    }
+    else{
+        if(list->current->next == NULL){    //ultimo proceso de la lista
+            list->current = NULL; //reseteo la lista
+            return nextProcessInList(scheduler->list[getNextPriority()]);  //esto deja seteado
+        }
+        else{
+            list->current = list->current->next;    //quiero retornar el pid del SIGUIENTE
+            if (processTable->processes[list->current->pid]->state == BLOCKED){
+                return nextProcessInList(list); //paso al siguiente de la lista
+            }
+            else{
+                return list->current->pid;
+            }
+        }
+    }
+}
+
+int getNextPriority(){
+    scheduler->currentPriorityOffset = (scheduler->currentPriorityOffset+1)%10;
+    return scheduler->priority[scheduler->currentPriorityOffset];
+}
+
+//###############################--END OF SCHEDULING ZONE--#########################################################
 
 void listInsert(ProcessList * list, ProcessNode * process){
     if(process==NULL){  //no se admiten nodos vacios
@@ -192,59 +274,7 @@ void addProcess(int pid, int priority, ProcessNode * node){
     if (priority > 0) scheduler->runnableProcs++;
 }
 
-int nextProcess(){
-    int priority = scheduler->priority[scheduler->currentPriorityOffset];
-    return nextProcessInList(scheduler->list[priority]);
-}
 
-int nextProcessInList(ProcessList * list){
-
-    // si no tengo nada q correr voy directo a idle
-    if(scheduler->runnableProcs == 0){
-        // basically el pid del idle
-        return scheduler->list[0]->firstProcess->pid;
-    }
-
-    if(list->size == 0){            //si la prioridad no tiene procesos, sigue buscando
-        /**
-         * int priority = scheduler->priority[scheduler->currentPriorityOffset];
-         * int newPrior;
-         * while((newPrior=getNextPriority()) == priority){
-         *      skippeo todos los 333 si es que en la lista 3 no hay ningun proceso
-         * }
-        */
-        return nextProcessInList(scheduler->list[getNextPriority()]);
-    }
-    else if(list->current == NULL){     //primera vez poniendo un proceso de la lista en marcha
-        list->current = list->firstProcess; 
-        if (processTable->processes[list->current->pid]->state == BLOCKED){
-            return nextProcessInList(scheduler->list[getNextPriority()]);
-        }
-        else{
-            return list->current->pid;
-        }
-    }
-    else{
-        if(list->current->next == NULL){    //ultimo proceso de la lista
-            list->current = NULL; //reseteo la lista
-            return nextProcessInList(scheduler->list[getNextPriority()]);  //esto deja seteado
-        }
-        else{
-            list->current = list->current->next;    //quiero retornar el pid del SIGUIENTE
-            if (processTable->processes[list->current->pid]->state == BLOCKED){
-                return nextProcessInList(scheduler->list[getNextPriority()]);
-            }
-            else{
-                return list->current->pid;
-            }
-        }
-    }
-}
-
-int getNextPriority(){
-    scheduler->currentPriorityOffset = (scheduler->currentPriorityOffset+1)%10;
-    return scheduler->priority[scheduler->currentPriorityOffset];
-}
 
 void initializeSleepingTable(void){
     int size = sizeof(SleepingTable);
@@ -303,7 +333,7 @@ int check_sleepers(unsigned long current_tick){
     SleepingProcess* previous_proc = NULL;
 
     while(current_proc != NULL){
-        if (current_proc->until_ticks == current_tick){
+        if (current_proc->until_ticks <= current_tick){
             processTable->processes[current_proc->pid]->state = READY;
             scheduler->runnableProcs++;
 
@@ -333,6 +363,59 @@ int check_sleepers(unsigned long current_tick){
     }
 }
 
+void block_process(int pid){
+    if(pid<1 || pid>MAX_PROCESS_COUNT){
+        return;
+    }
+    processTable->processes[processTable->runningPid]->state = BLOCKED;
+    scheduler->runnableProcs--;
+}
+
+void unblock_process(int pid){
+    if(pid<1 || pid>MAX_PROCESS_COUNT){
+        return;
+    }
+    processTable->processes[processTable->runningPid]->state = READY;
+    scheduler->runnableProcs++;
+}
+//########################--CEMENTERIO DE PROCESOS--#################################################
+
+
+
+void kill(int pid){     /*ALERT: en caso de que se borre el q esta corriendo, schedule lo va a sacar en proximo loop*/
+    
+    //unschedule(pid);        //primero borro del sched porque uso la referencia a la pcb
+    //delete from sleepingTable
+    //delete_from_pcb(pid);  //recien aca puedo borrar pcb
+    //delete from semaphores
+}
+
+/*void unschedule(int pid){
+    int processPriority = processTable->processes[pid]->priority;
+   scheduler->list[processPriority]->firstProcess = deleteFromList(scheduler->list[processPriority]->firstProcess, pid);
+}
+ProcessNode * deleteFromList(ProcessNode * current, int pid){
+    if(current == NULL){
+        return NULL;
+    }
+    else if(current->pid == pid){
+        ProcessNode * toReturn = current->next;
+        my_free(current);
+        scheduler->size--;
+        scheduler->runnableProcs--;             
+        return toReturn;
+    }
+    else{
+        current->next = deleteFromList(current->next, pid);
+        return current;
+    }
+}
+
+void delete_from_pcb(int pid){
+    my_free(processTable->processes[pid]);
+    processTable->processes[pid] = NULL;    //new_pid chequea NULL asi que dejo los vacios en null
+    processTable->size--;
+}
 
 /*void destroyProcess(Process * process){
     my_free(process->memory_start);

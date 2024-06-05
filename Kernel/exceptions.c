@@ -35,7 +35,7 @@ static void zero_division() {
     showRegs();
     printError("Cuando estes listo y preparado para volver al main (altamente recomendable) presiona cualquier tecla.");
     while(read_key(0) == 0){
-        sleep(0,0);
+        //sleep(1,1);
     }
 
 }

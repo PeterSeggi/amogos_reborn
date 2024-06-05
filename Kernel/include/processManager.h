@@ -10,8 +10,7 @@
 typedef enum State{
     READY,
     RUNNING,
-    BLOCKED,
-    DEAD
+    BLOCKED
 }State;
 
 typedef struct Registers{
@@ -24,6 +23,7 @@ typedef struct Process{
     void * memory_start; //inicio de su memoria reservada
     unsigned int memory_size;
     uint32_t pid;
+    int priority;
     State state;
     Registers registers;
 }Process;
