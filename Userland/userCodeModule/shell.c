@@ -45,7 +45,7 @@ char * get_process_foreground(uint8_t foreground){
 
 void ps(){
     Process ** processes  = NULL;
-    int process_amount = get_processes(processes);
+    int process_amount = get_processes(&processes);
     char aux_aux[BUFFER_SIZE];
     if(!processes){
         write_out("No processes\n");
@@ -71,7 +71,7 @@ void ps(){
         write_out("\t |");
         uintToBase(processes[i]->registers.rbp, aux, 16);
         write_out(aux);
-        write_out("\t | ");
+        write_out("\t |");
         uintToBase(processes[i]->registers.rip, aux, 16);
         write_out(aux);
         write_out("\t |");

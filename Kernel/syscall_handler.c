@@ -14,7 +14,7 @@
 #define STDERR 2
 
 void failure_free(Process ** ptr_list, int size);
-int set_processes(Process ** proc_buff);
+int set_processes(Process *** proc_buff);
 
 void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t rax) {
   switch (rax) {
@@ -170,32 +170,36 @@ void sys_memState(uint64_t states){
 
 //returns -1 when my_malloc fails
 int sys_get_processes(uint64_t proc_buff){
-  return set_processes((Process **) proc_buff);
+  return set_processes((Process ***) proc_buff);
   
 }
 
-int set_processes(Process ** proc_buff){
+int set_processes(Process *** proc_buff){
   if(!get_processTable_size()) return 0;
   Process ** processes = get_processes();
   int process_amount = get_processTable_size();
   Process ** to_ret = (Process **) my_malloc(sizeof(Process *)*process_amount);
   if(!to_ret) return -1;
-  for(int i = 0; i<process_amount; i++){
-    to_ret[i] = (Process *) my_malloc(sizeof(Process));
-    if(!to_ret[i]){
-      failure_free(to_ret, i-1);
-      my_free(to_ret);
-      return -1;
+  //from index=1 since pid0 is not valid
+  for(int i = 1, copied=0; i<MAX_PROCESS_COUNT && copied<process_amount; i++){
+    if(processes[i]){//only copies if process by that pid exists
+      to_ret[copied] = (Process *) my_malloc(sizeof(Process));
+      if(!to_ret[copied]){
+        failure_free(to_ret, copied-1);
+        my_free(to_ret);
+        return -1;
+      }
+      to_ret[copied]->memory_start=processes[i]->memory_start;
+      to_ret[copied]->memory_size=processes[i]->memory_size;
+      to_ret[copied]->pid=processes[i]->pid;
+      to_ret[copied]->priority=processes[i]->priority;
+      to_ret[copied]->state=processes[i]->state;
+      to_ret[copied]->registers=processes[i]->registers;
+      to_ret[copied]->foreground=processes[i]->foreground;
+      copied++;
     }
-    to_ret[i]->memory_start=processes[i]->memory_start;
-    to_ret[i]->memory_size=processes[i]->memory_size;
-    to_ret[i]->pid=processes[i]->pid;
-    to_ret[i]->priority=processes[i]->priority;
-    to_ret[i]->state=processes[i]->state;
-    to_ret[i]->registers=processes[i]->registers;
-    to_ret[i]->foreground=processes[i]->foreground;
   }
-  proc_buff = to_ret;
+  *proc_buff = to_ret;
   return process_amount;
 }
 

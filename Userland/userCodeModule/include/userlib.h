@@ -226,6 +226,6 @@ typedef struct Process{
 void ps(void);
 */
 
-int get_processes(Process ** processes);
+int get_processes(Process *** processes);
 
 #endif
