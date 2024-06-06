@@ -1,19 +1,30 @@
 include Makefile.inc
 
 KERNEL=kernel.bin
-SOURCES=$(wildcard *.c)
 SOURCES_ASM=$(wildcard asm/*.asm)
-OBJECTS=$(SOURCES:.c=.o)
 OBJECTS_ASM=$(SOURCES_ASM:.asm=.o)
 LOADERSRC=loader.asm
+
+ifeq ($(MEMORY_MANAGER), buddy)
+    MEMORY_MANAGER_DIR = buddyMemoryManager
+else
+    MEMORY_MANAGER_DIR = memoryManager
+
+endif
+
+MEMORY_MANAGER_SOURCES = $(wildcard $(MEMORY_MANAGER_DIR)/*.c)
+
+SOURCES_C = $(wildcard *.c)
+OBJECTS_C = $(SOURCES_C:.c=.o)
+OBJECTS = $(OBJECTS_C) $(OBJECTS_ASM) $(MEMORY_MANAGER_SOURCES:.c=.o)
 
 LOADEROBJECT=$(LOADERSRC:.asm=.o)
 STATICLIBS=
 
 all: $(KERNEL)
 
-$(KERNEL): $(LOADEROBJECT) $(OBJECTS) $(STATICLIBS) $(OBJECTS_ASM)
-	$(LD) $(LDFLAGS) -T kernel.ld -o $(KERNEL) $(LOADEROBJECT) $(OBJECTS) $(OBJECTS_ASM) $(STATICLIBS)
+$(KERNEL): $(LOADEROBJECT) $(OBJECTS) $(STATICLIBS) 
+	$(LD) $(LDFLAGS) -T kernel.ld -o $(KERNEL) $(LOADEROBJECT) $(OBJECTS) $(STATICLIBS)
 
 %.o: %.c
 	$(GCC) $(GCCFLAGS) -I./include -c $< -o $@

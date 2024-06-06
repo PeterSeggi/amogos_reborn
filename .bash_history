@@ -86,3 +86,17 @@ make clean
 cd Toolchain
 make clean
 exit
+exit
+clear
+cd Toolchain/
+make clean all
+cd ..
+make all
+clear
+cd Toolchain/
+make clean all
+cd ..
+make clean buddy 
+clear
+make clean buddy 
+exit
