@@ -11,6 +11,8 @@ GLOBAL _my_malloc
 GLOBAL _my_free
 GLOBAL _getMemState
 
+GLOBAL _get_processes
+
 GLOBAL _changeSize
 GLOBAL _opError 
 GLOBAL _divError
@@ -263,3 +265,20 @@ _sti:
 	ret
 section .bss
     newLineString db "hello" 
+
+;================================================================================================================================
+;_get_processes 
+;int 80h para usar la syscall
+;IN: Process *;
+;RET: amount of processes
+;================================================================================================================================
+;================================================================================================================================
+_get_processes:
+	push rbp
+	mov rbp, rsp
+
+    mov rax, 0xA0   ;sys_get_processes ID
+    int 80h;
+	mov rsp, rbp
+	pop rbp
+	ret

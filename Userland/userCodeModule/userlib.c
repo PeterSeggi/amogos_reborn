@@ -233,3 +233,66 @@ char byteConverter(uint64_t * amount){
     }
     else return '\0';
 }
+
+//================================================================================================================================
+// Processes
+//================================================================================================================================
+
+int get_processes(Process ** processes){
+    return _get_processes(processes);
+}
+
+/*
+void ps(){
+    Process ** processes  = NULL;
+    int process_amount = _get_processes(processes);
+    if(!processes){
+        write_out("No processes\n");
+        return;
+    }
+    write_out("PID\t | STATE\t | PRIORITY\t | RSP\t | RBP\t | RIP\t | FOREGROUND\n");
+    char aux[BUFFER_SIZE];
+    for(int i = 0; i<process_amount; i++){
+        uintToBase(processes[i]->pid, aux, 10);
+        write_out(aux);
+        write_out("\t |");
+        write_out(get_process_status(processes[i]->state));
+        write_out("\t |");
+        uintToBase(processes[i]->priority, aux, 10);
+        write_out(aux);
+        write_out("\t |");
+        uintToBase(processes[i]->registers.rsp, aux, 16);
+        write_out(aux);
+        write_out("\t |");
+        uintToBase(processes[i]->registers.rbp, aux, 16);
+        write_out(aux);
+        write_out("\t | ");
+        uintToBase(processes[i]->registers.rip, aux, 16);
+        write_out(aux);
+        write_out("\t |");
+        write_out(get_process_foreground(processes[i]->foreground));
+        write_out("\n");
+    }
+    for(int i = 0; i<process_amount; i++){
+        my_free(processes[i]);
+    }
+    my_free(processes);
+}
+
+char * get_process_status(State state){
+    switch(state){
+        case READY:
+            return "READY";
+        case RUNNING:
+            return "RUNNING";
+        case BLOCKED:
+            return "BLOCKED";
+        default:
+            return "UNKOWN";
+    }
+}
+
+char * get_process_foreground(uint8_t foreground){
+    if(foreground) return "YES";
+    else return "NO";
+}*/

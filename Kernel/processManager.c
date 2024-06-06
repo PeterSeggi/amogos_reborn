@@ -129,6 +129,7 @@ int createProcessWithpriority(void * function, unsigned int priority){
     Process * process = my_malloc(INITIAL_PROCESS_SIZE);
     process->memory_size = INITIAL_PROCESS_SIZE;
     process->state = READY;  
+    process->foreground = 0;
 
     //inicializa el stack
     process->registers.rbp = ( (uint64_t)process + INITIAL_PROCESS_SIZE ); 
@@ -211,11 +212,12 @@ void change_priority(int pid, int priority){
 int get_pid(){
     return processTable->runningPid;
 }
-Process * get_processes(){
+Process ** get_processes(){
     return processTable->processes;
 }
-
-
+int get_processTable_size(){
+    return processTable->size;
+}
 
 
 //###############################--SCHEDULING ZONE--#########################################################
