@@ -238,6 +238,6 @@ char byteConverter(uint64_t * amount){
 // Processes
 //================================================================================================================================
 
-int get_processes(Process *** processes){
-    return _get_processes(processes);
+Process ** get_processes(uint16_t * proc_amount){
+    return _get_processes(proc_amount);
 }
