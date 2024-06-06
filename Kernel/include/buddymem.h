@@ -2,12 +2,16 @@
 
 #define EXIT_SUCCESS 0
 #define MAP_LENGTH 15
-#define EMPTY '0'
-#define FRAGMENTED '1'
-#define FULL '2'
-#define ALLFULL '3'
+
+#define EMPTY 0
+#define FRAGMENTED 1 
+#define FULL 2
+#define ALLFULL 3
+
 #define LEFT 0
 #define RIGHT 1
+
+#define NODE_AMOUNT 2097151
 
 
 typedef struct memNode {
