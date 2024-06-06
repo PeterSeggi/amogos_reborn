@@ -100,3 +100,8 @@ make clean buddy
 clear
 make clean buddy 
 exit
+cd Toolchain/
+make clean 
+cd ..
+make clean 
+exit
