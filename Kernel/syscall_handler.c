@@ -213,11 +213,6 @@ void failure_free(Process ** ptr_list, int size){
     my_free(ptr_list[size--]);
   }
 }
-void sys_memState(uint64_t * states){
-    states[0] = get_mem_total();
-    states[1] = get_mem_vacant();
-    states[2] = get_mem_occupied();
-}
 
 int sys_get_pid(){
   return get_pid();
