@@ -25,14 +25,6 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
     sys_write(rdi, rsi, rdx);
     break;
 
-  case (0x77):
-    sys_draw(rdi, rsi, rdx, rcx, r8);
-    break;
-
-  case (0x83):
-    sys_screenData(rdi, rsi, rdx, rcx);
-    break;
-
   case (0x4e):
     sys_gettimeofday(rdi, rsi, rdx);
     break;
@@ -41,20 +33,36 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
     sys_sleep(rdi, rsi);
     break;  
 
+  case (0x77):
+    sys_draw(rdi, rsi, rdx, rcx, r8);
+    break;
+
   case (0x78):
     sys_registers(rdi);
     break;
 
-  case (0x93):
-    sys_changeSize(rdi, rsi);
+  case (0x83):
+    sys_screenData(rdi, rsi, rdx, rcx);
     break;
 
   case (0x84):
     sys_speak(rdi, rsi);
     break;
 
+  case (0x86):
+    sys_malloc(rdi);
+    break;
+
+  case (0x87):
+    sys_free(rdi);
+    break;
+
   case (0x88):
     sys_memState(rdi);
+    break;
+
+  case (0x93):
+    sys_changeSize(rdi, rsi);
     break;
   }
 }
@@ -134,6 +142,14 @@ void sys_changeSize(uint8_t newSize, uint8_t fd){
 
 void sys_speak(uint64_t frequence, uint64_t duration){
     beep((uint32_t) frequence, (int) duration);
+}
+
+void *sys_malloc(uint16_t size){
+  return my_malloc(size);
+}
+
+void sys_free(void * addr_to_free){
+  return my_free(addr_to_free);
 }
 
 void sys_memState(uint64_t * states){

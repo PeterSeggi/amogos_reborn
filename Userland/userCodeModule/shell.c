@@ -3,8 +3,9 @@
 #include "include/userlibasm.h"
 #include "include/snake.h"
 #include <stdint.h>
+#include <stddef.h>
 
-#define COMMANDS 16 //AGREGUE UNO TODO: VOLVER A 15
+#define COMMANDS 18 //AGREGUE UNO TODO: VOLVER A 15
 extern endOfBinary;//ESTO TMB
 extern bss;//ESTO TMB
 #define VERT_SIZE 32
@@ -18,7 +19,7 @@ char PROMPT_START[] = {127, 0};
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak", "mem"};
+static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak", "mem", "malloc", "free"};
 char char_buffer[1];
 
 typedef enum {
@@ -66,6 +67,7 @@ char* regsNames[18] = {"rax:", "rbx:", "rcx:", "rdx:", "rsi:", "rdi:", "rbp:", "
                        
 uint64_t aux_mem_state[3];
 char byteUnit[2]={0};
+int * aux_mem_pointer = NULL;
 
 int shell(){
     cursor_x = 0;
@@ -305,6 +307,35 @@ void process_command(char* buffer){
                     write_out(aux);
                     write_out(byteUnit);
                     write_out("B\n");
+                    break;
+
+                case 16:
+                    write_out("Probamos malloc(sizeof(int))\n");
+                    if(aux_mem_pointer) write_out("Eu, acordate del free antes, no?\n");
+                    else{
+                        aux_mem_pointer=(int *) my_malloc(sizeof(int));
+                        if(!aux_mem_pointer) write_out("No pudo guardar la memoria :(\n");
+                        else{
+                            *(aux_mem_pointer)=777;
+                            write_out("aux_mem_pointer = ");
+                            uintToBase(aux_mem_pointer, aux, 10);
+                            write_out(aux);
+                            write_out("\n");
+                            write_out("*(aux_mem_pointer) = ");
+                            uintToBase(*aux_mem_pointer, aux, 10);
+                            write_out(aux);
+                            write_out("\n");
+                        }
+                    }
+                    break;
+
+                case 17:
+                    write_out("Probamos free(sizeof(int)\n");
+                    if(!aux_mem_pointer) write_out("Eu, acordate del malloc primero, no?\n");
+                    else{
+                        my_free(aux_mem_pointer);
+                        aux_mem_pointer=NULL;//reset
+                    }
                     break;
             }   
             return;
