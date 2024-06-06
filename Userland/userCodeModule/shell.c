@@ -46,9 +46,13 @@ char * get_process_foreground(uint8_t foreground){
 void ps(){
     Process ** processes  = NULL;
     int process_amount = get_processes(processes);
-    write_out("heyo");
+    char aux_aux[BUFFER_SIZE];
     if(!processes){
         write_out("No processes\n");
+        write_out("amount:");
+        uintToBase(process_amount, aux_aux, 10);
+        write_out(aux_aux);
+        write_out("\n");
         return;
     }
     write_out("PID\t | STATE\t | PRIORITY\t | RSP\t | RBP\t | RIP\t | FOREGROUND\n");
