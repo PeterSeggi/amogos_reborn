@@ -2,3 +2,4 @@
 .tgdbinit
 .tmux.conf
 .gdb_history
+.bash_history
