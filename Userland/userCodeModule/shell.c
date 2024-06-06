@@ -44,8 +44,8 @@ char * get_process_foreground(uint8_t foreground){
 }
 
 void ps(){
-    Process ** processes  = NULL;
-    int process_amount = get_processes(&processes);
+    uint16_t process_amount = 0;
+    Process ** processes  = get_processes(&process_amount);
     char aux_aux[BUFFER_SIZE];
     if(!processes){
         write_out("No processes\n");
@@ -77,8 +77,6 @@ void ps(){
         write_out("\t |");
         write_out(get_process_foreground(processes[i]->foreground));
         write_out("\n");
-    }
-    for(int i = 0; i<process_amount; i++){
         my_free(processes[i]);
     }
     my_free(processes);

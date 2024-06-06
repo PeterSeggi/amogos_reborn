@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <processManager.h>
 
 void syscall_handler();
 void sys_write(uint64_t fd, uint64_t message, uint64_t length);
@@ -25,5 +26,4 @@ void sys_speak(uint64_t frequence, uint64_t duration);
 
 void sys_changeSize(uint8_t newSize, uint8_t fd);
 
-
-int sys_get_processes(uint64_t proc_buff);
+Process ** sys_get_processes(uint64_t proc_amount);

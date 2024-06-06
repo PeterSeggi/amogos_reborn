@@ -8,14 +8,13 @@
 #include <sound.h>
 #include <mman.h>
 #include <processManager.h>
-#include <processManager.h>
 
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2
 
 void failure_free(Process ** ptr_list, int size);
-int set_processes(Process *** proc_buff);
+Process ** set_processes(uint16_t * proc_amount);
 
 void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t rax) {
   switch (rax) {
@@ -174,17 +173,17 @@ void sys_memState(uint64_t states){
 }
 
 //returns -1 when my_malloc fails
-int sys_get_processes(uint64_t proc_buff){
-  return set_processes((Process ***) proc_buff);
+Process ** sys_get_processes(uint64_t proc_amount){
+  return set_processes((uint16_t *) proc_amount);
   
 }
 
-int set_processes(Process *** proc_buff){
+Process ** set_processes(uint16_t * proc_amount){
   if(!get_processTable_size()) return 0;
   Process ** processes = get_processes();
   int process_amount = get_processTable_size();
   Process ** to_ret = (Process **) my_malloc(sizeof(Process *)*process_amount);
-  if(!to_ret) return -1;
+  if(!to_ret) return NULL;
   //from index=1 since pid0 is not valid
   for(int i = 1, copied=0; i<MAX_PROCESS_COUNT && copied<process_amount; i++){
     if(processes[i]){//only copies if process by that pid exists
@@ -192,7 +191,7 @@ int set_processes(Process *** proc_buff){
       if(!to_ret[copied]){
         failure_free(to_ret, copied-1);
         my_free(to_ret);
-        return -1;
+        return NULL;
       }
       to_ret[copied]->memory_start=processes[i]->memory_start;
       to_ret[copied]->memory_size=processes[i]->memory_size;
@@ -204,8 +203,8 @@ int set_processes(Process *** proc_buff){
       copied++;
     }
   }
-  *proc_buff = to_ret;
-  return process_amount;
+  *proc_amount = process_amount;
+  return to_ret;
 }
 
 void failure_free(Process ** ptr_list, int size){
