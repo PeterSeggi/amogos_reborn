@@ -211,6 +211,7 @@ void change_priority(int pid, int priority){
 int get_pid(){
     return processTable->runningPid;
 }
+
 Process * get_processes(){
     return processTable->processes;
 }

@@ -4,7 +4,7 @@
 #include "include/snake.h"
 #include <stdint.h>
 
-#define COMMANDS 16 //AGREGUE UNO TODO: VOLVER A 15
+#define COMMANDS 17 //AGREGUE UNO TODO: VOLVER A 15
 extern endOfBinary;//ESTO TMB
 extern bss;//ESTO TMB
 #define VERT_SIZE 32
@@ -18,7 +18,7 @@ char PROMPT_START[] = {127, 0};
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak", "mem"};
+static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak", "mem", "getpid"};
 char char_buffer[1];
 
 typedef enum {
@@ -305,6 +305,12 @@ void process_command(char* buffer){
                     write_out(aux);
                     write_out(byteUnit);
                     write_out("B\n");
+                    break;  
+                case 16:    //getpid
+                    uintToBase(getPid(), aux, 10);
+                    write_out("El pid del proceso actual es: ");
+                    write_out(aux);
+                    write_out("\n");
                     break;
             }   
             return;

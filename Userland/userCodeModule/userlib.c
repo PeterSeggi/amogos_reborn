@@ -66,6 +66,9 @@ void printHex(uint64_t value){
     printBase(value, 16);
 }
 
+int getPid(){
+    return _getPid();
+}
 
 
 

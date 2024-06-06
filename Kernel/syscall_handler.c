@@ -7,6 +7,7 @@
 #include <registers.h>
 #include <sound.h>
 #include <mman.h>
+#include <processManager.h>
 
 #define STDIN 0
 #define STDOUT 1
@@ -55,6 +56,10 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
 
   case (0x88):
     sys_memState(rdi);
+    break;
+  
+  case (0xA1):
+    sys_get_pid();
     break;
   }
 }
@@ -140,4 +145,8 @@ void sys_memState(uint64_t * states){
     states[0] = get_mem_total();
     states[1] = get_mem_vacant();
     states[2] = get_mem_occupied();
+}
+
+int sys_get_pid(){
+  return get_pid();
 }

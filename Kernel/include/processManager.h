@@ -92,6 +92,7 @@ void initializeSleepingTable(void);
 int sleepingTableAppend(SleepingProcess * process);
 int createSleeper(unsigned long until_ticks, int* timer_lock);
 int check_sleepers(unsigned long current_tick);
+int get_pid();
 
 // queda comentada porq es quasi-privada
 // void * schedule(void * rsp);
