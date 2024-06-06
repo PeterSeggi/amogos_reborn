@@ -16,6 +16,7 @@ void printTime(int *hrs, int *min, int *seg);
 void printDate();
 
 void sleep(int sec, int uni);
+void sleep_once();
 void my_ints();
 
 #endif

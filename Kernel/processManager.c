@@ -205,9 +205,6 @@ void change_priority(int pid, int priority){
 
 }
 
-
-
-
 int get_pid(){
     return processTable->runningPid;
 }
@@ -216,7 +213,21 @@ Process * get_processes(){
     return processTable->processes;
 }
 
+void yield(){
+    if (scheduler->runnableProcs > 1) sleep_once();
+}
 
+//debe liberar los recursos que el proceso ocupaba para funcionar
+
+//unschedule(processpid)
+//delete_from_pcb(processpid)
+//free(process)
+void exit_process(){
+    int pid = processTable->runningPid;
+    unschedule(pid);
+    delete_from_pcb(pid);
+    
+}
 
 
 //###############################--SCHEDULING ZONE--#########################################################

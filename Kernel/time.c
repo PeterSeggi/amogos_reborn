@@ -162,16 +162,9 @@ void sleep(int sec, int uni) {
   unsigned long until_ticks = ticks_elapsed() + (sec * 18);
   timer_lock = 1;
   createSleeper(until_ticks, &timer_lock);
+}
 
-    /*
-  if (sec == 0) {
-    _hlt();
-    return;
-  }
-
-  unsigned long t0 = ticks_elapsed();
-  while (((ticks_elapsed() - t0) * pow(1000, uni)) / 18 < sec)
-    _hlt();
-
-    */
+void sleep_once() {
+  timer_lock = 1;
+  createSleeper(ticks_elapsed() + 1, &timer_lock);
 }
