@@ -68,7 +68,7 @@ typedef struct SleepingTable{
 
 Process * createProcess(void * function);
 int nextProcess(void);
-void addProcess(int pid, int priority, ProcessNode * node);
+void scheduler_add(int pid, int priority, ProcessNode * node);
 void initializeScheduler(void);
 int processTableAppend(Process * process);
 //void destroyProcess(Process * process);

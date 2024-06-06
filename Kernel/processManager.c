@@ -5,8 +5,35 @@
 
 
 
-
-
+Process * createProcess(void * function);
+int nextProcess(void);
+void scheduler_add(int pid, int priority, ProcessNode * node);
+void initializeScheduler(void);
+int processTableAppend(Process * process);
+//void destroyProcess(Process * process);
+void stackTest(int myrsp);
+void createStack(void);
+void stackPrep(void);
+void stackUnprep(void);
+void cosa11(void);
+void cosa12(void);
+void cosa21(void);
+void cosa22(void);
+uint64_t initializeStack(void * rsp, void * rip);
+void initializeProcessTable(void);
+void initializeScheduler(void);
+int createProcessWithpriority(void * function, unsigned int priority);
+void _cli();
+void _sti();
+void _hlt();
+void _setUser(void);
+void initializeSleepingTable(void);
+int sleepingTableAppend(SleepingProcess * process);
+int createSleeper(unsigned long until_ticks, int* timer_lock);
+int check_sleepers(unsigned long current_tick);
+ProcessNode * deleteFromList(ProcessNode * current, int pid);
+void delete_from_pcb(int pid);
+void destroyProcess(Process * process);
 
 //variables globales
 ProcessTable * processTable = NULL;
@@ -137,7 +164,7 @@ int createProcessWithpriority(void * function, unsigned int priority){
         _sti();
         return NULL;
     }
-    addProcess(process->pid, priority, node);  //agrega el proceso a la cola de scheduling con la prioridad deseada
+    scheduler_add(process->pid, priority, node);  //agrega el proceso a la cola de scheduling con la prioridad deseada
     
     _sti();
     return process;                     
@@ -162,10 +189,33 @@ int processTableAppend(Process * process){
     return 0;
 }
 
+void change_priority(int pid, int priority){
+    if(pid<1 || pid>MAX_PROCESS_COUNT || priority<0 || priority>4){
+        return;
+    }
+    
+    int oldPriority = processTable->processes[pid]->priority;
+    if(oldPriority != priority){
+        
+        //sacar de scheduler
+        unschedule(pid);
+        scheduler_add(pid, priority, processTable->processes[pid]);
+        processTable->processes[pid]->priority = priority;
+    }
 
+}
+
+
+
+
+int get_pid(){
+    return processTable->runningPid;
+}
 Process * get_processes(){
     return processTable->processes;
 }
+
+
 
 
 //###############################--SCHEDULING ZONE--#########################################################
@@ -264,7 +314,7 @@ void listInsert(ProcessList * list, ProcessNode * process){
     return;   
 }
 
-void addProcess(int pid, int priority, ProcessNode * node){
+void scheduler_add(int pid, int priority, ProcessNode * node){
     if(pid<=0 || priority < 0 || priority > 4){
         return;
     }
@@ -390,7 +440,7 @@ void kill(int pid){     /*ALERT: en caso de que se borre el q esta corriendo, sc
     //delete from semaphores
 }
 
-/*void unschedule(int pid){
+void unschedule(int pid){
     int processPriority = processTable->processes[pid]->priority;
    scheduler->list[processPriority]->firstProcess = deleteFromList(scheduler->list[processPriority]->firstProcess, pid);
 }
@@ -417,9 +467,9 @@ void delete_from_pcb(int pid){
     processTable->size--;
 }
 
-/*void destroyProcess(Process * process){
+void destroyProcess(Process * process){
     my_free(process->memory_start);
-}*/
+}
 
 
 //##################################################################################
