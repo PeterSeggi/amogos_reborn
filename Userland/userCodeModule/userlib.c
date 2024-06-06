@@ -201,6 +201,14 @@ void beep(uint32_t frequency, int duration){
 // Memory
 //================================================================================================================================
 
+void * my_malloc(uint16_t size){
+    return _my_malloc(size);
+}
+
+void my_free(void * addr_to_free){
+    _my_free(addr_to_free);
+}
+
 void getMemState(uint64_t * states){
     _getMemState(states);
 }
@@ -227,4 +235,12 @@ char byteConverter(uint64_t * amount){
         return 'K';
     }
     else return '\0';
+}
+
+//================================================================================================================================
+// Processes
+//================================================================================================================================
+
+int get_processes(Process *** processes){
+    return _get_processes(processes);
 }

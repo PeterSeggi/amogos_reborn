@@ -8,12 +8,14 @@
 #include <sound.h>
 #include <mman.h>
 #include <processManager.h>
+#include <processManager.h>
 
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2
 
-
+void failure_free(Process ** ptr_list, int size);
+int set_processes(Process *** proc_buff);
 
 void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t rax) {
   switch (rax) {
@@ -26,14 +28,6 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
     sys_write(rdi, rsi, rdx);
     break;
 
-  case (0x77):
-    sys_draw(rdi, rsi, rdx, rcx, r8);
-    break;
-
-  case (0x83):
-    sys_screenData(rdi, rsi, rdx, rcx);
-    break;
-
   case (0x4e):
     sys_gettimeofday(rdi, rsi, rdx);
     break;
@@ -42,20 +36,40 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
     sys_sleep(rdi, rsi);
     break;  
 
+  case (0x77):
+    sys_draw(rdi, rsi, rdx, rcx, r8);
+    break;
+
   case (0x78):
     sys_registers(rdi);
     break;
 
-  case (0x93):
-    sys_changeSize(rdi, rsi);
+  case (0x83):
+    sys_screenData(rdi, rsi, rdx, rcx);
     break;
 
   case (0x84):
     sys_speak(rdi, rsi);
     break;
 
+  case (0x86):
+    sys_malloc(rdi);
+    break;
+
+  case (0x87):
+    sys_free(rdi);
+    break;
+
   case (0x88):
     sys_memState(rdi);
+    break;
+
+  case (0x93):
+    sys_changeSize(rdi, rsi);
+    break;
+
+  case (0xA0):
+    sys_get_processes(rdi);
     break;
   
   case (0xA1):
@@ -141,6 +155,64 @@ void sys_speak(uint64_t frequence, uint64_t duration){
     beep((uint32_t) frequence, (int) duration);
 }
 
+void *sys_malloc(uint16_t size){
+  return my_malloc(size);
+}
+
+void sys_free(uint64_t addr_to_free){
+  return my_free((void *)addr_to_free);
+}
+
+void set_memstates(uint64_t * states){
+  *(states) = get_mem_total();
+  *(states+1)  = get_mem_vacant();
+  *(states+2) = get_mem_occupied();
+}
+
+void sys_memState(uint64_t states){
+    set_memstates((uint64_t *) states);
+}
+
+//returns -1 when my_malloc fails
+int sys_get_processes(uint64_t proc_buff){
+  return set_processes((Process ***) proc_buff);
+  
+}
+
+int set_processes(Process *** proc_buff){
+  if(!get_processTable_size()) return 0;
+  Process ** processes = get_processes();
+  int process_amount = get_processTable_size();
+  Process ** to_ret = (Process **) my_malloc(sizeof(Process *)*process_amount);
+  if(!to_ret) return -1;
+  //from index=1 since pid0 is not valid
+  for(int i = 1, copied=0; i<MAX_PROCESS_COUNT && copied<process_amount; i++){
+    if(processes[i]){//only copies if process by that pid exists
+      to_ret[copied] = (Process *) my_malloc(sizeof(Process));
+      if(!to_ret[copied]){
+        failure_free(to_ret, copied-1);
+        my_free(to_ret);
+        return -1;
+      }
+      to_ret[copied]->memory_start=processes[i]->memory_start;
+      to_ret[copied]->memory_size=processes[i]->memory_size;
+      to_ret[copied]->pid=processes[i]->pid;
+      to_ret[copied]->priority=processes[i]->priority;
+      to_ret[copied]->state=processes[i]->state;
+      to_ret[copied]->registers=processes[i]->registers;
+      to_ret[copied]->foreground=processes[i]->foreground;
+      copied++;
+    }
+  }
+  *proc_buff = to_ret;
+  return process_amount;
+}
+
+void failure_free(Process ** ptr_list, int size){
+  while(size>=0){
+    my_free(ptr_list[size--]);
+  }
+}
 void sys_memState(uint64_t * states){
     states[0] = get_mem_total();
     states[1] = get_mem_vacant();

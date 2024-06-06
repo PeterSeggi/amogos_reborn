@@ -17,8 +17,13 @@ void sys_gettimeofday(uint64_t hrs, uint64_t min, uint64_t seg);
 
 int sys_registers(uint64_t regs);
 
-void sys_memState(uint64_t * states);
+void *sys_malloc(uint16_t size);
+void sys_free(uint64_t addr_to_free);
+void sys_memState(uint64_t states);
 
 void sys_speak(uint64_t frequence, uint64_t duration);
 
 void sys_changeSize(uint8_t newSize, uint8_t fd);
+
+
+int sys_get_processes(uint64_t proc_buff);

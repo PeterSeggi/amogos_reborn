@@ -26,6 +26,7 @@ typedef struct Process{
     int priority;
     State state;
     Registers registers;
+    uint8_t foreground;
 }Process;
 
 typedef struct ProcessTable{
@@ -96,5 +97,9 @@ int get_pid();
 
 // queda comentada porq es quasi-privada
 // void * schedule(void * rsp);
+
+int get_processTable_size();
+Process ** get_processes();
+int get_pid();
 
 #endif

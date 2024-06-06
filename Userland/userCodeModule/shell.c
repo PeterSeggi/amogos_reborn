@@ -3,8 +3,9 @@
 #include "include/userlibasm.h"
 #include "include/snake.h"
 #include <stdint.h>
+#include <stddef.h>
 
-#define COMMANDS 17 //AGREGUE UNO TODO: VOLVER A 15
+#define COMMANDS 20 //AGREGUE UNO TODO: VOLVER A 15
 extern endOfBinary;//ESTO TMB
 extern bss;//ESTO TMB
 #define VERT_SIZE 32
@@ -18,8 +19,72 @@ char PROMPT_START[] = {127, 0};
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak", "mem", "getpid"};
+static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak", "mem", "malloc", "free", "ps", "getpid"};
 char char_buffer[1];
+
+//TODO ps stuff
+void ps(void);
+
+char * get_process_status(State state){
+    switch(state){
+        case READY:
+            return "READY";
+        case RUNNING:
+            return "RUNNING";
+        case BLOCKED:
+            return "BLOCKED";
+        default:
+            return "UNKOWN";
+    }
+}
+
+char * get_process_foreground(uint8_t foreground){
+    if(foreground) return "YES";
+    else return "NO";
+}
+
+void ps(){
+    Process ** processes  = NULL;
+    int process_amount = get_processes(&processes);
+    char aux_aux[BUFFER_SIZE];
+    if(!processes){
+        write_out("No processes\n");
+        write_out("amount:");
+        uintToBase(process_amount, aux_aux, 10);
+        write_out(aux_aux);
+        write_out("\n");
+        return;
+    }
+    write_out("PID\t | STATE\t | PRIORITY\t | RSP\t | RBP\t | RIP\t | FOREGROUND\n");
+    char aux[BUFFER_SIZE];
+    for(int i = 0; i<process_amount; i++){
+        uintToBase(processes[i]->pid, aux, 10);
+        write_out(aux);
+        write_out("\t |");
+        write_out(get_process_status(processes[i]->state));
+        write_out("\t |");
+        uintToBase(processes[i]->priority, aux, 10);
+        write_out(aux);
+        write_out("\t |");
+        uintToBase(processes[i]->registers.rsp, aux, 16);
+        write_out(aux);
+        write_out("\t |");
+        uintToBase(processes[i]->registers.rbp, aux, 16);
+        write_out(aux);
+        write_out("\t |");
+        uintToBase(processes[i]->registers.rip, aux, 16);
+        write_out(aux);
+        write_out("\t |");
+        write_out(get_process_foreground(processes[i]->foreground));
+        write_out("\n");
+    }
+    for(int i = 0; i<process_amount; i++){
+        my_free(processes[i]);
+    }
+    my_free(processes);
+}
+
+//TODO end of  ps stuff
 
 typedef enum {
     EXIT,
@@ -37,7 +102,11 @@ typedef enum {
     TEST_DIV,
     TEST_INVALID,
     SPEAK,
-    MEM
+    MEM,
+    MALLOC,
+    FREE,
+    PS,
+    GETPID
 } COMMAND_TYPE;
 
 
@@ -66,6 +135,7 @@ char* regsNames[18] = {"rax:", "rbx:", "rcx:", "rdx:", "rsi:", "rdi:", "rbp:", "
                        
 uint64_t aux_mem_state[3];
 char byteUnit[2]={0};
+int * aux_mem_pointer = NULL;
 
 int shell(){
     cursor_x = 0;
@@ -212,10 +282,7 @@ void process_command(char* buffer){
                     break;
                 
                 case 8:
-                    _cli();
-                    write_out("saracatunga\n");
                     sleep(3000, 1);
-                    _sti();
                     break;
 
                 case 9:
@@ -305,13 +372,48 @@ void process_command(char* buffer){
                     write_out(aux);
                     write_out(byteUnit);
                     write_out("B\n");
-                    break;  
-                case 16:    //getpid
+                    break;
+
+                case 16:
+                    write_out("Probamos malloc(sizeof(int))\n");
+                    if(aux_mem_pointer) write_out("Eu, acordate del free antes, no?\n");
+                    else{
+                        aux_mem_pointer=(int *) my_malloc(sizeof(int));
+                        if(!aux_mem_pointer) write_out("No pudo guardar la memoria :(\n");
+                        else{
+                            *(aux_mem_pointer)=777;
+                            write_out("aux_mem_pointer = ");
+                            uintToBase(aux_mem_pointer, aux, 10);
+                            write_out(aux);
+                            write_out("\n");
+                            write_out("*(aux_mem_pointer) = ");
+                            uintToBase(*aux_mem_pointer, aux, 10);
+                            write_out(aux);
+                            write_out("\n");
+                        }
+                    }
+                    break;
+
+                case 17:
+                    write_out("Probamos free(sizeof(int)\n");
+                    if(!aux_mem_pointer) write_out("Eu, acordate del malloc primero, no?\n");
+                    else{
+                        my_free(aux_mem_pointer);
+                        aux_mem_pointer=NULL;//reset
+                    }
+                    break;
+
+                case 18:
+                    write_out("Probamos ps\n");
+                    ps();
+                    break;
+                case 19:
                     uintToBase(getPid(), aux, 10);
                     write_out("El pid del proceso actual es: ");
                     write_out(aux);
                     write_out("\n");
                     break;
+
             }   
             return;
         }
