@@ -10,5 +10,5 @@ sem_lock_wait:
     ret
 
 sem_lock_post:
-    mov lock, 0
+    mov [rdi], 0
     ret

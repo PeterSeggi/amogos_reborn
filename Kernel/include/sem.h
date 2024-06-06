@@ -3,6 +3,7 @@
 
 #define SEM_NAME_MAX_LEN 200
 
+// todo cambiar blocked_size a blocked_cant o algo mas referenciable
 typedef struct sem_t{
     char name[SEM_NAME_MAX_LEN];
     uint16_t value;
@@ -57,13 +58,13 @@ int sem_wait(sem_t *sem);
 *@brief     Locks the desired semaphore.
 *@param[in] lock Semaphore's lock.
 */
-void sem_lock_wait(uint8_t lock);
+void sem_lock_wait(uint8_t* lock);
 
 /**
 *@brief     Unlocks the desired semaphore.
 *@param[in] lock Semaphore's lock.
 */
-void sem_lock_post(uint8_t lock);
+void sem_lock_post(uint8_t* lock);
 
 
 #endif //SEM_H

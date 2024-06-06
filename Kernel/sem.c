@@ -13,20 +13,20 @@ sem_t *sem_open(const char *name, uint16_t value){
     if(strlen(name)>SEM_NAME_MAX_LEN) return NULL;
 
     sem_t *aux_sem;
-    sem_lock_wait(list.lock);
+    sem_lock_wait(&list.lock);
     if(list.size){
         aux_sem = search_by_name(list.first, name);
         if(aux_sem){
-            sem_lock_wait(aux_sem->lock);
+            sem_lock_wait(&aux_sem->lock);
             (aux_sem->openings)++;
-            sem_lock_post(aux_sem->lock);
-            sem_lock_post(list.lock);
+            sem_lock_post(&aux_sem->lock);
+            sem_lock_post(&list.lock);
             return aux_sem;
         }
     }
     aux_sem = (sem_t *) my_malloc(sizeof(sem_t));
     if(!aux_sem){
-        sem_lock_post(list.lock);
+        sem_lock_post(&list.lock);
         return NULL;
     }
     strcpy(aux_sem->name, name);
@@ -39,26 +39,26 @@ sem_t *sem_open(const char *name, uint16_t value){
     list.last = aux_sem;
     if(!list.first) list.first=list.last;
     list.size++;
-    sem_lock_post(list.lock);
+    sem_lock_post(&list.lock);
     return aux_sem;
 }
 
 int sem_close(sem_t *sem){
     if(check_valid_sem(sem)) return -1;
-    sem_lock_wait(list.lock);
-    sem_lock_wait(sem->lock);
+    sem_lock_wait(&list.lock);
+    sem_lock_wait(&sem->lock);
     sem->openings--;
     if(!sem->openings){
         list.first = delete_sem(list.first, sem);
     }
-    else sem_lock_post(sem->lock);
-    sem_lock_post(list.lock);
+    else sem_lock_post(&sem->lock);
+    sem_lock_post(&list.lock);
     return 0;
 }
 
 int sem_post(sem_t *sem){
     if(!check_valid_sem(sem)) return -1;
-    sem_lock_wait(sem->lock);
+    sem_lock_wait(&sem->lock);
     if(!sem->value){
         (sem->blocked_size)--;
         pid_t pid_to_unblock = get_pid_to_unblock(sem);
@@ -66,21 +66,21 @@ int sem_post(sem_t *sem){
         unblock_process(pid_to_unblock);
     }
     else sem->value++;
-    sem_lock_post(sem->lock);
+    sem_lock_post(&sem->lock);
     return 0;
 }
 
 int sem_wait(sem_t *sem){
     if(!check_valid_sem(sem)) return -1;
-    sem_lock_wait(sem->lock);
+    sem_lock_wait(&sem->lock);
     if(sem->value) sem->value--;
     else{
         sem->blocked_processes[get_pid()] = 1;
         (sem->blocked_size)++;
-        sem_lock_post(sem->lock);
+        sem_lock_post(&sem->lock);
         blockProcess(get_pid());
     }
-    sem_lock_post(sem->lock);
+    sem_lock_post(&sem->lock);
     return 0;
 }
 
@@ -93,13 +93,13 @@ int sem_wait(sem_t *sem){
 *@return    1 if successful, 0 upon failure.
 */
 int check_valid_sem(sem_t *sem){
-    sem_lock_wait(list.lock);
+    sem_lock_wait(&list.lock);
     if(!list.size){
         sem_post(list.lock);
         return 0;
     }
     sem_t *aux = search_by_name(list.first, sem->name);
-    sem_lock_post(list.lock);
+    sem_lock_post(&list.lock);
     return sem == aux;
 }
 
@@ -154,14 +154,14 @@ pid_t get_pid_to_unblock(sem_t *sem){
 *@param[in] pid_to_delete Process ID to delete.
 */
 void delete_pid(pid_t pid_to_delete){
-    sem_lock_wait(list.lock);
+    sem_lock_wait(&list.lock);
     if(!list.first){
-        sem_lock_post(list.lock);
+        sem_lock_post(&list.lock);
         return;
     }
     sem_t *current = {"", 1, 0, 0, 0, 0, list.first};
     while(current->next){
-        sem_lock_wait(current->next->lock);
+        sem_lock_wait(&current->next->lock);
         if((current->next)->blocked_size && (current->next)->blocked_processes[pid_to_delete]){
             (current->next)->blocked_processes[pid_to_delete]=0;
             current->next->openings--;//a blocked process had the semaphore opened
@@ -169,10 +169,10 @@ void delete_pid(pid_t pid_to_delete){
                 list.first = delete_sem(list.first, current->next);
             }
             else{
-                sem_lock_post(current->next->lock);
+                sem_lock_post(&current->next->lock);
                 current = current->next;
             }
         }
     }
-    sem_lock_post(list.lock);
+    sem_lock_post(&list.lock);
 }
