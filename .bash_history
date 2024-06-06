@@ -104,3 +104,8 @@ make all
 cd ..
 make all
 exit
+cd Toolchain/
+make clean 
+cd ..
+make clean 
+exit
