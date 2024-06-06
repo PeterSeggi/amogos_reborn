@@ -277,10 +277,7 @@ void process_command(char* buffer){
                     break;
                 
                 case 8:
-                    _cli();
-                    write_out("saracatunga\n");
                     sleep(3000, 1);
-                    _sti();
                     break;
 
                 case 9:

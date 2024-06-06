@@ -11,3 +11,7 @@ void _changeSize(uint8_t newSize, uint8_t fd);
 int _getRegs(uint64_t regs[]);
 void _opError();
 void _beep(uint32_t frequency, int duration);
+int _get_processes(Process ** processes);
+void _getMemState(uint64_t * states);
+void * _my_malloc(uint16_t size);
+void _my_free(void * addr_to_free);
