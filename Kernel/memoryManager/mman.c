@@ -51,15 +51,13 @@ void * my_malloc(uint16_t size){
 
 void my_free(void * addr_to_free){
     if(!addr_to_free) return;
-    uint64_t aux_idx = ((uint64_t) addr_to_free - FREE_MEM_START);
+    uint64_t aux_idx = ((uint64_t) addr_to_free - FREE_MEM_START)/MEM_CHUNK;
     uint64_t aux_size = *(header + aux_idx);
 
     *(header + aux_idx) = 0;
 
     vacant_mem += aux_size*MEM_CHUNK;
     occupied_mem -= aux_size*MEM_CHUNK;
-
-    addr_to_free = NULL;
 
     return;
 }

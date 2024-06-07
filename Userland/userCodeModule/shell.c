@@ -352,22 +352,22 @@ void process_command(char* buffer){
                     write_out("\n");
                     getMemState(aux_mem_state);
                     write_out("Total: ");
-                    byteUnit[0] = byteConverter(aux_mem_state);
+                    //byteUnit[0] = byteConverter(aux_mem_state);
                     uintToBase(aux_mem_state[0], aux, 10);
                     write_out(aux);
-                    write_out(byteUnit);
+                    //write_out(byteUnit);
                     write_out("B\n");
                     write_out("Disponible: ");
-                    byteUnit[0] = byteConverter(aux_mem_state+1);
+                    //byteUnit[0] = byteConverter(aux_mem_state+1);
                     uintToBase(aux_mem_state[1], aux, 10);
                     write_out(aux);
-                    write_out(byteUnit);
+                    //write_out(byteUnit);
                     write_out("B\n");
                     write_out("Ocupada: ");
-                    byteUnit[0] = byteConverter(aux_mem_state+2);
+                    //byteUnit[0] = byteConverter(aux_mem_state+2);
                     uintToBase(aux_mem_state[2], aux, 10);
                     write_out(aux);
-                    write_out(byteUnit);
+                    //write_out(byteUnit);
                     write_out("B\n");
                     break;
 
@@ -375,6 +375,11 @@ void process_command(char* buffer){
                     write_out("Probamos malloc(sizeof(int))\n");
                     if(aux_mem_pointer) write_out("Eu, acordate del free antes, no?\n");
                     else{
+                        getMemState(aux_mem_state);
+                        write_out("Pre-Ocupada: ");
+                        uintToBase(aux_mem_state[2], aux, 10);
+                        write_out(aux);
+                        write_out("B\n");
                         aux_mem_pointer=(int *) my_malloc(sizeof(int));
                         if(!aux_mem_pointer) write_out("No pudo guardar la memoria :(\n");
                         else{
@@ -387,6 +392,11 @@ void process_command(char* buffer){
                             uintToBase(*aux_mem_pointer, aux, 10);
                             write_out(aux);
                             write_out("\n");
+                            getMemState(aux_mem_state);
+                            write_out("Post-Ocupada: ");
+                            uintToBase(aux_mem_state[2], aux, 10);
+                            write_out(aux);
+                            write_out("B\n");
                         }
                     }
                     break;
@@ -395,14 +405,34 @@ void process_command(char* buffer){
                     write_out("Probamos free(sizeof(int)\n");
                     if(!aux_mem_pointer) write_out("Eu, acordate del malloc primero, no?\n");
                     else{
+                        getMemState(aux_mem_state);
+                        write_out("Pre-Ocupada: ");
+                        uintToBase(aux_mem_state[2], aux, 10);
+                        write_out(aux);
+                        write_out("B\n");
                         my_free(aux_mem_pointer);
+                        getMemState(aux_mem_state);
+                        write_out("Post-Ocupada: ");
+                        uintToBase(aux_mem_state[2], aux, 10);
+                        write_out(aux);
+                        write_out("B\n");
                         aux_mem_pointer=NULL;//reset
                     }
                     break;
 
                 case 18:
                     write_out("Probamos ps\n");
+                    getMemState(aux_mem_state);
+                    write_out("Pre-Ocupada: ");
+                    uintToBase(aux_mem_state[2], aux, 10);
+                    write_out(aux);
+                    write_out("B\n");
                     ps();
+                    getMemState(aux_mem_state);
+                    write_out("Post-Ocupada: ");
+                    uintToBase(aux_mem_state[2], aux, 10);
+                    write_out(aux);
+                    write_out("B\n");
                     break;
             }   
             return;
