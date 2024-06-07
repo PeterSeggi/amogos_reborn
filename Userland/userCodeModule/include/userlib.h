@@ -228,4 +228,15 @@ void ps(void);
 
 Process ** get_processes(uint16_t * proc_amount);
 
+//================================================================================================================================
+// Processes
+//================================================================================================================================
+
+typedef struct sem_t sem_t;
+
+sem_t * sem_open(const char *name, uint16_t value);
+int sem_close(sem_t *sem);
+int sem_up(sem_t *sem);
+int sem_down(sem_t *sem);
+
 #endif

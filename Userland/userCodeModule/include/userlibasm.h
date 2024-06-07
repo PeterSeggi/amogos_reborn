@@ -15,3 +15,8 @@ Process ** _get_processes(uint16_t * proc_amount);
 void _getMemState(uint64_t * states);
 void * _my_malloc(uint16_t size);
 void _my_free(void * addr_to_free);
+
+sem_t * _sem_open(const char *name, uint16_t value);
+int _sem_close(sem_t *sem);
+int _sem_up(sem_t *sem);
+int _sem_down(sem_t *sem);

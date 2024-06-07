@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <processManager.h>
+#include <sem.h>
 
 void syscall_handler();
 void sys_write(uint64_t fd, uint64_t message, uint64_t length);
@@ -27,3 +28,8 @@ void sys_speak(uint64_t frequence, uint64_t duration);
 void sys_changeSize(uint8_t newSize, uint8_t fd);
 
 Process ** sys_get_processes(uint64_t proc_amount);
+
+sem_t * sys_sem_open(uint64_t name, uint64_t value);
+int sys_sem_close(uint64_t sem);
+int sys_sem_up(uint64_t sem);
+int sys_sem_down(uint64_t sem);

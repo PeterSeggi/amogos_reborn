@@ -241,3 +241,23 @@ char byteConverter(uint64_t * amount){
 Process ** get_processes(uint16_t * proc_amount){
     return _get_processes(proc_amount);
 }
+
+//================================================================================================================================
+// Semaphores
+//================================================================================================================================
+
+sem_t * sem_open(const char *name, uint16_t value){
+   return  _sem_open(name, value);
+}
+
+int sem_close(sem_t *sem){
+    return _sem_close(sem);
+}
+
+int sem_up(sem_t *sem){
+    return _sem_up(sem);
+}
+
+int sem_down(sem_t *sem){
+    return _sem_down(sem);
+}

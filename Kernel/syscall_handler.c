@@ -69,6 +69,22 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
   case (0xA0):
     sys_get_processes(rdi);
     break;
+
+  case (0xB0):
+    sys_sem_open(rdi, rsi);
+    break;
+
+  case (0xB1):
+    sys_sem_close(rdi);
+    break;
+
+  case (0xB2):
+    sys_sem_up(rdi);
+    break;
+
+  case (0xB3):
+    sys_sem_down(rdi);
+    break;
   }
 }
 
@@ -206,4 +222,20 @@ void failure_free(Process ** ptr_list, int size){
   while(size>=0){
     my_free(ptr_list[size--]);
   }
+}
+
+sem_t * sys_sem_open(uint64_t name, uint64_t value){
+  return sem_open((const char *) name, (uint16_t) value);
+}
+
+int sys_sem_close(uint64_t sem){
+  return sem_close((sem_t *) sem);
+}
+
+int sys_sem_up(uint64_t sem){
+  return sem_post((sem_t *) sem);
+}
+
+int sys_sem_down(uint64_t sem){
+  return sem_wait((sem_t *) sem);
 }
