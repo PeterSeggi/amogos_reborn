@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define INITIAL_PROCESS_SIZE 2000
+#define INITIAL_PROCESS_SIZE 8192
 #define MAX_PROCESS_COUNT 100
 #define MAX_CHILDREN_COUNT 50
 #define DEFAULT_PRIORITY 4
