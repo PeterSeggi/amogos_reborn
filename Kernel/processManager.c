@@ -6,8 +6,8 @@
 
 
 Process * createProcess(void * function);
-int nextProcess(void);
-void scheduler_add(int pid, int priority, ProcessNode * node);
+pid_t nextProcess(void);
+void scheduler_add(pid_t pid, int priority, ProcessNode * node);
 void initializeScheduler(void);
 int processTableAppend(Process * process);
 //void destroyProcess(Process * process);
@@ -27,13 +27,13 @@ void initializeSleepingTable(void);
 int sleepingTableAppend(SleepingProcess * process);
 int createSleeper(unsigned long until_ticks, int* timer_lock);
 int check_sleepers(unsigned long current_tick);
-ProcessNode * deleteFromList(ProcessNode * current, int pid);
-void delete_from_pcb(int pid);
+ProcessNode * deleteFromList(ProcessNode * current, pid_t pid);
+void delete_from_pcb(pid_t pid);
 void destroyProcess(Process * process);
 
-int new_pid();
-void unschedule(int pid);
-int nextProcessInList(ProcessList * list);
+pid_t new_pid();
+void unschedule(pid_t pid);
+pid_t nextProcessInList(ProcessList * list);
 
 //variables globales
 ProcessTable * processTable = NULL;
@@ -138,7 +138,7 @@ int createProcessWithpriority(void * function, unsigned int priority){
     return process;                     
 }
 
-int new_pid(){
+pid_t new_pid(){
     for(int i=1;i<MAX_PROCESS_COUNT;i++){
         if(processTable->processes[i] == NULL){
             return i;
@@ -157,7 +157,7 @@ int processTableAppend(Process * process){
     return 0;
 }
 
-void change_priority(int pid, int priority){
+void change_priority(pid_t pid, int priority){
     if(pid<1 || pid>MAX_PROCESS_COUNT || priority<0 || priority>4){
         return;
     }
@@ -176,7 +176,7 @@ void change_priority(int pid, int priority){
 
 
 
-int get_pid(){
+pid_t get_pid(){
     return processTable->runningPid;
 }
 Process ** get_processes(){
@@ -204,12 +204,12 @@ void * schedule(void * rsp){
     //return rsp;
 }
 
-int nextProcess(){
+pid_t nextProcess(){
     int priority = scheduler->priority[scheduler->currentPriorityOffset];
     return nextProcessInList(scheduler->list[priority]);
 }
 
-int nextProcessInList(ProcessList * list){
+pid_t nextProcessInList(ProcessList * list){
 
     // si no tengo nada q correr voy directo a idle
     if(scheduler->runnableProcs == 0){
@@ -283,7 +283,7 @@ void listInsert(ProcessList * list, ProcessNode * process){
     return;   
 }
 
-void scheduler_add(int pid, int priority, ProcessNode * node){
+void scheduler_add(pid_t pid, int priority, ProcessNode * node){
     if(pid<=0 || priority < 0 || priority > 4){
         return;
     }
@@ -382,7 +382,7 @@ int check_sleepers(unsigned long current_tick){
     }
 }
 
-void block_process(int pid){
+void block_process(pid_t pid){
     if(pid<1 || pid>MAX_PROCESS_COUNT){
         return;
     }
@@ -390,7 +390,7 @@ void block_process(int pid){
     scheduler->runnableProcs--;
 }
 
-void unblock_process(int pid){
+void unblock_process(pid_t pid){
     if(pid<1 || pid>MAX_PROCESS_COUNT){
         return;
     }
@@ -401,7 +401,7 @@ void unblock_process(int pid){
 
 
 
-void kill(int pid){     /*ALERT: en caso de que se borre el q esta corriendo, schedule lo va a sacar en proximo loop*/
+void kill(pid_t pid){     /*ALERT: en caso de que se borre el q esta corriendo, schedule lo va a sacar en proximo loop*/
     
     //unschedule(pid);        //primero borro del sched porque uso la referencia a la pcb
     //delete from sleepingTable
@@ -409,11 +409,11 @@ void kill(int pid){     /*ALERT: en caso de que se borre el q esta corriendo, sc
     //delete from semaphores
 }
 
-void unschedule(int pid){
+void unschedule(pid_t pid){
     int processPriority = processTable->processes[pid]->priority;
    scheduler->list[processPriority]->firstProcess = deleteFromList(scheduler->list[processPriority]->firstProcess, pid);
 }
-ProcessNode * deleteFromList(ProcessNode * current, int pid){
+ProcessNode * deleteFromList(ProcessNode * current, pid_t pid){
     if(current == NULL){
         return NULL;
     }
@@ -430,7 +430,7 @@ ProcessNode * deleteFromList(ProcessNode * current, int pid){
     }
 }
 
-void delete_from_pcb(int pid){
+void delete_from_pcb(pid_t pid){
     my_free(processTable->processes[pid]);
     processTable->processes[pid] = NULL;    //new_pid chequea NULL asi que dejo los vacios en null
     processTable->size--;

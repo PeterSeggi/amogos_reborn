@@ -200,6 +200,8 @@ char byteConverter(uint64_t * amount);
 // Processes
 //================================================================================================================================
 
+typedef int pid_t;
+
 typedef enum State{
     READY,
     RUNNING,
@@ -215,7 +217,7 @@ typedef struct Registers{
 typedef struct Process{
     void * memory_start;
     unsigned int memory_size;
-    uint32_t pid;
+    pid_t pid;
     int priority;
     State state;
     Registers registers;

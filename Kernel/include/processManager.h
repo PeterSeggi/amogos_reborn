@@ -7,7 +7,7 @@
 #define MAX_PROCESS_COUNT 100
 #define DEFAULT_PRIORITY 4
 
-typedef uint32_t pid_t;
+typedef int pid_t;
 
 typedef enum State{
     READY,
@@ -24,7 +24,7 @@ typedef struct Registers{
 typedef struct Process{
     void * memory_start; //inicio de su memoria reservada
     unsigned int memory_size;
-    uint32_t pid;
+    pid_t pid;
     int priority;
     State state;
     Registers registers;
@@ -38,7 +38,7 @@ typedef struct ProcessTable{
 }ProcessTable;
 
 typedef struct ProcessNode{
-    int pid;
+    pid_t pid;
     struct ProcessNode * next;
 }ProcessNode;
 
@@ -58,7 +58,7 @@ typedef struct PriorityArray{
 }PriorityArray;
 
 typedef struct SleepingProcess{
-    int pid;
+    pid_t pid;
     unsigned long until_ticks;
     struct SleepingProcess* next; 
 }SleepingProcess;
@@ -70,8 +70,8 @@ typedef struct SleepingTable{
 }SleepingTable;
 
 Process * createProcess(void * function);
-int nextProcess(void);
-void scheduler_add(int pid, int priority, ProcessNode * node);
+pid_t nextProcess(void);
+void scheduler_add(pid_t pid, int priority, ProcessNode * node);
 void initializeScheduler(void);
 int processTableAppend(Process * process);
 //void destroyProcess(Process * process);
@@ -97,9 +97,9 @@ int check_sleepers(unsigned long current_tick);
 
 int get_processTable_size();
 Process ** get_processes();
-int get_pid();
+pid_t get_pid();
 
-void block_process(int pid);
-void unblock_process(int pid);
+void block_process(pid_t pid);
+void unblock_process(pid_t pid);
 
 #endif
