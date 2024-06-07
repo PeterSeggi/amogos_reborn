@@ -3,9 +3,11 @@
 
 #include <stdint.h>
 
-#define INITIAL_PROCESS_SIZE 1000
+#define INITIAL_PROCESS_SIZE 2000
 #define MAX_PROCESS_COUNT 100
 #define DEFAULT_PRIORITY 4
+
+typedef int pid_t;
 
 typedef enum State{
     READY,
@@ -22,10 +24,11 @@ typedef struct Registers{
 typedef struct Process{
     void * memory_start; //inicio de su memoria reservada
     unsigned int memory_size;
-    uint32_t pid;
+    pid_t pid;
     int priority;
     State state;
     Registers registers;
+    uint8_t foreground;
 }Process;
 
 typedef struct ProcessTable{
@@ -35,7 +38,7 @@ typedef struct ProcessTable{
 }ProcessTable;
 
 typedef struct ProcessNode{
-    int pid;
+    pid_t pid;
     struct ProcessNode * next;
 }ProcessNode;
 
@@ -55,7 +58,7 @@ typedef struct PriorityArray{
 }PriorityArray;
 
 typedef struct SleepingProcess{
-    int pid;
+    pid_t pid;
     unsigned long until_ticks;
     struct SleepingProcess* next; 
 }SleepingProcess;
@@ -67,8 +70,8 @@ typedef struct SleepingTable{
 }SleepingTable;
 
 Process * createProcess(void * function);
-int nextProcess(void);
-void scheduler_add(int pid, int priority, ProcessNode * node);
+pid_t nextProcess(void);
+void scheduler_add(pid_t pid, int priority, ProcessNode * node);
 void initializeScheduler(void);
 int processTableAppend(Process * process);
 //void destroyProcess(Process * process);
@@ -76,10 +79,6 @@ void stackTest(int myrsp);
 void createStack(void);
 void stackPrep(void);
 void stackUnprep(void);
-void cosa11(void);
-void cosa12(void);
-void cosa21(void);
-void cosa22(void);
 uint64_t initializeStack(void * rsp, void * rip);
 void initializeProcessTable(void);
 void initializeScheduler(void);
@@ -95,5 +94,12 @@ int check_sleepers(unsigned long current_tick);
 
 // queda comentada porq es quasi-privada
 // void * schedule(void * rsp);
+
+int get_processTable_size();
+Process ** get_processes();
+pid_t get_pid();
+
+void block_process(pid_t pid);
+void unblock_process(pid_t pid);
 
 #endif

@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define COMMANDS 18 //AGREGUE UNO TODO: VOLVER A 15
+#define COMMANDS 19 //AGREGUE UNO TODO: VOLVER A 15
 extern endOfBinary;//ESTO TMB
 extern bss;//ESTO TMB
 #define VERT_SIZE 32
@@ -19,8 +19,70 @@ char PROMPT_START[] = {127, 0};
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak", "mem", "malloc", "free"};
+static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak", "mem", "malloc", "free", "ps"};
 char char_buffer[1];
+
+//TODO ps stuff
+void ps(void);
+
+char * get_process_status(State state){
+    switch(state){
+        case READY:
+            return "READY";
+        case RUNNING:
+            return "RUNNING";
+        case BLOCKED:
+            return "BLOCKED";
+        default:
+            return "UNKOWN";
+    }
+}
+
+char * get_process_foreground(uint8_t foreground){
+    if(foreground) return "YES";
+    else return "NO";
+}
+
+void ps(){
+    uint16_t process_amount = 0;
+    Process ** processes  = get_processes(&process_amount);
+    char aux_aux[BUFFER_SIZE];
+    if(!processes){
+        write_out("No processes\n");
+        write_out("amount:");
+        uintToBase(process_amount, aux_aux, 10);
+        write_out(aux_aux);
+        write_out("\n");
+        return;
+    }
+    write_out("PID\t | STATE\t | PRIORITY\t | RSP\t | RBP\t | RIP\t | FOREGROUND\n");
+    char aux[BUFFER_SIZE];
+    for(int i = 0; i<process_amount; i++){
+        uintToBase(processes[i]->pid, aux, 10);
+        write_out(aux);
+        write_out("\t |");
+        write_out(get_process_status(processes[i]->state));
+        write_out("\t |");
+        uintToBase(processes[i]->priority, aux, 10);
+        write_out(aux);
+        write_out("\t |");
+        uintToBase(processes[i]->registers.rsp, aux, 16);
+        write_out(aux);
+        write_out("\t |");
+        uintToBase(processes[i]->registers.rbp, aux, 16);
+        write_out(aux);
+        write_out("\t |");
+        uintToBase(processes[i]->registers.rip, aux, 16);
+        write_out(aux);
+        write_out("\t |");
+        write_out(get_process_foreground(processes[i]->foreground));
+        write_out("\n");
+        my_free(processes[i]);
+    }
+    my_free(processes);
+}
+
+//TODO end of  ps stuff
 
 typedef enum {
     EXIT,
@@ -38,7 +100,10 @@ typedef enum {
     TEST_DIV,
     TEST_INVALID,
     SPEAK,
-    MEM
+    MEM,
+    MALLOC,
+    FREE,
+    PS
 } COMMAND_TYPE;
 
 
@@ -214,10 +279,7 @@ void process_command(char* buffer){
                     break;
                 
                 case 8:
-                    _cli();
-                    write_out("saracatunga\n");
                     sleep(3000, 1);
-                    _sti();
                     break;
 
                 case 9:
@@ -290,22 +352,22 @@ void process_command(char* buffer){
                     write_out("\n");
                     getMemState(aux_mem_state);
                     write_out("Total: ");
-                    byteUnit[0] = byteConverter(aux_mem_state);
+                    //byteUnit[0] = byteConverter(aux_mem_state);
                     uintToBase(aux_mem_state[0], aux, 10);
                     write_out(aux);
-                    write_out(byteUnit);
+                    //write_out(byteUnit);
                     write_out("B\n");
                     write_out("Disponible: ");
-                    byteUnit[0] = byteConverter(aux_mem_state+1);
+                    //byteUnit[0] = byteConverter(aux_mem_state+1);
                     uintToBase(aux_mem_state[1], aux, 10);
                     write_out(aux);
-                    write_out(byteUnit);
+                    //write_out(byteUnit);
                     write_out("B\n");
                     write_out("Ocupada: ");
-                    byteUnit[0] = byteConverter(aux_mem_state+2);
+                    //byteUnit[0] = byteConverter(aux_mem_state+2);
                     uintToBase(aux_mem_state[2], aux, 10);
                     write_out(aux);
-                    write_out(byteUnit);
+                    //write_out(byteUnit);
                     write_out("B\n");
                     break;
 
@@ -313,6 +375,11 @@ void process_command(char* buffer){
                     write_out("Probamos malloc(sizeof(int))\n");
                     if(aux_mem_pointer) write_out("Eu, acordate del free antes, no?\n");
                     else{
+                        getMemState(aux_mem_state);
+                        write_out("Pre-Ocupada: ");
+                        uintToBase(aux_mem_state[2], aux, 10);
+                        write_out(aux);
+                        write_out("B\n");
                         aux_mem_pointer=(int *) my_malloc(sizeof(int));
                         if(!aux_mem_pointer) write_out("No pudo guardar la memoria :(\n");
                         else{
@@ -325,6 +392,11 @@ void process_command(char* buffer){
                             uintToBase(*aux_mem_pointer, aux, 10);
                             write_out(aux);
                             write_out("\n");
+                            getMemState(aux_mem_state);
+                            write_out("Post-Ocupada: ");
+                            uintToBase(aux_mem_state[2], aux, 10);
+                            write_out(aux);
+                            write_out("B\n");
                         }
                     }
                     break;
@@ -333,9 +405,34 @@ void process_command(char* buffer){
                     write_out("Probamos free(sizeof(int)\n");
                     if(!aux_mem_pointer) write_out("Eu, acordate del malloc primero, no?\n");
                     else{
+                        getMemState(aux_mem_state);
+                        write_out("Pre-Ocupada: ");
+                        uintToBase(aux_mem_state[2], aux, 10);
+                        write_out(aux);
+                        write_out("B\n");
                         my_free(aux_mem_pointer);
+                        getMemState(aux_mem_state);
+                        write_out("Post-Ocupada: ");
+                        uintToBase(aux_mem_state[2], aux, 10);
+                        write_out(aux);
+                        write_out("B\n");
                         aux_mem_pointer=NULL;//reset
                     }
+                    break;
+
+                case 18:
+                    write_out("Probamos ps\n");
+                    getMemState(aux_mem_state);
+                    write_out("Pre-Ocupada: ");
+                    uintToBase(aux_mem_state[2], aux, 10);
+                    write_out(aux);
+                    write_out("B\n");
+                    ps();
+                    getMemState(aux_mem_state);
+                    write_out("Post-Ocupada: ");
+                    uintToBase(aux_mem_state[2], aux, 10);
+                    write_out(aux);
+                    write_out("B\n");
                     break;
             }   
             return;

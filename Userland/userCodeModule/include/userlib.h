@@ -196,4 +196,49 @@ void getMemState(uint64_t * states);
 
 char byteConverter(uint64_t * amount);
 
+//================================================================================================================================
+// Processes
+//================================================================================================================================
+
+typedef int pid_t;
+
+typedef enum State{
+    READY,
+    RUNNING,
+    BLOCKED
+}State;
+
+typedef struct Registers{
+    uint64_t rbp;
+    uint64_t rsp;
+    uint64_t rip;
+} Registers;
+
+typedef struct Process{
+    void * memory_start;
+    unsigned int memory_size;
+    pid_t pid;
+    int priority;
+    State state;
+    Registers registers;
+    uint8_t foreground;
+} Process;
+
+/*
+void ps(void);
+*/
+
+Process ** get_processes(uint16_t * proc_amount);
+
+//================================================================================================================================
+// Processes
+//================================================================================================================================
+
+typedef struct sem_t sem_t;
+
+sem_t * sem_open(const char *name, uint16_t value);
+int sem_close(sem_t *sem);
+int sem_up(sem_t *sem);
+int sem_down(sem_t *sem);
+
 #endif
