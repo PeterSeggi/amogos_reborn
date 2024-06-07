@@ -58,6 +58,21 @@ void ps(){
     write_out("PID\t | STATE\t | PRIORITY\t | RSP\t | RBP\t | RIP\t | FOREGROUND\n");
     char aux[BUFFER_SIZE];
     for(int i = 0; i<process_amount; i++){
+        /*write_out("AAAAA\n");
+        if(processes[i]==NULL) write_out("NULL\n");
+        else{
+            write_out("NULL'nt:\n");
+            uintToBase(processes[i], aux, 16);
+            write_out(aux);
+            write_out("\n");
+        }
+        if(processes[i]->state==NULL) write_out("NULL\n");
+        else{
+            write_out("NULL'nt:\n");
+            uintToBase(processes[i]->state, aux, 10);
+            write_out(aux);
+            write_out("\n");
+        }*/
         uintToBase(processes[i]->pid, aux, 10);
         write_out(aux);
         write_out("\t |");

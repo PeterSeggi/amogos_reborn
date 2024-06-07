@@ -60,7 +60,7 @@ void * my_malloc(uint16_t size)
         toRet = (void *) found_address;
         return toRet;
     };
-    return toRet;
+    return NULL;
 }
 
 void my_free(void * address)
