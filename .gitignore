@@ -1,5 +1,16 @@
+# gdb and friends
 .gdbinit
 .tgdbinit
 .tmux.conf
 .gdb_history
 .bash_history
+run.sh
+
+# output files
+*.o
+*.sys
+*.bin
+*.img
+*.qcow2
+*.elf
+*.vmdk
