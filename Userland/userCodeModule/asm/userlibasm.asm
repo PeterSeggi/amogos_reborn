@@ -12,6 +12,7 @@ GLOBAL _my_free
 GLOBAL _getMemState
 
 GLOBAL _get_processes
+GLOBAL _create_process
 
 GLOBAL _changeSize
 GLOBAL _opError 
@@ -229,6 +230,22 @@ _get_processes:
 	mov rbp, rsp
 
     mov rax, 0xA0   ;sys_get_processes ID
+    int 80h;
+	mov rsp, rbp
+	pop rbp
+	ret
+
+;================================================================================================================================
+;_create_process 
+;int 80h para usar la syscall
+;IN: void* function, int priority, boolean orphan;
+;================================================================================================================================
+;================================================================================================================================
+_create_process:
+	push rbp
+	mov rbp, rsp
+
+    mov rax, 0xA1   ;sys_create_process ID
     int 80h;
 	mov rsp, rbp
 	pop rbp

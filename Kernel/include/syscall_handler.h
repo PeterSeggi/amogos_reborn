@@ -1,6 +1,17 @@
 #include <stdint.h>
 #include <processManager.h>
 
+typedef struct ProcessView{
+    unsigned int memory_size;
+    pid_t pid;
+    int priority;
+    State state;
+    Registers registers;
+    boolean foreground;
+    pid_t fatherPid;
+    int children_amount;
+}ProcessView;
+
 void syscall_handler();
 void sys_write(uint64_t fd, uint64_t message, uint64_t length);
 int sys_read(uint64_t fd, uint64_t buffer, uint64_t length);
@@ -26,4 +37,5 @@ void sys_speak(uint64_t frequence, uint64_t duration);
 
 void sys_changeSize(uint8_t newSize, uint8_t fd);
 
-Process ** sys_get_processes(uint64_t proc_amount);
+ProcessView ** sys_get_processes(uint64_t proc_amount);
+void sys_create_process(uint64_t function, uint64_t priority, uint64_t orphan);

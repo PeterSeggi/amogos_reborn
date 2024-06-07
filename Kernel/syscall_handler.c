@@ -12,8 +12,8 @@
 #define STDOUT 1
 #define STDERR 2
 
-void failure_free(Process ** ptr_list, int size);
-Process ** set_processes(uint16_t * proc_amount);
+void failure_free(ProcessView ** ptr_list, int size);
+ProcessView ** set_processes(uint16_t * proc_amount);
 
 void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t rax) {
   switch (rax) {
@@ -68,6 +68,10 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
 
   case (0xA0):
     sys_get_processes(rdi);
+    break;
+
+  case (0xA1):
+    sys_create_process(rdi, rsi, rdx);
     break;
   }
 }
@@ -168,21 +172,21 @@ void sys_memState(uint64_t states){
 }
 
 //returns -1 when my_malloc fails
-Process ** sys_get_processes(uint64_t proc_amount){
+ProcessView ** sys_get_processes(uint64_t proc_amount){
   return set_processes((uint16_t *) proc_amount);
   
 }
 
-Process ** set_processes(uint16_t * proc_amount){
+ProcessView ** set_processes(uint16_t * proc_amount){
   if(!get_pcb_size()) return 0;
   Process ** processes = get_processes();
   int process_amount = get_pcb_size();
-  Process ** to_ret = (Process **) my_malloc(sizeof(Process *)*process_amount);
+  ProcessView ** to_ret = (ProcessView **) my_malloc(sizeof(ProcessView *)*process_amount);
   if(!to_ret) return NULL;
   //from index=1 since pid0 is not valid
   for(int i = 1, copied=0; i<MAX_PROCESS_COUNT && copied<process_amount; i++){
     if(processes[i]){//only copies if process by that pid exists
-      to_ret[copied] = (Process *) my_malloc(sizeof(Process));
+      to_ret[copied] = (Process *) my_malloc(sizeof(ProcessView));
       if(!to_ret[copied]){
         failure_free(to_ret, copied-1);
         my_free(to_ret);
@@ -194,6 +198,9 @@ Process ** set_processes(uint16_t * proc_amount){
       to_ret[copied]->state=processes[i]->state;
       to_ret[copied]->registers=processes[i]->registers;
       to_ret[copied]->foreground=processes[i]->foreground;
+      if(processes[i]->fatherPid==-1) to_ret[copied]->fatherPid=0;//no father
+      else to_ret[copied]->fatherPid=processes[i]->fatherPid;
+      to_ret[copied]->children_amount=processes[i]->children_amount;
       copied++;
     }
   }
@@ -201,8 +208,14 @@ Process ** set_processes(uint16_t * proc_amount){
   return to_ret;
 }
 
-void failure_free(Process ** ptr_list, int size){
+void failure_free(ProcessView ** ptr_list, int size){
   while(size>=0){
     my_free(ptr_list[size--]);
   }
+}
+
+void sys_create_process(uint64_t function, uint64_t priority, uint64_t orphan){
+  int check_case = (int) priority;
+  if(check_case<0) create_process((void *) function);
+  else create_shiny_process((void *) function, (int) priority, (boolean) orphan);
 }

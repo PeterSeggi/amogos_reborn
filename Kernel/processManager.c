@@ -94,12 +94,13 @@ Process * create_process(void * function){
     return create_shiny_process(function, DEFAULT_PRIORITY, FALSE);  //por defecto se crea con prioridad 4
 }
 
-Process * create_shiny_process(void * function, unsigned int priority, boolean orphan){
+Process * create_shiny_process(void * function, int priority, boolean orphan){
     _cli();
     Process * process = my_malloc(INITIAL_PROCESS_SIZE);
     process->memory_size = INITIAL_PROCESS_SIZE;
     process->state = READY;  
     process->foreground = FALSE;
+    process->children_amount = 0;
     pid_t runningPid = pcb->runningPid;
     if(orphan==FALSE){            //los primeros 2 procesos no son hijos de nadie
         boolean added = add_child(runningPid, process);   
@@ -205,6 +206,7 @@ boolean add_child(pid_t pid, Process * child){   //si todos los espacios estan o
     for(int i=0; i<MAX_CHILDREN_COUNT; i++){
         if(pcb->processes[pid]->children[i]==NULL){
             pcb->processes[pid]->children[i] = child;  //guardo hijo en espacio libre
+            pcb->processes[pid]->children_amount++;
             return TRUE;
         }
     }    

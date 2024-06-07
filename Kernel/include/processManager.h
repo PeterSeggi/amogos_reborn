@@ -30,12 +30,13 @@ typedef struct Registers{
 typedef struct Process{
     unsigned int memory_size;
     pid_t pid;
-    int priority;
-    struct Process * children[MAX_PROCESS_COUNT];
+    pid_t fatherPid;
     State state;
     Registers registers;
     boolean foreground;
-    pid_t fatherPid;
+    int priority;
+    struct Process * children[MAX_CHILDREN_COUNT];
+    int children_amount;
 }Process;
 
 typedef struct ProcessTable{
@@ -80,7 +81,7 @@ typedef struct SleepingTable{
 
 
 Process * create_process(void * function);
-Process * create_shiny_process(void * function, unsigned int priority, boolean orphan);
+Process * create_shiny_process(void * function, int priority, boolean orphan);
 boolean add_child(int pid, Process * child);
 int nextProcess(void);
 void scheduler_add(pid_t pid, int priority, ProcessNode * node);
