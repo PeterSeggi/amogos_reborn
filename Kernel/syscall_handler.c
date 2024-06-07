@@ -174,9 +174,9 @@ Process ** sys_get_processes(uint64_t proc_amount){
 }
 
 Process ** set_processes(uint16_t * proc_amount){
-  if(!get_processTable_size()) return 0;
+  if(!get_pcb_size()) return 0;
   Process ** processes = get_processes();
-  int process_amount = get_processTable_size();
+  int process_amount = get_pcb_size();
   Process ** to_ret = (Process **) my_malloc(sizeof(Process *)*process_amount);
   if(!to_ret) return NULL;
   //from index=1 since pid0 is not valid
@@ -188,7 +188,6 @@ Process ** set_processes(uint16_t * proc_amount){
         my_free(to_ret);
         return NULL;
       }
-      to_ret[copied]->memory_start=processes[i]->memory_start;
       to_ret[copied]->memory_size=processes[i]->memory_size;
       to_ret[copied]->pid=processes[i]->pid;
       to_ret[copied]->priority=processes[i]->priority;

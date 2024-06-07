@@ -3,15 +3,23 @@
 
 #include <stdint.h>
 
-#define INITIAL_PROCESS_SIZE 1000
+#define INITIAL_PROCESS_SIZE 2000
 #define MAX_PROCESS_COUNT 100
+#define MAX_CHILDREN_COUNT 50
 #define DEFAULT_PRIORITY 4
+
+typedef enum boolean{
+    FALSE,
+    TRUE
+}boolean;
 
 typedef enum State{
     READY,
     RUNNING,
     BLOCKED
 }State;
+
+typedef int pid_t;
 
 typedef struct Registers{
     uint64_t rbp;
@@ -20,23 +28,24 @@ typedef struct Registers{
 }Registers;
 
 typedef struct Process{
-    void * memory_start; //inicio de su memoria reservada
     unsigned int memory_size;
-    uint32_t pid;
+    pid_t pid;
     int priority;
+    struct Process * children[MAX_PROCESS_COUNT];
     State state;
     Registers registers;
-    uint8_t foreground;
+    boolean foreground;
+    pid_t fatherPid;
 }Process;
 
 typedef struct ProcessTable{
     Process * processes[MAX_PROCESS_COUNT];
     unsigned int size;
-    uint16_t runningPid;
+    pid_t runningPid;
 }ProcessTable;
 
 typedef struct ProcessNode{
-    int pid;
+    pid_t pid;
     struct ProcessNode * next;
 }ProcessNode;
 
@@ -56,7 +65,7 @@ typedef struct PriorityArray{
 }PriorityArray;
 
 typedef struct SleepingProcess{
-    int pid;
+    pid_t pid;
     unsigned long until_ticks;
     struct SleepingProcess* next; 
 }SleepingProcess;
@@ -67,11 +76,16 @@ typedef struct SleepingTable{
     SleepingProcess * last;
 }SleepingTable;
 
-Process * createProcess(void * function);
+
+
+
+Process * create_process(void * function);
+Process * create_shiny_process(void * function, unsigned int priority, boolean orphan);
+boolean add_child(int pid, Process * child);
 int nextProcess(void);
-void scheduler_add(int pid, int priority, ProcessNode * node);
+void scheduler_add(pid_t pid, int priority, ProcessNode * node);
 void initializeScheduler(void);
-int processTableAppend(Process * process);
+int pcb_append(Process * process);
 //void destroyProcess(Process * process);
 void stackTest(int myrsp);
 void createStack(void);
@@ -82,9 +96,8 @@ void cosa12(void);
 void cosa21(void);
 void cosa22(void);
 uint64_t initializeStack(void * rsp, void * rip);
-void initializeProcessTable(void);
+void initialize_pcb(void);
 void initializeScheduler(void);
-int createProcessWithpriority(void * function, unsigned int priority);
 void _cli();
 void _sti();
 void _hlt();
@@ -97,8 +110,8 @@ int check_sleepers(unsigned long current_tick);
 // queda comentada porq es quasi-privada
 // void * schedule(void * rsp);
 
-int get_processTable_size();
+int get_pcb_size();
 Process ** get_processes();
-int get_pid();
+pid_t get_pid();
 
 #endif
