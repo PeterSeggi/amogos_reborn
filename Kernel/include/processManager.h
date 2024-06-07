@@ -3,9 +3,11 @@
 
 #include <stdint.h>
 
-#define INITIAL_PROCESS_SIZE 1000
+#define INITIAL_PROCESS_SIZE 2000
 #define MAX_PROCESS_COUNT 100
 #define DEFAULT_PRIORITY 4
+
+typedef uint32_t pid_t;
 
 typedef enum State{
     READY,
@@ -77,10 +79,6 @@ void stackTest(int myrsp);
 void createStack(void);
 void stackPrep(void);
 void stackUnprep(void);
-void cosa11(void);
-void cosa12(void);
-void cosa21(void);
-void cosa22(void);
 uint64_t initializeStack(void * rsp, void * rip);
 void initializeProcessTable(void);
 void initializeScheduler(void);
@@ -100,5 +98,8 @@ int check_sleepers(unsigned long current_tick);
 int get_processTable_size();
 Process ** get_processes();
 int get_pid();
+
+void block_process(int pid);
+void unblock_process(int pid);
 
 #endif

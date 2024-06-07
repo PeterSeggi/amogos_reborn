@@ -15,10 +15,6 @@ void stackTest(int myrsp);
 void createStack(void);
 void stackPrep(void);
 void stackUnprep(void);
-void cosa11(void);
-void cosa12(void);
-void cosa21(void);
-void cosa22(void);
 uint64_t initializeStack(void * rsp, void * rip);
 void initializeProcessTable(void);
 void initializeScheduler(void);
@@ -35,45 +31,16 @@ ProcessNode * deleteFromList(ProcessNode * current, int pid);
 void delete_from_pcb(int pid);
 void destroyProcess(Process * process);
 
+int new_pid();
+void unschedule(int pid);
+int nextProcessInList(ProcessList * list);
+
 //variables globales
 ProcessTable * processTable = NULL;
 PriorityArray * scheduler = NULL;
 SleepingTable * sleepingTable = NULL;
 
 int schedule_lock = 1;
-
-void testNext(){
-    int firstProcess = nextProcess();
-    int secondProcess = nextProcess();
-    int firstagain = nextProcess();
-    int secondagain = nextProcess();
-    int firstoncenoceagain = nextProcess();
-    int secondoncenoceagain = nextProcess();
-}
-
-
-void cosa11(){
-    int cosa = 1;
-    cosa++;    
-}
-void cosa12(){
-    int cosa = 12;
-}
-
-void cosa21(){
-    int cosa = 21;
-}
-
-void cosa22(){
-    int cosa = 22;
-}
-void my_main(void){
-    int message = 1000;
-    createProcess(&cosa11);
-    int message2 = 110;
-    createProcess(&cosa12);
-    int message3 = 120;
-}
 
 
 //funciones publicas 
@@ -114,7 +81,7 @@ void initializeScheduler(){
     }
     //createProcess(&my_main);   
     createProcessWithpriority(&_idle, 0);     //proceso vigilante _hlt
-    createProcess(0x400000);
+    createProcess((void *) 0x400000);
 
     schedule_lock = 0;
     _idle();
@@ -135,7 +102,7 @@ int createProcessWithpriority(void * function, unsigned int priority){
     process->registers.rbp = ( (uint64_t)process + INITIAL_PROCESS_SIZE ); 
     process->registers.rsp = process->registers.rbp;        //inicialmente stack vacio
     process->registers.rip = (uint64_t)function;  //direccion de la funcion a ejecutar
-    process->registers.rsp = initializeStack(process->registers.rsp, process->registers.rip); 
+    process->registers.rsp = initializeStack((void *) process->registers.rsp, (void *) process->registers.rip); 
     process->pid = new_pid();       //cada nuevo proceso recibe el pid siguiente en orden natural
     if(process->pid == -1){
         my_free(process);  //libero recursos utlizados
@@ -230,10 +197,10 @@ void * schedule(void * rsp){
 
     int priority = scheduler->priority[scheduler->currentPriorityOffset];
     if(scheduler->list[priority]->current != NULL){ //si estoy en el primer proceso no me guardo el stack de kernel
-        processTable->processes[processTable->runningPid]->registers.rsp = rsp;           
+        processTable->processes[processTable->runningPid]->registers.rsp = (uint64_t) rsp;           
     }
     processTable->runningPid = nextProcess();   //next process ignora los procesos bloqueados
-    return processTable->processes[processTable->runningPid]->registers.rsp;
+    return (void *) processTable->processes[processTable->runningPid]->registers.rsp;
     //return rsp;
 }
 
