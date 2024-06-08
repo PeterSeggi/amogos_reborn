@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define COMMANDS 19 //AGREGUE UNO TODO: VOLVER A 15
+#define COMMANDS 20 //AGREGUE UNO TODO: VOLVER A 15
 extern char endOfBinary;//ESTO TMB
 extern char bss;//ESTO TMB
 #define VERT_SIZE 32
@@ -19,7 +19,7 @@ char PROMPT_START[] = {127, 0};
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak", "mem", "malloc", "free", "ps"};
+static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak", "mem", "malloc", "free", "ps", "bt"};
 char char_buffer[1];
 
 //TODO ps stuff
@@ -103,7 +103,8 @@ typedef enum {
     MEM,
     MALLOC,
     FREE,
-    PS
+    PS,
+    BT
 } COMMAND_TYPE;
 
 
@@ -433,6 +434,18 @@ void process_command(char* buffer){
                     uintToBase(aux_mem_state[2], aux, 10);
                     write_out(aux);
                     write_out("B\n");
+                    break;
+                case 19:
+                    write_out("Probamos bloquear : )\n");
+                    write_out("Abrimos sem\n");
+                    sem_t * my_sem = sem_open("my_sem", 0);
+                    if(!my_sem){
+                        write_out("algo salio mal\n");
+                        break;
+                    }
+                    write_out("down(sem)\n");
+                    sem_down(my_sem);
+                    write_out("????\n");
                     break;
             }   
             return;
