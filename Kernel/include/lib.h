@@ -34,4 +34,8 @@ uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
 int pow(int base, int exp);
 
+void k_strcpy(char *destination, const char *source);
+int k_strlen(const char * string);
+int k_strcmp(const char *str1, const char *str2);
+
 #endif

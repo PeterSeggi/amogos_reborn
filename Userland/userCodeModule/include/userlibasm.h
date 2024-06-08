@@ -20,3 +20,6 @@ sem_t * _sem_open(const char *name, uint16_t value);
 int _sem_close(sem_t *sem);
 int _sem_up(sem_t *sem);
 int _sem_down(sem_t *sem);
+
+int _pipe(int pipefd[2]);
+int _pclose(int fd);
