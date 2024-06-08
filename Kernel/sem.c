@@ -60,6 +60,7 @@ sem_t *sem_open(const char *name, uint16_t value){
         aux_sem->blocked_processes[i] = 0;
     }
     aux_sem->blocked_size=0;
+    if(list.last) list.last->next = aux_sem;
     list.last = aux_sem;
     if(!list.first) list.first=list.last;
     list.size++;
@@ -151,9 +152,21 @@ sem_t *delete_sem(sem_t *current, sem_t *sem){
         sem_t *aux_sem = current->next;
         my_free(current);
         (list.size)--;
+        if(!list.size) list.last = NULL;
         return aux_sem;
     }
-    if(current->next) current->next = delete_sem(current->next, sem);
+    if(current->next){
+        if(!current->next->next){
+            if(current->next==sem){
+                my_free(current->next);
+                (list.size)--;
+                current->next = NULL;
+                list.last = current;
+                return current;
+            }
+        }
+        current->next = delete_sem(current->next, sem);
+    }
     return current;
 }
 
