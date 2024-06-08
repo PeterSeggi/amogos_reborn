@@ -4,7 +4,7 @@
 #include <lib.h>
 
 #define MAX_FD 1000
-#define PIPE_BUFF 65535
+#define PIPE_BUFF 65400
 
 #define STDIN 0
 #define STDOUT 1
