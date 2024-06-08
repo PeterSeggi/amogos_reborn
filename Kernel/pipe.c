@@ -38,9 +38,9 @@ void set_pipe_name(int num, char str[]);
 
 int pipe(int pipefd[2]){
     if(highest_fd+2 > MAX_FD) return -1;
-    pipe_t *aux_pipe = create_pipe(highest_fd+1, highest_fd);
+    pipe_t *aux_pipe = create_pipe(highest_fd+1, highest_fd+2);
     if(!aux_pipe) return -1;
-    pipes[highest_fd/2] = aux_pipe;
+    pipes[(highest_fd+2)/2] = aux_pipe;
     pipefd[0]=++highest_fd;
     pipefd[1]=++highest_fd;
     return 0;
@@ -110,7 +110,7 @@ int pclose(int fd){
 *@return    Pointer to the created pipe.
 */
 pipe_t *create_pipe(int read_fd, int write_fd){
-    pipe_t *aux_pipe = (pipe_t *) my_malloc(sizeof(pipe_t *));
+    pipe_t *aux_pipe = (pipe_t *) my_malloc(sizeof(pipe_t));
     if(!aux_pipe) return NULL;
     aux_pipe->read_fd = read_fd;
     aux_pipe->write_fd = write_fd;
