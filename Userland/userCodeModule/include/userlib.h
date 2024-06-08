@@ -202,6 +202,11 @@ char byteConverter(uint64_t * amount);
 
 typedef int pid_t;
 
+typedef enum boolean{
+    FALSE,
+    TRUE
+}boolean;
+
 typedef enum State{
     READY,
     RUNNING,
@@ -214,20 +219,24 @@ typedef struct Registers{
     uint64_t rip;
 } Registers;
 
-typedef struct Process{
-    void * memory_start;
+typedef struct ProcessView{
     unsigned int memory_size;
+    pid_t pid;
     pid_t pid;
     int priority;
     State state;
     Registers registers;
-    uint8_t foreground;
-} Process;
+    boolean foreground;
+    pid_t fatherPid;
+    int children_amount;
+}ProcessView;
 
 /*
 void ps(void);
 */
 
+ProcessView ** get_processes(uint16_t * proc_amount);
+void create_process(void * function, int priority, boolean orphan);
 Process ** get_processes(uint16_t * proc_amount);
 
 //================================================================================================================================

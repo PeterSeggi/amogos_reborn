@@ -3,9 +3,16 @@
 
 #include <stdint.h>
 
+#define INITIAL_PROCESS_SIZE 8192
 #define INITIAL_PROCESS_SIZE 2000
 #define MAX_PROCESS_COUNT 100
+#define MAX_CHILDREN_COUNT 50
 #define DEFAULT_PRIORITY 4
+
+typedef enum boolean{
+    FALSE,
+    TRUE
+}boolean;
 
 typedef int pid_t;
 
@@ -15,6 +22,8 @@ typedef enum State{
     BLOCKED
 }State;
 
+typedef int pid_t;
+
 typedef struct Registers{
     uint64_t rbp;
     uint64_t rsp;
@@ -22,22 +31,27 @@ typedef struct Registers{
 }Registers;
 
 typedef struct Process{
-    void * memory_start; //inicio de su memoria reservada
     unsigned int memory_size;
+    pid_t pid;
+    pid_t fatherPid;
     pid_t pid;
     int priority;
     State state;
     Registers registers;
-    uint8_t foreground;
+    boolean foreground;
+    int priority;
+    struct Process * children[MAX_CHILDREN_COUNT];
+    int children_amount;
 }Process;
 
 typedef struct ProcessTable{
     Process * processes[MAX_PROCESS_COUNT];
     unsigned int size;
-    uint16_t runningPid;
+    pid_t runningPid;
 }ProcessTable;
 
 typedef struct ProcessNode{
+    pid_t pid;
     pid_t pid;
     struct ProcessNode * next;
 }ProcessNode;
@@ -59,6 +73,7 @@ typedef struct PriorityArray{
 
 typedef struct SleepingProcess{
     pid_t pid;
+    pid_t pid;
     unsigned long until_ticks;
     struct SleepingProcess* next; 
 }SleepingProcess;
@@ -69,18 +84,26 @@ typedef struct SleepingTable{
     SleepingProcess * last;
 }SleepingTable;
 
+
+
+
+Process * create_process(void * function);
+Process * create_shiny_process(void * function, int priority, boolean orphan);
+boolean add_child(int pid, Process * child);
+int nextProcess(void);
+void scheduler_add(pid_t pid, int priority, ProcessNode * node);
 Process * createProcess(void * function);
 pid_t nextProcess(void);
 void scheduler_add(pid_t pid, int priority, ProcessNode * node);
 void initializeScheduler(void);
-int processTableAppend(Process * process);
+int pcb_append(Process * process);
 //void destroyProcess(Process * process);
 void stackTest(int myrsp);
 void createStack(void);
 void stackPrep(void);
 void stackUnprep(void);
 uint64_t initializeStack(void * rsp, void * rip);
-void initializeProcessTable(void);
+void initialize_pcb(void);
 void initializeScheduler(void);
 Process * createProcessWithpriority(void * function, unsigned int priority);
 void _cli();
@@ -95,8 +118,9 @@ void check_sleepers(unsigned long current_tick);
 // queda comentada porq es quasi-privada
 // void * schedule(void * rsp);
 
-int get_processTable_size();
+int get_pcb_size();
 Process ** get_processes();
+pid_t get_pid();
 pid_t get_pid();
 
 void block_process(pid_t pid);

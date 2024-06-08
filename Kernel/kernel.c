@@ -63,7 +63,7 @@ int main()
     flush_buffer();
 	mm_init();
 	initializeSleepingTable();
-	initializeProcessTable();
+	initialize_pcb();
 	initializeScheduler();
 
 	//_sti();

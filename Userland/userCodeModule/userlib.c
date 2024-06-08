@@ -238,8 +238,12 @@ char byteConverter(uint64_t * amount){
 // Processes
 //================================================================================================================================
 
-Process ** get_processes(uint16_t * proc_amount){
+ProcessView ** get_processes(uint16_t * proc_amount){
     return _get_processes(proc_amount);
+}
+
+void create_process(void * function, int priority, boolean orphan){
+    _create_process(function, priority, orphan);
 }
 
 //================================================================================================================================
