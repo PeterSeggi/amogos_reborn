@@ -2,6 +2,7 @@
     "files.associations": {
         "syscall_handler.h": "c",
         "videodriver.h": "c",
-        "userlib.h": "c"
+        "userlib.h": "c",
+        "userlibasm.h": "c"
     }
 }
