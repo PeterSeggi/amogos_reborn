@@ -28,6 +28,9 @@ GLOBAL _outb
 GLOBAL _inb
 GLOBAL initializeStack
 
+;aux functions
+GLOBAL _force_schedule
+
 EXTERN popState
 section .text
 
@@ -458,6 +461,18 @@ _saveRegs:
 	int 77h
 	ret
 
+
+_force_schedule:
+	push rbp
+	mov rbp, rsp
+
+	int 20h	;force a tick 
+
+.end:
+	popf
+	mov rsp, rbp
+	pop rbp
+	ret
 
 ;================================================================================================================================
 ;_outb hace out a param 1 de lo que hay en param 2 

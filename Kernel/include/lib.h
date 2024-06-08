@@ -14,6 +14,7 @@ long* _regsInterrupt();
 void _saveRegs();
 void _outb();
 uint8_t _inb();
+void _force_schedule();
 
 
 // asm time functions

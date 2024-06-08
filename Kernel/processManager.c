@@ -2,6 +2,7 @@
 #include <mman.h>
 #include <processManager.h>
 #include <interrupts.h>
+#include <lib.h>
 
 
 ProcessNode * deleteFromList(ProcessNode * current, pid_t pid);
@@ -372,6 +373,7 @@ void block_process(pid_t pid){
     }
     processTable->processes[processTable->runningPid]->state = BLOCKED;
     scheduler->runnableProcs--;
+    _force_schedule();
 }
 
 void unblock_process(pid_t pid){
