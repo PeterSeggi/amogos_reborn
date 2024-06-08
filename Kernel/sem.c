@@ -84,11 +84,11 @@ int sem_close(sem_t *sem){
 int sem_post(sem_t *sem){
     if(!check_valid_sem(sem)) return -1;
     sem_lock_wait(&(sem->lock));
-    if(!sem->value){
-        (sem->blocked_size)--;
-        pid_t pid_to_unblock = get_pid_to_unblock(sem);
-        sem->blocked_processes[pid_to_unblock] = 0;
-        unblock_process(pid_to_unblock);
+    if(!sem->value && sem->blocked_size){
+            (sem->blocked_size)--;
+            pid_t pid_to_unblock = get_pid_to_unblock(sem);
+            sem->blocked_processes[pid_to_unblock] = 0;
+            unblock_process(pid_to_unblock);
     }
     else sem->value++;
     sem_lock_post(&(sem->lock));

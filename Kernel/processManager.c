@@ -382,6 +382,7 @@ void unblock_process(pid_t pid){
     }
     processTable->processes[processTable->runningPid]->state = READY;
     scheduler->runnableProcs++;
+    _force_schedule();
 }
 //########################--CEMENTERIO DE PROCESOS--#################################################
 
