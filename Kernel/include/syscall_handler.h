@@ -49,3 +49,5 @@ int sys_sem_close(uint64_t sem);
 int sys_sem_up(uint64_t sem);
 int sys_sem_down(uint64_t sem);
 
+int sys_pipe(uint64_t pipefd);
+int sys_pclose(uint64_t fd);

@@ -4,35 +4,13 @@
 
 sem_list list = {0, 0, NULL, NULL};
 
-int strcmp(const char *str1, const char *str2){
-    while (*str1 && (*str1 == *str2)){
-        str1++;
-        str2++;
-    }
-
-    return *(unsigned char *)str1 - *(unsigned char *)str2;
-}
-
-int strlen(const char * string){
-    int i=0;
-    while(string[i++]!=0);
-    return i;
-}
-
-void strcpy(char *destination, const char *source) {
-    while (*source != '\0') {
-        *destination++ = *source++;
-    }
-    *destination = '\0';
-}
-
 sem_t *search_by_name(sem_t* current, const char *name);
 sem_t *delete_sem(sem_t *current, sem_t *sem);
 int check_valid_sem(sem_t *sem);
 pid_t get_pid_to_unblock(sem_t *sem);
 
 sem_t *sem_open(const char *name, uint16_t value){
-    if(strlen(name)>SEM_NAME_MAX_LEN) return NULL;
+    if(k_strlen(name)>SEM_NAME_MAX_LEN) return NULL;
 
     sem_t *aux_sem;
     sem_lock_wait(&(list.lock));
@@ -51,7 +29,7 @@ sem_t *sem_open(const char *name, uint16_t value){
         sem_lock_post(&(list.lock));
         return NULL;
     }
-    strcpy(aux_sem->name, name);
+    k_strcpy(aux_sem->name, name);
     aux_sem->value=value;
     aux_sem->lock=0;
     aux_sem->next=NULL;
@@ -84,11 +62,11 @@ int sem_close(sem_t *sem){
 int sem_post(sem_t *sem){
     if(!check_valid_sem(sem)) return -1;
     sem_lock_wait(&(sem->lock));
-    if(!sem->value){
-        (sem->blocked_size)--;
-        pid_t pid_to_unblock = get_pid_to_unblock(sem);
-        sem->blocked_processes[pid_to_unblock] = 0;
-        unblock_process(pid_to_unblock);
+    if(!sem->value && sem->blocked_size){
+            (sem->blocked_size)--;
+            pid_t pid_to_unblock = get_pid_to_unblock(sem);
+            sem->blocked_processes[pid_to_unblock] = 0;
+            unblock_process(pid_to_unblock);
     }
     else sem->value++;
     sem_lock_post(&(sem->lock));
@@ -136,7 +114,7 @@ int check_valid_sem(sem_t *sem){
 *@note      If not found, returns NULL.
 */
 sem_t *search_by_name(sem_t *current, const char *name){
-    if(strcmp(current->name, name)==0) return current;
+    if(k_strcmp(current->name, name)==0) return current;
     if(current->next) return search_by_name(current->next, name);
     return NULL;
 }

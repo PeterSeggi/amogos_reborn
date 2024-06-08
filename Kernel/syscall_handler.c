@@ -7,6 +7,7 @@
 #include <registers.h>
 #include <sound.h>
 #include <mman.h>
+#include <pipe.h>
 
 #define STDIN 0
 #define STDOUT 1
@@ -102,6 +103,14 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
   case (0xB3):
     sys_sem_down(rdi);
     break;
+
+  case (0xC0):
+    sys_pipe(rdi);
+    break;
+
+  case (0xC1):
+    sys_pclose(rdi);
+    break;
   }
 }
 
@@ -114,13 +123,27 @@ void sys_write(uint64_t fd, uint64_t message, uint64_t length) {
       case (STDERR):
         printColorCant((char *)message, length, ERRCOLORFONT, ERRCOLORBACK);
         break;
+
+      case (STDIN):
+        break;
+      
+      default:
+        write_pipe((int) fd, (char *) message, (uint16_t) length);
+        break;
       }
 }
 
 int sys_read(uint64_t fd, uint64_t buffer, uint64_t length) {
-  int retVal = 0;
-  retVal = read_chars(fd, (char *)buffer, length);
-  return retVal;
+  switch(fd){
+    case (STDIN):
+      int retVal = 0;
+      retVal = read_chars(fd, (char *)buffer, length);
+      return retVal;
+
+    default:
+      return read_pipe((int) fd, (char *) buffer, (uint16_t) length);
+  }
+  
 }
 
 int read_chars(int fd, char *buffer, int length) {
@@ -288,4 +311,12 @@ void sys_exit(){
 
 void sys_kill(uint64_t pid){
   kill((pid_t) pid);
+}
+
+int sys_pipe(uint64_t pipefd){
+	return pipe((int *) pipefd);
+}
+
+int sys_pclose(uint64_t fd){
+	return pclose((int) fd);
 }

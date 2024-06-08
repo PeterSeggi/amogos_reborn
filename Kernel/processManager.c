@@ -2,6 +2,7 @@
 #include <mman.h>
 #include <processManager.h>
 #include <interrupts.h>
+#include <lib.h>
 
 
 ProcessNode * delete_from_sched(ProcessNode * current, pid_t pid);
@@ -422,6 +423,7 @@ void block_process(pid_t pid){
     }
     pcb->processes[pcb->runningPid]->state = BLOCKED;
     scheduler->runnableProcs--;
+    _force_schedule();
 }
 
 void unblock_process(pid_t pid){
@@ -430,6 +432,7 @@ void unblock_process(pid_t pid){
     }
     pcb->processes[pcb->runningPid]->state = READY;
     scheduler->runnableProcs++;
+    _force_schedule();
 }
 //########################--CEMENTERIO DE PROCESOS--#################################################
 
