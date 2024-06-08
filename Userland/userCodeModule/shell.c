@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define COMMANDS 21 //AGREGUE UNO TODO: VOLVER A 15
+#define COMMANDS 23 //AGREGUE UNO TODO: VOLVER A 15
 extern char endOfBinary;//ESTO TMB
 extern char bss;//ESTO TMB
 #define VERT_SIZE 32
@@ -19,11 +19,17 @@ char PROMPT_START[] = {127, 0};
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak", "mem", "malloc", "free", "ps", "bt", "pipe"};
+static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak", "mem", "malloc", "free", "ps", "bt", "pipe", "cproc", "sexo"};
 char char_buffer[1];
+
+//cproc test stuf TODO SACAR Y MODULAR BIEN!
+void dummy_process(){
+    write_out("im dummy\n");
+}
 
 //TODO ps stuff
 void ps(void);
+void sexo(void);
 
 char * get_process_status(State state){
     switch(state){
@@ -39,13 +45,13 @@ char * get_process_status(State state){
 }
 
 char * get_process_foreground(uint8_t foreground){
-    if(foreground) return "YES";
+    if(foreground==TRUE) return "YES";
     else return "NO";
 }
 
 void ps(){
     uint16_t process_amount = 0;
-    Process ** processes  = get_processes(&process_amount);
+    ProcessView ** processes  = get_processes(&process_amount);
     char aux_aux[BUFFER_SIZE];
     if(!processes){
         write_out("No processes\n");
@@ -55,7 +61,7 @@ void ps(){
         write_out("\n");
         return;
     }
-    write_out("PID\t | STATE\t | PRIORITY\t | RSP\t | RBP\t | RIP\t | FOREGROUND\n");
+    write_out("PID\t | STATE\t | PRIORITY\t | RSP\t | RBP\t | RIP\t | FOREGROUND\t | PARENT\t | CHILDREN\n");
     char aux[BUFFER_SIZE];
     for(int i = 0; i<process_amount; i++){
         uintToBase(processes[i]->pid, aux, 10);
@@ -76,7 +82,14 @@ void ps(){
         write_out(aux);
         write_out("\t |");
         write_out(get_process_foreground(processes[i]->foreground));
+        write_out("\t |");
+        uintToBase(processes[i]->fatherPid, aux, 10);
+        write_out(aux);
+        write_out("\t |");
+        uintToBase(processes[i]->children_amount, aux, 10);
+        write_out(aux);
         write_out("\n");
+
         my_free(processes[i]);
     }
     my_free(processes);
@@ -105,7 +118,9 @@ typedef enum {
     FREE,
     PS,
     BT,
-    PIPE
+    PIPE,
+    CPROC,
+    SEXO,
 } COMMAND_TYPE;
 
 
@@ -436,6 +451,7 @@ void process_command(char* buffer){
                     write_out(aux);
                     write_out("B\n");
                     break;
+
                 case 19:
                     write_out("Probamos bloquear : )\n");
                     write_out("Abrimos sem\n");
@@ -479,6 +495,13 @@ void process_command(char* buffer){
                     write_out(aux);
                     write_out("\n");
                     break;
+
+                case 21:
+                    write_out("Probamos crear un proceso\n");
+                    create_process(&dummy_process);
+                    break;
+                case 22:
+                    sexo();
             }   
             return;
         }
@@ -593,3 +616,13 @@ void desize(){
     }
 
 }
+
+void sexo_command(){
+    write_out("que campeon del lol es ese loco? es adc o mid? cuanto danio ap tiene?");
+    exit();
+}
+
+void sexo(void){
+    create_process(&sexo_command);
+}
+
