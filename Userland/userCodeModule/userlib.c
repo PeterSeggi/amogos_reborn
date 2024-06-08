@@ -273,3 +273,11 @@ int pipe(int pipefd[2]){
 int pclose(int fd){
     return _pclose(fd);
 }
+
+int read_fd(int fd, char *buffer, uint16_t length){
+    return _read(fd, buffer, length);
+}
+
+int write(int fd, char *message, uint16_t length){
+    return _write(fd, message, length);
+}

@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define COMMANDS 20 //AGREGUE UNO TODO: VOLVER A 15
+#define COMMANDS 21 //AGREGUE UNO TODO: VOLVER A 15
 extern char endOfBinary;//ESTO TMB
 extern char bss;//ESTO TMB
 #define VERT_SIZE 32
@@ -19,7 +19,7 @@ char PROMPT_START[] = {127, 0};
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak", "mem", "malloc", "free", "ps", "bt"};
+static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak", "mem", "malloc", "free", "ps", "bt", "pipe"};
 char char_buffer[1];
 
 //TODO ps stuff
@@ -104,7 +104,8 @@ typedef enum {
     MALLOC,
     FREE,
     PS,
-    BT
+    BT,
+    PIPE
 } COMMAND_TYPE;
 
 
@@ -450,6 +451,23 @@ void process_command(char* buffer){
                     write_out("down(sem)\n");
                     sem_down(my_sem);
                     write_out("????\n");
+                    break;
+                case 20:
+                    write_out("Probamos pipes (literalmente anda a saber)\n");
+                    int aux_fds[2];
+                    if(pipe(aux_fds)){
+                        write_out("salio mal\n");
+                        break;
+                    }
+                    if(write(aux_fds[1], "holi\0", strlen("holi\0"))<0){
+                        write_out("nao write\n");
+                        break;
+                    }
+                    if(read_fd(aux_fds[0], aux, 128)<0){
+                        write_out("nao read\n");
+                        break;
+                    }
+                    write_out(aux);
                     break;
             }   
             return;
