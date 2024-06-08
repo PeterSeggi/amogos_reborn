@@ -38,6 +38,10 @@ void delChar();
 void clear();
 void repoCursor();
 
+// new stuff :D
+void moveScreen();
+void copyPixel(uint64_t new_x, uint64_t new_y, uint64_t old_x, uint64_t old_y);
+
 int process_input(const char* string, int index, uint32_t frontColor, uint32_t bgColor);
 
 void printBase(uint64_t value, uint32_t base);

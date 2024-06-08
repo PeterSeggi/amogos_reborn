@@ -55,6 +55,7 @@ uint8_t bpp;
 
 static char buffer[64] = {'0'};
 
+static void clearLine();
 
 uint16_t cursor_location_x = 0x0000;
 uint16_t cursor_location_y = 0x0000;
