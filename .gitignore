@@ -4,7 +4,6 @@
 .tmux.conf
 .gdb_history
 .bash_history
-run.sh
 
 # output files
 *.o
