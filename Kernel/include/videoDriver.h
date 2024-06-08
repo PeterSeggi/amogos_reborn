@@ -4,7 +4,8 @@
 #include <stdint.h>
 
 #define DEFAULT_FONT 0xDADADA
-#define DEFAULT_BACK 0X01233E
+//#define DEFAULT_BACK 0X01233E
+#define DEFAULT_BACK 0x171421
 #define ERRCOLORFONT 0xFF0000 // texto rojo, bg gris;
 #define ERRCOLORBACK 0xDADADA // texto rojo, bg gris;
 

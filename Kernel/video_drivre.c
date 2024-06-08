@@ -257,6 +257,50 @@ void clear(){
     }
 }
 
+// función auxiliar para limpiar la última línea de la pantalla
+static void clearLine()
+{
+	for (int x = 0; x < VBE_mode_info->width / charWidth; x++)
+	{
+	    printChar(' ');
+	}
+
+	cursor_location_y -= SCALE * charHeight;
+}
+
+// Comenzando en la segunda linea, copio la current a la anterior
+void moveScreen()
+{
+	int y = SCALE * charHeight;
+
+	while (y < VBE_mode_info->height)
+	{
+		for (int j = 0; j < SCALE * charHeight; j++)
+		{
+			for (int i = 0; i < VBE_mode_info->width; i++)
+			{
+				copyPixel(i, y - (SCALE * charHeight) + j , i , y + j );
+			}
+		}
+
+		y += SCALE * charHeight;
+	}
+
+	clearLine();
+}
+
+void copyPixel(uint64_t new_x, uint64_t new_y, uint64_t old_x, uint64_t old_y)
+{
+	if (new_x >= 0 && new_x < VBE_mode_info->width && new_y >= 0 && new_y < VBE_mode_info->height)
+	{
+		uint8_t *framebuffer = (uint8_t *)VBE_mode_info->framebuffer;
+		uint64_t oldOffset = (old_x * ((VBE_mode_info->bpp) / 8)) + (old_y * VBE_mode_info->pitch);
+		uint64_t offset = (new_x * ((VBE_mode_info->bpp) / 8)) + (new_y * VBE_mode_info->pitch);
+		framebuffer[offset] = framebuffer[oldOffset];
+		framebuffer[offset + 1] = framebuffer[oldOffset + 1];
+		framebuffer[offset + 2] = framebuffer[oldOffset + 2];
+	}
+}
 //================================================================================================================================
 //========= INPUT PROCESSING
 //================================================================================================================================
