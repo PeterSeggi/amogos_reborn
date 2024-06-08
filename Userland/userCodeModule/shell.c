@@ -443,6 +443,10 @@ void process_command(char* buffer){
                         write_out("algo salio mal\n");
                         break;
                     }
+                    write_out("up(sem)\n");
+                    sem_up(my_sem);
+                    write_out("down(sem)\n");
+                    sem_down(my_sem);
                     write_out("down(sem)\n");
                     sem_down(my_sem);
                     write_out("????\n");
