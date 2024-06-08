@@ -4,7 +4,6 @@
 #include <stdint.h>
 
 #define INITIAL_PROCESS_SIZE 8192
-#define INITIAL_PROCESS_SIZE 2000
 #define MAX_PROCESS_COUNT 100
 #define MAX_CHILDREN_COUNT 50
 #define DEFAULT_PRIORITY 4
@@ -32,16 +31,15 @@ typedef struct Registers{
 
 typedef struct Process{
     unsigned int memory_size;
-    pid_t pid;
     pid_t fatherPid;
     pid_t pid;
     int priority;
     State state;
     Registers registers;
     boolean foreground;
-    int priority;
-    struct Process * children[MAX_CHILDREN_COUNT];
+    pid_t children[MAX_CHILDREN_COUNT];
     int children_amount;
+    pid_t waiting_for;
 }Process;
 
 typedef struct ProcessTable{
@@ -51,7 +49,6 @@ typedef struct ProcessTable{
 }ProcessTable;
 
 typedef struct ProcessNode{
-    pid_t pid;
     pid_t pid;
     struct ProcessNode * next;
 }ProcessNode;
@@ -73,7 +70,6 @@ typedef struct PriorityArray{
 
 typedef struct SleepingProcess{
     pid_t pid;
-    pid_t pid;
     unsigned long until_ticks;
     struct SleepingProcess* next; 
 }SleepingProcess;
@@ -84,18 +80,11 @@ typedef struct SleepingTable{
     SleepingProcess * last;
 }SleepingTable;
 
-
-
-
 Process * create_process(void * function);
 Process * create_shiny_process(void * function, int priority, boolean orphan);
-boolean add_child(int pid, Process * child);
-int nextProcess(void);
+
 void scheduler_add(pid_t pid, int priority, ProcessNode * node);
-Process * createProcess(void * function);
 pid_t nextProcess(void);
-void scheduler_add(pid_t pid, int priority, ProcessNode * node);
-void initializeScheduler(void);
 int pcb_append(Process * process);
 //void destroyProcess(Process * process);
 void stackTest(int myrsp);
@@ -121,9 +110,14 @@ void check_sleepers(unsigned long current_tick);
 int get_pcb_size();
 Process ** get_processes();
 pid_t get_pid();
-pid_t get_pid();
-
 void block_process(pid_t pid);
 void unblock_process(pid_t pid);
+
+void exit_process();
+void kill(pid_t pid);
+
+int wait_pid(pid_t childPid);
+int wait_any_pid();
+int wait_all_pid();
 
 #endif

@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define COMMANDS 19 //AGREGUE UNO TODO: VOLVER A 15
+#define COMMANDS 21 //AGREGUE UNO TODO: VOLVER A 15
 extern char endOfBinary;//ESTO TMB
 extern char bss;//ESTO TMB
 #define VERT_SIZE 32
@@ -19,7 +19,7 @@ char PROMPT_START[] = {127, 0};
 // Buffers
 char screen_buffer[VERT_SIZE][LINE_SIZE];
 char command_buffer[BUFFER_SIZE];
-static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak", "mem", "malloc", "free", "ps", "cproc"};
+static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "time", "sleep", "infoSleep", "help", "milisleep", "nanosleep", "registers", "snake", "test-div", "test-invalid", "speak", "mem", "malloc", "free", "ps", "cproc", "sexo"};
 char char_buffer[1];
 
 //cproc test stuf TODO SACAR Y MODULAR BIEN!
@@ -29,6 +29,7 @@ void dummy_process(){
 
 //TODO ps stuff
 void ps(void);
+void sexo(void);
 
 char * get_process_status(State state){
     switch(state){
@@ -116,7 +117,8 @@ typedef enum {
     MALLOC,
     FREE,
     PS,
-    CPROC
+    CPROC,
+    SEXO
 } COMMAND_TYPE;
 
 
@@ -450,7 +452,10 @@ void process_command(char* buffer){
 
                 case 19:
                     write_out("Probamos crear un proceso\n");
-                    create_process(&dummy_process,-1,0);
+                    create_process(&dummy_process);
+                    break;
+                case 20:
+                    sexo();
                     break;
             }   
             return;
@@ -566,3 +571,13 @@ void desize(){
     }
 
 }
+
+void sexo_command(){
+    write_out("que campeon del lol es ese loco? es adc o mid? cuanto danio ap tiene?");
+    exit();
+}
+
+void sexo(void){
+    create_process(&sexo_command);
+}
+

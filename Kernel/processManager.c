@@ -4,14 +4,16 @@
 #include <interrupts.h>
 
 
-ProcessNode * deleteFromList(ProcessNode * current, pid_t pid);
+ProcessNode * delete_from_sched(ProcessNode * current, pid_t pid);
 void delete_from_pcb(pid_t pid);
 void destroyProcess(Process * process);
-
 pid_t new_pid();
 void unschedule(pid_t pid);
 pid_t nextProcessInList(ProcessList * list);
 int getNextPriority();
+SleepingProcess * remove_sleeper(SleepingProcess * current, pid_t pid);
+void delete_sleeper(pid_t pid);
+boolean add_child(pid_t fatherPid, pid_t childPid);
 
 //variables globales
 ProcessTable * pcb = NULL;
@@ -38,7 +40,7 @@ void executeProcess(uint64_t rip){
 
 void initializeScheduler(){
     int size = sizeof(PriorityArray);
-    scheduler = my_malloc(size);
+    scheduler = (PriorityArray *)my_malloc(size);
     scheduler->size = 0;
     scheduler->runnableProcs = 0;
     scheduler->currentPriorityOffset = 0;    //señalizo que no tiene procesos corriendo aun
@@ -47,8 +49,7 @@ void initializeScheduler(){
         scheduler->priority[i] = myPriorities[i];
     }
     for(int i=0; i<5; i++){
-        scheduler->list[i] = my_malloc(sizeof(ProcessTable));
-
+        scheduler->list[i] = (ProcessList *)my_malloc(sizeof(ProcessList));
         if(scheduler->list[i]!=NULL){
             scheduler->list[i]->firstProcess=NULL;
             scheduler->list[i]->last=NULL;
@@ -70,14 +71,28 @@ Process * create_process(void * function){
 
 Process * create_shiny_process(void * function, int priority, boolean orphan){
     _cli();
-    Process * process = my_malloc(INITIAL_PROCESS_SIZE);
+    Process * process = (Process *)my_malloc(INITIAL_PROCESS_SIZE);
     process->memory_size = INITIAL_PROCESS_SIZE;
     process->state = READY;  
     process->foreground = FALSE;
     process->children_amount = 0;
+    
+    //inicializa el stack
+    process->registers.rbp = ( (uint64_t)process + INITIAL_PROCESS_SIZE ); 
+    process->registers.rsp = process->registers.rbp;        //inicialmente stack vacio
+    process->registers.rip = (uint64_t)function;  //direccion de la funcion a ejecutar
+    process->registers.rsp = initializeStack((void *)process->registers.rsp, (void *)process->registers.rip); 
+    process->pid = new_pid();       //cada nuevo proceso recibe el pid siguiente en orden natural
+    
+    if(process->pid == -1){
+        my_free(process);  //libero recursos utlizados
+        _sti();
+        return NULL;
+    }
+
     pid_t runningPid = pcb->runningPid;
     if(orphan==FALSE){            //los primeros 2 procesos no son hijos de nadie
-        boolean added = add_child(runningPid, process);   
+        boolean added = add_child(runningPid, process->pid);   
         if(added==TRUE){
             process->fatherPid = runningPid; 
         }
@@ -89,20 +104,7 @@ Process * create_shiny_process(void * function, int priority, boolean orphan){
         process->fatherPid = -1;
     }
     for(int i=0; i<MAX_CHILDREN_COUNT; i++){
-        process->children[i] = NULL;
-    }
-
-
-    //inicializa el stack
-    process->registers.rbp = ( (uint64_t)process + INITIAL_PROCESS_SIZE ); 
-    process->registers.rsp = process->registers.rbp;        //inicialmente stack vacio
-    process->registers.rip = (uint64_t)function;  //direccion de la funcion a ejecutar
-    process->registers.rsp = initializeStack((void *)process->registers.rsp, (void *)process->registers.rip); 
-    process->pid = new_pid();       //cada nuevo proceso recibe el pid siguiente en orden natural
-    if(process->pid == -1){
-        my_free(process);  //libero recursos utlizados
-        _sti();
-        return NULL;
+        process->children[i] = 0;
     }
     process->priority = priority;
     int result = pcb_append(process);
@@ -114,7 +116,7 @@ Process * create_shiny_process(void * function, int priority, boolean orphan){
 
     int size = sizeof(ProcessNode);
     if(size%8!=0){size+=8-(size%8);}
-    ProcessNode * node = my_malloc(size);
+    ProcessNode * node = (ProcessNode *)my_malloc(size);
     if(node == NULL){
         //free(process);
         _sti();
@@ -133,7 +135,7 @@ Process * create_shiny_process(void * function, int priority, boolean orphan){
     return process;                     
 }
 
-pid_t new_pid(){
+
 pid_t new_pid(){
     for(int i=1;i<MAX_PROCESS_COUNT;i++){
         if(pcb->processes[i] == NULL){
@@ -161,29 +163,34 @@ void change_priority(pid_t pid, int priority){
     int oldPriority = pcb->processes[pid]->priority;
     if(oldPriority != priority){
         
-        ProcessNode * newNode = my_malloc(sizeof(ProcessNode));
+        ProcessNode * newNode = (ProcessNode *)my_malloc(sizeof(ProcessNode));
         if(newNode == NULL){
             return;
         }
-        //sacar de scheduler
         unschedule(pid);
-        //TODO FREE DE ESTO??? fijarse si scheduler add toma responsabilidd
-        //lo cambiamos por un warning @juli
-        ProcessNode * node = my_malloc(sizeof(ProcessNode));
-        if(!node) return;//allocation failed
-        node->pid = pid;
-        node->next = NULL;
-        scheduler_add(pid, priority, node);
-        processTable->processes[pid]->priority = priority;
+        newNode->pid = pid;
+        scheduler_add(pid, priority, newNode);
+        pcb->processes[pid]->priority = priority;
     }
 
 }
 
-
+boolean add_child(pid_t fatherPid, pid_t childPid){
+    if(fatherPid<1 || fatherPid>=MAX_PROCESS_COUNT){
+        return FALSE;
+    }
+    for(int i=0; i<MAX_CHILDREN_COUNT; i++){
+        if(pcb->processes[fatherPid]->children[i]==0){
+            pcb->processes[fatherPid]->children[i] = childPid;
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
 
 
 pid_t get_pid(){
-    return processTable->runningPid;
+    return pcb->runningPid;
 }
 Process ** get_processes(){
     return pcb->processes;
@@ -210,13 +217,13 @@ void * schedule(void * rsp){
     //return rsp;
 }
 
-pid_t nextProcess(){
+
 pid_t nextProcess(){
     int priority = scheduler->priority[scheduler->currentPriorityOffset];
     return nextProcessInList(scheduler->list[priority]);
 }
 
-pid_t nextProcessInList(ProcessList * list){
+
 pid_t nextProcessInList(ProcessList * list){
 
     // si no tengo nada q correr voy directo a idle
@@ -291,7 +298,7 @@ void listInsert(ProcessList * list, ProcessNode * process){
     return;   
 }
 
-void scheduler_add(pid_t pid, int priority, ProcessNode * node){
+
 void scheduler_add(pid_t pid, int priority, ProcessNode * node){
     if(pid<=0 || priority < 0 || priority > 4){
         return;
@@ -355,6 +362,24 @@ void createSleeper(unsigned long until_ticks, int* timer_lock){
 
 }
 
+void delete_sleeper(pid_t pid){
+    sleepingTable->first = remove_sleeper(sleepingTable->first, pid);
+}
+
+SleepingProcess * remove_sleeper(SleepingProcess * current, pid_t pid){
+    if(current == NULL){
+        return NULL;     //no se encontro el
+    }
+    if(current->pid == pid){
+        SleepingProcess * toRet = current->next;
+        my_free(current);
+        scheduler->runnableProcs++;
+        return toRet;
+    }
+    current->next = remove_sleeper(current->next, pid);
+    return current;
+}
+
 void check_sleepers(unsigned long current_tick){
 
     SleepingProcess* current_proc = sleepingTable->first;
@@ -412,17 +437,22 @@ void unblock_process(pid_t pid){
 
 void kill(pid_t pid){     /*ALERT: en caso de que se borre el q esta corriendo, schedule lo va a sacar en proximo loop*/
     
+    if(pcb->processes[pid]->fatherPid!=-1){     //borro entry en array de children de padre
+        pid_t fatherPid = pcb->processes[pid]->fatherPid;
+        pcb->processes[fatherPid]->children[pid] = 0;
+    }
     unschedule(pid);        //primero borro del sched porque uso la referencia a la pcb
-    //delete from sleepingTable
+    delete_sleeper(pid);
+    //TODO delete from semaphores
     delete_from_pcb(pid);  //recien aca puedo borrar pcb
-    //delete from semaphores
+    
 }
 
 void unschedule(pid_t pid){
     int processPriority = pcb->processes[pid]->priority;
-   scheduler->list[processPriority]->firstProcess = deleteFromList(scheduler->list[processPriority]->firstProcess, pid);
+   scheduler->list[processPriority]->firstProcess = delete_from_sched(scheduler->list[processPriority]->firstProcess, pid);
 }
-ProcessNode * deleteFromList(ProcessNode * current, pid_t pid){
+ProcessNode * delete_from_sched(ProcessNode * current, pid_t pid){
     if(current == NULL){
         return NULL;
     }
@@ -434,7 +464,7 @@ ProcessNode * deleteFromList(ProcessNode * current, pid_t pid){
         return toReturn;
     }
     else{
-        current->next = deleteFromList(current->next, pid);
+        current->next = delete_from_sched(current->next, pid);
         return current;
     }
 }
@@ -446,9 +476,44 @@ void delete_from_pcb(pid_t pid){
 }
 
 void exit_process(){
-    //hay que asegurarse de responder al wait del padre
+    pid_t fatherPid = pcb->processes[get_pid()]->fatherPid;
+    if(pcb->processes[fatherPid]->waiting_for<-1){
+        pcb->processes[fatherPid]->waiting_for++;
+    }
+    if(pcb->processes[fatherPid]->waiting_for==get_pid() || pcb->processes[fatherPid]->waiting_for==-1){
+        pcb->processes[fatherPid]->waiting_for=0;
+        boolean found = FALSE;
+        pid_t childPid = get_pid();
+        for(int i=0; i<MAX_CHILDREN_COUNT && found==FALSE; i++){
+            if(pcb->processes[pcb->runningPid]->children[i]==childPid){
+                pcb->processes[pcb->runningPid]->children[i]=0;
+                found = TRUE;
+            }
+        }
+        unblock_process(fatherPid);
+    }
+    kill(get_pid());
+}
 
-    kill(pcb->runningPid);
+int wait_pid(pid_t childPid){
+    if(childPid!=-1){
+        boolean found = FALSE;
+        for(int i=0; i<MAX_CHILDREN_COUNT && found==FALSE; i++){
+            if(pcb->processes[pcb->runningPid]->children[i]==childPid) found = TRUE;
+        }
+        if(found==FALSE) return -1;
+    }
+    pcb->processes[pcb->runningPid]->waiting_for=childPid;
+    block_process(get_pid());
+    return 0;
+}
+
+int wait_any_pid(){
+    return wait_pid(-1);
+}
+
+int wait_all_pid(){
+    return wait_pid(((pcb->processes[pcb->runningPid]->children_amount)*(-1))-1);
 }
 
 

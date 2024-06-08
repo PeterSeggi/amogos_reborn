@@ -40,9 +40,12 @@ void sys_changeSize(uint8_t newSize, uint8_t fd);
 
 ProcessView ** sys_get_processes(uint64_t proc_amount);
 void sys_create_process(uint64_t function, uint64_t priority, uint64_t orphan);
-
+int sys_waitpid(uint64_t pid);
+void sys_exit(void);
+void sys_kill(uint64_t pid);
 
 sem_t * sys_sem_open(uint64_t name, uint64_t value);
 int sys_sem_close(uint64_t sem);
 int sys_sem_up(uint64_t sem);
 int sys_sem_down(uint64_t sem);
+

@@ -14,6 +14,7 @@
 
 void failure_free(ProcessView ** ptr_list, int size);
 ProcessView ** set_processes(uint16_t * proc_amount);
+int waitpid_handler(pid_t pid);
 
 void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t rax) {
   switch (rax) {
@@ -72,6 +73,18 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
 
   case (0xA1):
     sys_create_process(rdi, rsi, rdx);
+    break;
+  
+  case (0xA2):
+    sys_waitpid(rdi);
+    break;
+
+  case (0xA3):
+    sys_kill(rdi);
+    break;
+
+  case (0xA4):
+    sys_exit();
     break;
 
   case (0xB0):
@@ -202,7 +215,7 @@ ProcessView ** set_processes(uint16_t * proc_amount){
   //from index=1 since pid0 is not valid
   for(int i = 1, copied=0; i<MAX_PROCESS_COUNT && copied<process_amount; i++){
     if(processes[i]){//only copies if process by that pid exists
-      to_ret[copied] = (Process *) my_malloc(sizeof(ProcessView));
+      to_ret[copied] = (ProcessView *) my_malloc(sizeof(ProcessView));
       if(!to_ret[copied]){
         failure_free(to_ret, copied-1);
         my_free(to_ret);
@@ -250,4 +263,29 @@ int sys_sem_up(uint64_t sem){
 
 int sys_sem_down(uint64_t sem){
   return sem_wait((sem_t *) sem);
+}
+
+int sys_waitpid(uint64_t pid){
+  return waitpid_handler((pid_t) pid);
+}
+
+int waitpid_handler(pid_t pid){
+  switch (pid){
+    case (-1):
+      return wait_any_pid();
+
+    case (0):
+      return wait_all_pid();
+  
+    default:
+      return wait_pid(pid);
+  }
+}
+
+void sys_exit(){
+  exit_process();
+}
+
+void sys_kill(uint64_t pid){
+  kill((pid_t) pid);
 }

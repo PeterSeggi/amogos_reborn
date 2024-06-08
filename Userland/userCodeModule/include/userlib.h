@@ -222,7 +222,6 @@ typedef struct Registers{
 typedef struct ProcessView{
     unsigned int memory_size;
     pid_t pid;
-    pid_t pid;
     int priority;
     State state;
     Registers registers;
@@ -236,11 +235,14 @@ void ps(void);
 */
 
 ProcessView ** get_processes(uint16_t * proc_amount);
-void create_process(void * function, int priority, boolean orphan);
-Process ** get_processes(uint16_t * proc_amount);
+void create_process(void * function);
+void create_shiny_process(void * function, int priority, boolean orphan);
+int waitpid(pid_t pid);
+void kill(pid_t pid);
+void exit(void);
 
 //================================================================================================================================
-// Processes
+// Semaphores
 //================================================================================================================================
 
 typedef struct sem_t sem_t;
