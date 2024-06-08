@@ -151,6 +151,10 @@ uint64_t aux_mem_state[3];
 char byteUnit[2]={0};
 int * aux_mem_pointer = NULL;
 
+pid_t the_shell(){
+    return create_process(&shell);
+}
+
 int shell(){
     cursor_x = 0;
     cursor_y = 0;
@@ -619,6 +623,7 @@ void desize(){
 
 void sexo_command(){
     write_out("que campeon del lol es ese loco? es adc o mid? cuanto danio ap tiene?");
+    write_out("\n");
     exit();
 }
 

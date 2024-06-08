@@ -6,13 +6,16 @@
 #include "include/rand.h"
 
 
+
 int main(){    
     
     while(1){
         uint8_t selection = mainMenu();
 
+
         if(selection==1){
-            shell();
+            pid_t shellPid = the_shell();
+            waitpid(shellPid);
         }
         else{
             Snake();
