@@ -459,16 +459,25 @@ void process_command(char* buffer){
                         write_out("salio mal\n");
                         break;
                     }
-                    //if(write(aux_fds[1], "holi\0", strlen("holi\0"))<0){
-                    //    write_out("nao write\n");
-                    //    break;
-                    //}
+                    if(write(aux_fds[1], "holi\0", strlen("holi\0"))<0){
+                        write_out("nao write\n");
+                        break;
+                    }
+                    if(read_fd(aux_fds[0], aux, 128)<=0){
+                        write_out("nao read\n");
+                        break;
+                    }
+
+                    write_out(aux);
+                    write_out("\n");
+
                     write_out("before blocks");
                     if(read_fd(aux_fds[0], aux, 128)<=0){
                         write_out("nao read\n");
                         break;
                     }
                     write_out(aux);
+                    write_out("\n");
                     break;
             }   
             return;

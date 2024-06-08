@@ -52,11 +52,16 @@ int read_pipe(int fd, char *buffer, uint16_t amount){
     if(!aux_pipe->write_fd && aux_pipe->to_read_idx==aux_pipe->to_write_idx) return 0;
 
     int amount_read = 0;
-    while(amount_read < amount && aux_pipe->to_read_idx!=aux_pipe->to_write_idx){
+    int done = 0;
+
+    while(amount_read < amount && !done){
         sem_wait(aux_pipe->sem_to_read);
         sem_wait(aux_pipe->sem_mutex);
         buffer[amount_read++] = aux_pipe->buffer[aux_pipe->to_read_idx];
         aux_pipe->to_read_idx = (aux_pipe->to_read_idx+1)%PIPE_BUFF;
+
+        done = aux_pipe->to_read_idx == aux_pipe->to_write_idx;
+
         sem_post(aux_pipe->sem_mutex);
         sem_post(aux_pipe->sem_to_write);
     }
