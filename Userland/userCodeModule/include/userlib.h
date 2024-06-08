@@ -236,8 +236,8 @@ void ps(void);
 */
 
 ProcessView ** get_processes(uint16_t * proc_amount);
-void create_process(void * function);
-void create_shiny_process(void * function, int priority, boolean orphan);
+int create_process(void * function);
+int create_shiny_process(void * function, int priority, boolean orphan);
 int waitpid(pid_t pid);
 void kill(pid_t pid);
 void exit(void);

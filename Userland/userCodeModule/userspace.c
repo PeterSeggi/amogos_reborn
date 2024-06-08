@@ -1,10 +1,10 @@
 #include "include/userlib.h"
-#include "include/shell.h"
+#include "include/sh.h"
 #include "include/userlibasm.h"
 #include "include/drawings.h"
 #include "include/snake.h"
 #include "include/rand.h"
-
+#include <stdint.h>
 
 
 int main(){    

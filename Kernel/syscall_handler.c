@@ -8,6 +8,7 @@
 #include <sound.h>
 #include <mman.h>
 #include <pipe.h>
+#include <processManager.h>
 
 #define STDIN 0
 #define STDOUT 1
@@ -266,10 +267,17 @@ void failure_free(ProcessView ** ptr_list, int size){
   }
 }
 
-void sys_create_process(uint64_t function, uint64_t priority, uint64_t orphan){
+int sys_create_process(uint64_t function, uint64_t priority, uint64_t orphan){
   int check_case = (int) priority;
-  if(check_case<0) create_process((void *) function);
-  else create_shiny_process((void *) function, (int) priority, (boolean) orphan);
+  if(check_case<0){
+    Process* aux = create_process((void *) function);
+    return aux->pid;
+  } 
+  else {
+    Process* aux = create_shiny_process((void *) function, (int) priority, (boolean) orphan);
+    return aux->pid;
+  }
+
 }
 
 sem_t * sys_sem_open(uint64_t name, uint64_t value){

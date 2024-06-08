@@ -4,7 +4,8 @@
 #include <stdint.h>
 
 #define DEFAULT_FONT 0xDADADA
-#define DEFAULT_BACK 0X01233E
+//#define DEFAULT_BACK 0X01233E
+#define DEFAULT_BACK 0x171421
 #define ERRCOLORFONT 0xFF0000 // texto rojo, bg gris;
 #define ERRCOLORBACK 0xDADADA // texto rojo, bg gris;
 
@@ -36,6 +37,10 @@ void flush_buffer();
 void delChar();
 void clear();
 void repoCursor();
+
+// new stuff :D
+void moveScreen();
+void copyPixel(uint64_t new_x, uint64_t new_y, uint64_t old_x, uint64_t old_y);
 
 int process_input(const char* string, int index, uint32_t frontColor, uint32_t bgColor);
 
