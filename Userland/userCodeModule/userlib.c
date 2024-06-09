@@ -243,12 +243,11 @@ ProcessView ** get_processes(uint16_t * proc_amount){
 }
 
 int create_process(void * function){
-    // creamos un shiny con default params
-    return create_shiny_process(function, 4, 0, KEY_FD, VID_FD);
+    return _create_process(function);
 }
 
 int create_shiny_process(void * function, int priority, boolean orphan, uint16_t stdin, uint16_t stdout){
-    return _create_process(function, priority, orphan, stdin, stdout);
+    return _create_shiny_process(function, priority, orphan, stdin, stdout);
 }
 
 int waitpid(pid_t pid){

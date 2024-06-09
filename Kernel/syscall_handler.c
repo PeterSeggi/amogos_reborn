@@ -74,18 +74,22 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
     break;
 
   case (0xA1):
-    sys_create_process(rdi, rsi, rdx, rcx, r8);
+    sys_create_process(rdi);
+    break;
+
+  case (0xA2):
+    sys_create_shiny_process(rdi, rsi, rdx, rcx, r8);
     break;
   
-  case (0xA2):
+  case (0xA3):
     sys_waitpid(rdi);
     break;
 
-  case (0xA3):
+  case (0xA4):
     sys_kill(rdi);
     break;
 
-  case (0xA4):
+  case (0xA5):
     sys_exit();
     break;
 
@@ -268,17 +272,14 @@ void failure_free(ProcessView ** ptr_list, int size){
   }
 }
 
-int sys_create_process(uint64_t function, uint64_t priority, uint64_t orphan, uint16_t stdin, uint16_t stdout){
-  int check_case = (int) priority;
-  if(check_case<0){
-    Process* aux = create_process((void *) function);
-    return aux->pid;
-  } 
-  else {
-    Process* aux = create_shiny_process((void *) function, (int) priority, (boolean) orphan, stdin, stdout);
-    return aux->pid;
-  }
+int sys_create_process(uint64_t function){
+  Process* aux = create_process((void *) function);
+  return aux->pid;
+}
 
+int sys_create_shiny_process(uint64_t function, uint64_t priority, uint64_t orphan, uint16_t stdin, uint16_t stdout){
+  Process* aux = create_shiny_process((void *) function, (int) priority, (boolean) orphan, stdin, stdout);
+  return aux->pid;
 }
 
 sem_t * sys_sem_open(uint64_t name, uint64_t value){

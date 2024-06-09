@@ -13,6 +13,7 @@ GLOBAL _getMemState
 
 GLOBAL _get_processes
 GLOBAL _create_process
+GLOBAL _create_shiny_process
 GLOBAL _waitpid
 GLOBAL _exit
 GLOBAL _kill
@@ -379,7 +380,7 @@ _write:
 ;================================================================================================================================
 ;_create_process 
 ;int 80h para usar la syscall
-;IN: void* function, int priority, boolean orphan;
+;IN: void* functionn;
 ;================================================================================================================================
 ;================================================================================================================================
 _create_process:
@@ -387,6 +388,22 @@ _create_process:
 	mov rbp, rsp
 
     mov rax, 0xA1   ;sys_create_process ID
+    int 80h;
+	mov rsp, rbp
+	pop rbp
+	ret
+
+;================================================================================================================================
+;_create_shiny_process 
+;int 80h para usar la syscall
+;IN: void* function, int priority, boolean orphan, uint16_t stdin, uint16_t stdout;
+;================================================================================================================================
+;================================================================================================================================
+_create_shiny_process:
+	push rbp
+	mov rbp, rsp
+
+    mov rax, 0xA2   ;sys_create_shiny_process ID
     int 80h;
 	mov rsp, rbp
 	pop rbp
@@ -424,7 +441,7 @@ _waitpid:
 	push rbp
 	mov rbp, rsp
 
-    mov rax, 0xA2   ;sys_waitpid ID
+    mov rax, 0xA3   ;sys_waitpid ID
     int 80h;
 	mov rsp, rbp
 	pop rbp
@@ -441,7 +458,7 @@ _exit:
 	push rbp
 	mov rbp, rsp
 
-    mov rax, 0xA4   ;sys_exit ID
+    mov rax, 0xA5   ;sys_exit ID
     int 80h;
 	mov rsp, rbp
 	pop rbp
@@ -459,7 +476,7 @@ _kill:
 	push rbp
 	mov rbp, rsp
 
-    mov rax, 0xA3   ;sys_kill ID
+    mov rax, 0xA4   ;sys_kill ID
     int 80h;
 	mov rsp, rbp
 	pop rbp
