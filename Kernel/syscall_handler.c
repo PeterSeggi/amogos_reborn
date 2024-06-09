@@ -93,6 +93,13 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
     sys_exit();
     break;
 
+  case (0xA6):
+    sys_change_proc_priority(rdi, rsi);
+    break;
+
+  case (0xA7):
+    sys_block_proc(rdi);
+
   case (0xB0):
     sys_sem_open(rdi, rsi);
     break;
@@ -321,6 +328,14 @@ void sys_exit(){
 
 void sys_kill(uint64_t pid){
   kill((pid_t) pid);
+}
+
+void sys_change_proc_priority(uint64_t pid, uint64_t priority){
+//TODO logic
+}
+
+void sys_block_proc(uint64_t pid){
+//TODO logic
 }
 
 int sys_pipe(uint64_t pipefd){

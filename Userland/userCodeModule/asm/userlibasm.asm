@@ -17,6 +17,8 @@ GLOBAL _create_shiny_process
 GLOBAL _waitpid
 GLOBAL _exit
 GLOBAL _kill
+GLOBAL _change_proc_priority
+GLOBAL _block_proc
 
 GLOBAL _sem_open
 GLOBAL _sem_close
@@ -477,6 +479,38 @@ _kill:
 	mov rbp, rsp
 
     mov rax, 0xA4   ;sys_kill ID
+    int 80h;
+	mov rsp, rbp
+	pop rbp
+	ret
+
+;================================================================================================================================
+;_change_proc_priority 
+;int 80h para usar la syscall
+;IN: pid_t pid, int priority;
+;================================================================================================================================
+;================================================================================================================================
+_change_proc_priority:
+	push rbp
+	mov rbp, rsp
+
+    mov rax, 0xA6   ;sys_change_proc_priority ID
+    int 80h;
+	mov rsp, rbp
+	pop rbp
+	ret
+
+;================================================================================================================================
+;_block_proc 
+;int 80h para usar la syscall
+;IN: pid_t pid;
+;================================================================================================================================
+;================================================================================================================================
+_block_proc:
+	push rbp
+	mov rbp, rsp
+
+    mov rax, 0xA7   ;sys_block_proc ID
     int 80h;
 	mov rsp, rbp
 	pop rbp

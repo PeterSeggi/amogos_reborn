@@ -241,6 +241,8 @@ int create_shiny_process(void * function, int priority, boolean orphan, uint16_t
 int waitpid(pid_t pid);
 void kill(pid_t pid);
 void exit(void);
+void nice(pid_t pid, int priority);
+void block_proc(pid_t pid);
 
 //================================================================================================================================
 // Semaphores
