@@ -238,8 +238,36 @@ char byteConverter(uint64_t * amount){
 // Processes
 //================================================================================================================================
 
-Process ** get_processes(uint16_t * proc_amount){
+ProcessView ** get_processes(uint16_t * proc_amount){
     return _get_processes(proc_amount);
+}
+
+int create_process(void * function){
+    return _create_process(function);
+}
+
+int create_shiny_process(void * function, int priority, boolean orphan, uint16_t stdin, uint16_t stdout){
+    return _create_shiny_process(function, priority, orphan, stdin, stdout);
+}
+
+int waitpid(pid_t pid){
+    return _waitpid(pid);
+}
+
+void kill(pid_t pid){
+    _kill(pid);
+}
+
+void exit(void){
+    _exit();
+}
+
+void nice(pid_t pid, int priority){
+    _change_proc_priority(pid, priority);
+}
+
+void block_proc(pid_t pid){
+    _block_proc(pid);
 }
 
 //================================================================================================================================

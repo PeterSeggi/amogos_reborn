@@ -1,4 +1,5 @@
 #include "include/lib.h"
+#include <pipe.h>
 #include <stdint.h>
 #include <sound.h>
 #include <string.h>
@@ -63,7 +64,8 @@ int main()
     flush_buffer();
 	mm_init();
 	initializeSleepingTable();
-	initializeProcessTable();
+	initialize_pcb();
+    init_pipe();
 	initializeScheduler();
 
 	//_sti();

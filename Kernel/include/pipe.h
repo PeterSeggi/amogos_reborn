@@ -9,6 +9,12 @@
 int pipe(int pipefd[2]);
 
 /**
+*@brief     Creates the keyboard and video pipes.
+*@return    0 on success, -1 upon failure.
+*/
+int init_pipe();
+
+/**
 *@brief     Reads the buffer of the desired pipe.
 *@param[in] fd Desired pipe read-end.
 *@param[in] buffer Buffer to leave the information read.

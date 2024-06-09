@@ -203,6 +203,11 @@ char byteConverter(uint64_t * amount);
 
 typedef int pid_t;
 
+typedef enum boolean{
+    FALSE,
+    TRUE
+}boolean;
+
 typedef enum State{
     READY,
     RUNNING,
@@ -215,21 +220,29 @@ typedef struct Registers{
     uint64_t rip;
 } Registers;
 
-typedef struct Process{
-    void * memory_start;
+typedef struct ProcessView{
     unsigned int memory_size;
     pid_t pid;
     int priority;
     State state;
     Registers registers;
-    uint8_t foreground;
-} Process;
+    boolean foreground;
+    pid_t fatherPid;
+    int children_amount;
+}ProcessView;
 
 /*
 void ps(void);
 */
 
-Process ** get_processes(uint16_t * proc_amount);
+ProcessView ** get_processes(uint16_t * proc_amount);
+int create_process(void * function);
+int create_shiny_process(void * function, int priority, boolean orphan, uint16_t stdin, uint16_t stdout);
+int waitpid(pid_t pid);
+void kill(pid_t pid);
+void exit(void);
+void nice(pid_t pid, int priority);
+void block_proc(pid_t pid);
 
 //================================================================================================================================
 // Semaphores

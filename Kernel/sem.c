@@ -87,6 +87,30 @@ int sem_wait(sem_t *sem){
     return 0;
 }
 
+
+void delete_pid_from_sems(pid_t pid_to_delete){
+    sem_lock_wait(&(list.lock));
+    if(!list.first){
+        sem_lock_post(&(list.lock));
+        return;
+    }
+    sem_t aux_placeholder = {"", 1, 0, 0, {0}, 0, list.first};
+    sem_t *current = &aux_placeholder;
+    while(current->next){
+        sem_lock_wait(&(current->next->lock));
+        if((current->next)->blocked_size && (current->next)->blocked_processes[pid_to_delete]){
+            (current->next)->blocked_processes[pid_to_delete]=0;
+            current->next->openings--;//a blocked process had the semaphore opened
+            if(!current->next->openings){
+                list.first = delete_sem(list.first, current->next);
+            }
+        }
+        sem_lock_post(&(current->next->lock));
+        current = current->next;
+    }
+    sem_lock_post(&(list.lock));
+}
+
 /*----------------------
   | Local functions
   -----------------------*/
@@ -163,32 +187,3 @@ pid_t get_pid_to_unblock(sem_t *sem){
     return found;
 }
 
-/**
-*@brief     Looks for the target PID in all semaphores, and erases any participation.  To be used
-*           when deleting processes.
-*@param[in] pid_to_delete Process ID to delete.
-*/
-void delete_pid(pid_t pid_to_delete){
-    sem_lock_wait(&(list.lock));
-    if(!list.first){
-        sem_lock_post(&(list.lock));
-        return;
-    }
-    sem_t aux_placeholder = {"", 1, 0, 0, {0}, 0, list.first};
-    sem_t *current = &aux_placeholder;
-    while(current->next){
-        sem_lock_wait(&(current->next->lock));
-        if((current->next)->blocked_size && (current->next)->blocked_processes[pid_to_delete]){
-            (current->next)->blocked_processes[pid_to_delete]=0;
-            current->next->openings--;//a blocked process had the semaphore opened
-            if(!current->next->openings){
-                list.first = delete_sem(list.first, current->next);
-            }
-            else{
-                sem_lock_post(&(current->next->lock));
-                current = current->next;
-            }
-        }
-    }
-    sem_lock_post(&(list.lock));
-}

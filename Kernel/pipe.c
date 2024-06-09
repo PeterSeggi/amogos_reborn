@@ -36,6 +36,17 @@ pipe_t * check_valid_fd(uint16_t fd, pipe_action action);
 pipe_t *search_pipe(uint16_t fd);
 void set_pipe_name(int num, char str[]);
 
+int init_pipe(){
+    int fds[2];
+
+    // primero hago el de teclado que termina en pipes[2]
+    if(pipe(fds)) return -1;
+
+    // segundo va el de video que termina en pipes[3]
+    if(pipe(fds)) return -1;
+    return 0;
+}
+
 int pipe(int pipefd[2]){
     if(highest_fd+2 > MAX_FD) return -1;
     pipe_t *aux_pipe = create_pipe(highest_fd+1, highest_fd+2);
@@ -123,13 +134,13 @@ pipe_t *create_pipe(int read_fd, int write_fd){
     aux_pipe->to_write_idx = 0;
     char aux_pipe_name[20] = "pipe_0000";
     set_pipe_name(read_fd/2, aux_pipe_name);
-    k_strcpy(aux_pipe_name + 8, "_to_read");
+    k_strcpy(aux_pipe_name + 9, "_to_read");
     aux_pipe->sem_to_read = sem_open(aux_pipe_name, 0);
     if(!aux_pipe->sem_to_read) return NULL;
-    k_strcpy(aux_pipe_name + 8, "_to_write");
+    k_strcpy(aux_pipe_name + 9, "_to_write");
     aux_pipe->sem_to_write = sem_open(aux_pipe_name, PIPE_BUFF);
     if(!aux_pipe->sem_to_write) return NULL;
-    k_strcpy(aux_pipe_name + 8, "_mutex");
+    k_strcpy(aux_pipe_name + 9, "_mutex");
     aux_pipe->sem_mutex = sem_open(aux_pipe_name, 1);
     if(!aux_pipe->sem_mutex) return NULL;
     return aux_pipe;
