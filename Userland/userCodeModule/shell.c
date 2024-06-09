@@ -1,4 +1,4 @@
-
+/*
 #include "include/shell.h"
 #include "include/userlibasm.h"
 #include "include/snake.h"
@@ -227,7 +227,7 @@ void process_command(char* buffer){
                     exit_command = 1;
                     write_out("Bye now! Hope you enjoyed your stay!");
                     //sleep(2, 0);
-                    exit();         /*OJO AL PIOJO ESTE EXIT ES EXITANTE*/
+                    exit();         
                     break;
                 case 1:
                     clearScreen(); 
@@ -633,3 +633,4 @@ void sexo(void){
     create_process(&sexo_command);
 }
 
+*/

@@ -1,3 +1,4 @@
+#include "include/videoDriver.h"
 #include <videoDriver.h>
 #include <fonts.h>
 #include <lib.h>
@@ -166,11 +167,16 @@ void printCharColor(char character, uint32_t fontColor, uint32_t bgColor){
 
 
     else{
+        if (cursor_location_y >= VBE_mode_info->height) moveScreen();
+
         putChar(character, fontColor, bgColor, cursor_location_x, cursor_location_y);
         cursor_location_x += (charWidth * SCALE);
         if(cursor_location_x >= (VBE_mode_info->width)){
             cursor_location_x = 0;
-            cursor_location_y += (charHeight * SCALE);
+            if (cursor_location_y >= VBE_mode_info->height){
+                moveScreen();    
+            }
+            else cursor_location_y += (charHeight * SCALE);
         }
     }
 }
@@ -228,6 +234,7 @@ void printHex(uint64_t value){
 
 void newLine(){
     cursor_location_y += charHeight * SCALE;
+    if (cursor_location_y >= VBE_mode_info->height) moveScreen();
     cursor_location_x = 0;
 }
 
@@ -261,12 +268,11 @@ void clear(){
 // función auxiliar para limpiar la última línea de la pantalla
 static void clearLine()
 {
-	for (int x = 0; x < VBE_mode_info->width / charWidth; x++)
+	for (int x = 0; x < VBE_mode_info->width; x+=charWidth)
 	{
-	    printChar(' ');
+        putChar(' ', DEFAULT_FONT, DEFAULT_BACK, x, VBE_mode_info->height - charHeight);
 	}
 
-	cursor_location_y -= SCALE * charHeight;
 }
 
 // Comenzando en la segunda linea, copio la current a la anterior
@@ -288,6 +294,7 @@ void moveScreen()
 	}
 
 	clearLine();
+    cursor_location_y = VBE_mode_info->height - charHeight;
 }
 
 void copyPixel(uint64_t new_x, uint64_t new_y, uint64_t old_x, uint64_t old_y)

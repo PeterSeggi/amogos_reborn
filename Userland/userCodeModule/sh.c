@@ -7,32 +7,43 @@ int init_sh(){
 }
 
 char* let = " ";
+//char prompt_start[] = {127, 0};
+char* prompt_start = "> ";
+char command_buffer[BUFFER_SIZE];
+int command_cursor = 0;
 
 int sh(){
 
     clearScreen();
+    print(prompt_start);
     while(1){
         if (read(let, 1) == 1){
-            print(let);
+            process(let[0]);
         }
 
     }
-    /*
-    init_shell();
-    write_out(PROMPT_START);
-
-
-    while(!exit_command){
-        if (read(char_buffer, 1) == 1){
-            process_key(char_buffer[0]);
-        }
-        //sleep_once();
-    }
-
-    clearScreen();
-
-    */
     return 0;
 }
 
 
+void process(char key){
+    print(let);
+    if (key == '\n') process_command();
+    else if(command_cursor == BUFFER_SIZE - 1){
+     return;
+    }
+    else if (key <= 126 && key >= 20){
+        command_buffer[command_cursor++] = key;
+    }
+}
+
+
+void process_command(){
+    command_buffer[command_cursor] = 0;
+    print(command_buffer);
+    //strcpy(command_buffer, "");
+    command_cursor = 0;
+    print("\n");
+    print(prompt_start);
+
+}
