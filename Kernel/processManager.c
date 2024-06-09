@@ -497,6 +497,7 @@ ProcessNode * delete_from_sched(ProcessNode * current, pid_t pid){
         ProcessNode * toReturn = current->next;
         my_free(current);
         scheduler->size--;
+        scheduler->list[pcb->processes[pid]->priority]->size--;
         scheduler->runnableProcs--;             
         return toReturn;
     }
