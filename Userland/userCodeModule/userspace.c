@@ -8,6 +8,7 @@
 #include <stdint.h>
 
 
+// proc init (allegedly)
 int main(){    
     
     while(1){
@@ -20,6 +21,8 @@ int main(){
         else{
             Snake();
         }
+        //int shell_pid = init_sh(); 
+        //waitpid(shell_pid);
     }
 
     return 0;

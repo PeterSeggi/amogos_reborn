@@ -8,6 +8,9 @@
 #define MAX_CHILDREN_COUNT 50
 #define DEFAULT_PRIORITY 4
 
+#define KEY_FD 4
+#define VID_FD 7
+
 typedef enum boolean{
     FALSE,
     TRUE
@@ -40,6 +43,8 @@ typedef struct Process{
     pid_t children[MAX_CHILDREN_COUNT];
     int children_amount;
     pid_t waiting_for;
+    uint16_t stdin_fd;
+    uint16_t stdout_fd;
 }Process;
 
 typedef struct ProcessTable{
@@ -81,7 +86,7 @@ typedef struct SleepingTable{
 }SleepingTable;
 
 Process * create_process(void * function);
-Process * create_shiny_process(void * function, int priority, boolean orphan);
+Process * create_shiny_process(void * function, int priority, boolean orphan, uint16_t stdin, uint16_t stdout);
 
 void scheduler_add(pid_t pid, int priority, ProcessNode * node);
 pid_t nextProcess(void);
@@ -119,5 +124,7 @@ void kill(pid_t pid);
 int wait_pid(pid_t childPid);
 int wait_any_pid();
 int wait_all_pid();
+
+int dup(pid_t pid, uint16_t from, uint16_t to);
 
 #endif
