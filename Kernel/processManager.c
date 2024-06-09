@@ -11,7 +11,7 @@ void delete_from_pcb(pid_t pid);
 void destroyProcess(Process * process);
 pid_t new_pid();
 void unschedule(pid_t pid);
-pid_t nextProcessInList(ProcessList * list);
+pid_t nextProcessInList(ProcessList * list, boolean wasRunning);
 int getNextPriority();
 SleepingProcess * remove_sleeper(SleepingProcess * current, pid_t pid);
 void delete_sleeper(pid_t pid);
@@ -238,11 +238,11 @@ void * schedule(void * rsp){
 
 pid_t nextProcess(){
     int priority = scheduler->priority[scheduler->currentPriorityOffset];
-    return nextProcessInList(scheduler->list[priority]);
+    return nextProcessInList(scheduler->list[priority], TRUE);
 }
 
 
-pid_t nextProcessInList(ProcessList * list){
+/*pid_t nextProcessInList(ProcessList * list){
 
     // si no tengo nada q correr voy directo a idle
     if(scheduler->runnableProcs == 0){
@@ -251,13 +251,13 @@ pid_t nextProcessInList(ProcessList * list){
     }
 
     if(list->size == 0){            //si la prioridad no tiene procesos, sigue buscando
-        /**
-         * int priority = scheduler->priority[scheduler->currentPriorityOffset];
-         * int newPrior;
-         * while((newPrior=getNextPriority()) == priority){
-         *      skippeo todos los 333 si es que en la lista 3 no hay ningun proceso
-         * }
-        */
+        
+        // * int priority = scheduler->priority[scheduler->currentPriorityOffset];
+        // * int newPrior;
+        // * while((newPrior=getNextPriority()) == priority){
+        // *      skippeo todos los 333 si es que en la lista 3 no hay ningun proceso
+        // * }
+        
         return nextProcessInList(scheduler->list[getNextPriority()]);
     }
     else if(list->current == NULL){     //primera vez poniendo un proceso de la lista en marcha || reseteo lista
@@ -284,12 +284,50 @@ pid_t nextProcessInList(ProcessList * list){
             }
         }
     }
+}*/
+
+pid_t nextProcessInList(ProcessList * list, boolean wasRunning){
+    // si no tengo nada q correr voy directo a idle
+    if(scheduler->runnableProcs == 0){
+        // basically el pid del idle
+        return scheduler->list[0]->firstProcess->pid;
+    }
+    if(list->size == 0){                //skippeo la lista vacia
+        return nextProcessInList(scheduler->list[getNextPriority()], TRUE);   
+    }
+    if(list->current == NULL){
+        list->current = list->firstProcess;     //se que size!=0 y por ende firstProcess!=NULL
+        if(pcb->processes[list->current->pid]->state == BLOCKED){
+            return nextProcessInList(list, TRUE);     //busco el siguiente en la misma lista
+        }
+        return list->current->pid;
+    }
+    if(list->current->next == NULL){      //ultimo proc de la lista
+        if(wasRunning == FALSE){
+            return list->current->pid;
+        }
+        list->current = NULL;            //reseteo lista
+        return nextProcessInList(scheduler->list[getNextPriority()], TRUE);
+    }
+    list->current = list->current->next;
+    if(pcb->processes[list->current->pid]->state == BLOCKED){
+        return nextProcessInList(list, FALSE);     //busco el siguiente en la misma lista
+    }
+    return list->current->pid;
 }
+
+
+
+
 
 int getNextPriority(){
     scheduler->currentPriorityOffset = (scheduler->currentPriorityOffset+1)%10;
     return scheduler->priority[scheduler->currentPriorityOffset];
 }
+
+
+
+
 
 //###############################--END OF SCHEDULING ZONE--#########################################################
 
