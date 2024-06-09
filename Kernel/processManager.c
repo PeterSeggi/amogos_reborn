@@ -204,6 +204,18 @@ int get_pcb_size(){
     return pcb->size;
 }
 
+boolean check_valid_pid(pid_t pid){
+    return pcb->processes[pid]!=NULL;
+}
+
+State get_pid_state(pid_t pid){
+    return pcb->processes[pid]->state;
+}
+
+void change_pid_priority(pid_t pid, int priority){
+    pcb->processes[pid]->priority=priority;
+}
+
 
 //###############################--SCHEDULING ZONE--#########################################################
 

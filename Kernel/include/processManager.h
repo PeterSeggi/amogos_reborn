@@ -118,6 +118,10 @@ pid_t get_pid();
 void block_process(pid_t pid);
 void unblock_process(pid_t pid);
 
+boolean check_valid_pid(pid_t pid);
+State get_pid_state(pid_t pid);
+void change_pid_priority(pid_t pid, int priority);
+
 void exit_process();
 void kill(pid_t pid);
 
