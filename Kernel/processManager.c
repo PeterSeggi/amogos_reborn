@@ -541,6 +541,7 @@ ProcessNode * delete_from_sched(ProcessNode * current, pid_t pid){
     }
     else{
         current->next = delete_from_sched(current->next, pid);
+        if (current->next == NULL) scheduler->list[pcb->processes[current->pid]->priority]->last = current;
         return current;
     }
 }
