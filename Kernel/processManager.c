@@ -456,14 +456,25 @@ void unblock_process(pid_t pid){
 
 void kill(pid_t pid){     /*ALERT: en caso de que se borre el q esta corriendo, schedule lo va a sacar en proximo loop*/
     
-    if(pcb->processes[pid]->fatherPid!=-1){     //borro entry en array de children de padre
-        pid_t fatherPid = pcb->processes[pid]->fatherPid;
-        pcb->processes[fatherPid]->children[pid] = 0;
+    // doble cli por si kill se llama desde afuera de un exit_process
+    _cli();
+
+    pid_t fatherPid = pcb->processes[pid]->fatherPid;
+    if(fatherPid!=-1){     //borro entry en array de children de padre
+        boolean found = FALSE;
+        for(int i=0; i<MAX_CHILDREN_COUNT && found==FALSE; i++){    //busqueda lineal
+            if(pcb->processes[fatherPid]->children[i]==pid){
+                pcb->processes[fatherPid]->children[i]=0;
+                found = TRUE;
+            }
+        }
     }
     delete_pid_from_sems(pid);
     unschedule(pid);        //primero borro del sched porque uso la referencia a la pcb
     delete_sleeper(pid);    
     delete_from_pcb(pid);  //recien aca puedo borrar pcb
+
+    _force_schedule();
 
     //############TODO################## 
     //delete from semaphores
@@ -506,20 +517,12 @@ void exit_process(){
         if(pcb->processes[fatherPid]->waiting_for<-1){
             pcb->processes[fatherPid]->waiting_for++;
         }
-        boolean found = FALSE;
-        for(int i=0; i<MAX_CHILDREN_COUNT && found==FALSE; i++){    //busqueda lineal
-            if(pcb->processes[fatherPid]->children[i]==childPid){
-                pcb->processes[fatherPid]->children[i]=0;
-                found = TRUE;
-            }
-        }
         if(pcb->processes[fatherPid]->waiting_for==childPid || pcb->processes[fatherPid]->waiting_for==-1){
             pcb->processes[fatherPid]->waiting_for=0;
             unblock_process(fatherPid);
         }
     }
     kill(childPid);
-    _force_schedule();
 }
 
 int wait_pid(pid_t childPid){
