@@ -30,7 +30,7 @@ void dummy_process(){
 
 //TODO ps stuff
 void ps(void);
-void sexo(void);
+void sexo(int argc, char * argv[]);
 
 char * get_process_status(State state){
     switch(state){
@@ -623,13 +623,16 @@ void desize(){
 
 }
 
-void sexo_command(){
+void sexo_command(int argc, char * argv[]){
+    for(int i=0; i<argc; i++){
+        write_out(argv[i]);
+    }
     write_out("que campeon del lol es ese loco? es adc o mid? cuanto danio ap tiene?");
     write_out("\n");
     exit();
 }
 
-void sexo(void){
-    create_process(&sexo_command);
+void sexo(int argc, char * argv[]){
+    create_process(&sexo_command, int argc, char * argv[]);
 }
 

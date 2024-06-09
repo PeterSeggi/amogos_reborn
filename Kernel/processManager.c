@@ -67,25 +67,29 @@ void initializeScheduler(){
     _idle();
 }
 
-Process * create_process(void * function){
-    return create_shiny_process(function, DEFAULT_PRIORITY, FALSE, KEY_FD, VID_FD);  //por defecto se crea con prioridad 4
+Process * create_process(void * function, int argc, char * argv[]){
+    return create_shiny_process(function, int argc, char * argv[], DEFAULT_PRIORITY, FALSE, KEY_FD, VID_FD);  //por defecto se crea con prioridad 4
 }
 
-Process * create_shiny_process(void * function, int priority, boolean orphan, uint16_t stdin, uint16_t stdout){
+Process * create_shiny_process(void * function, int argc, char * argv[], int priority, boolean orphan, uint16_t stdin, uint16_t stdout){
     _cli();
     Process * process = (Process *)my_malloc(INITIAL_PROCESS_SIZE);
+    if(process == NULL){
+        return NULL;
+    }
     process->memory_size = INITIAL_PROCESS_SIZE;
     process->state = READY;  
     process->foreground = FALSE;
     process->children_amount = 0;
+    process->argc = argc;
+    process->argv = argv;
     
     //inicializa el stack
     process->registers.rbp = ( (uint64_t)process + INITIAL_PROCESS_SIZE ); 
     process->registers.rsp = process->registers.rbp;        //inicialmente stack vacio
     process->registers.rip = (uint64_t)function;  //direccion de la funcion a ejecutar
-    process->registers.rsp = initializeStack((void *)process->registers.rsp, (void *)process->registers.rip); 
+    process->registers.rsp = initializeStack((void *)process->registers.rsp, (void *)process->registers.rip, (void *)process->argc, (void *)process->argv); 
     process->pid = new_pid();       //cada nuevo proceso recibe el pid siguiente en orden natural
-
     process->stdin_fd = stdin;
     process->stdout_fd = stdout;
     

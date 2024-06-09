@@ -100,14 +100,31 @@ rtcInfo:
 initializeStack:
 	push rbp
 	mov rbp, rsp
-		
+;quiero dejar rdx en rdi --> argc primer arg
+; 			  rcx en rsi --> argv segundo arg		
 	mov rsp, rdi		;me paro en el stack del proceso
 	push 0x0 ;SS
 	push rdi ;RSP
 	push 0x202 ;RFLAGS
 	push 0x8   ;CS
 	push rsi ;RIP
-	pushState
+	mov rsi, rdx
+	mov rdx, rcx 
+	push rax
+	push rbx
+	push rcx
+	push rdx
+	push rbp
+	push rdi
+	push rsi
+	push r8
+	push r9
+	push r10
+	push r11
+	push r12
+	push r13
+	push r14
+	push r15
 
 	mov rax, rsp
 	mov rsp, rbp
