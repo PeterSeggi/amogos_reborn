@@ -104,11 +104,9 @@ void delete_pid_from_sems(pid_t pid_to_delete){
             if(!current->next->openings){
                 list.first = delete_sem(list.first, current->next);
             }
-            else{
-                sem_lock_post(&(current->next->lock));
-                current = current->next;
-            }
         }
+        sem_lock_post(&(current->next->lock));
+        current = current->next;
     }
     sem_lock_post(&(list.lock));
 }
