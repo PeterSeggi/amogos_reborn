@@ -231,13 +231,14 @@ typedef struct ProcessView{
     int children_amount;
 }ProcessView;
 
-/*
-void ps(void);
-*/
+typedef struct st_fds{
+    uint16_t stdin;
+    uint16_t stdout; 
+}st_fds;
 
 ProcessView ** get_processes(uint16_t * proc_amount);
-int create_process(void * function);
-int create_shiny_process(void * function, int priority, boolean orphan, uint16_t stdin, uint16_t stdout);
+int create_process(void * function, int argc, char * argv[]);
+int create_shiny_process(void * function, int argc, char * argv[], int priority, boolean orphan, st_fds standard_fds);
 int waitpid(pid_t pid);
 void kill(pid_t pid);
 void exit(void);

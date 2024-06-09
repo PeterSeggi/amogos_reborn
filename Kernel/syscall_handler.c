@@ -284,8 +284,8 @@ int sys_create_process(uint64_t function, uint64_t argc, uint64_t argv){
   return aux->pid;
 }
 
-int sys_create_shiny_process(uint64_t function, uint64_t argc, uint64_t argv,uint64_t priority, uint64_t orphan, uint16_t stdin, uint16_t stdout){
-  Process* aux = create_shiny_process((void *) function,  (int)argc, (char **)argv, (int) priority, (boolean) orphan, stdin, stdout);
+int sys_create_shiny_process(uint64_t function, uint64_t argc, uint64_t argv, uint64_t priority, uint64_t orphan, uint64_t standard_fds){
+  Process* aux = create_shiny_process((void *) function,  (int)argc, (char **)argv, (int) priority, (boolean) orphan, ((st_fds) standard_fds).stdin, ((st_fds) standard_fds).stdout);
   return aux->pid;
 }
 

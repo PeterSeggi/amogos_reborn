@@ -34,7 +34,6 @@ typedef struct Registers{
 
 typedef struct Process{
     unsigned int memory_size;
-    int argc;
     pid_t fatherPid;
     pid_t pid;
     int priority;
@@ -46,7 +45,8 @@ typedef struct Process{
     pid_t waiting_for;
     uint16_t stdin_fd;
     uint16_t stdout_fd;
-    char * argv[];
+    int argc;
+    char ** argv;
 }Process;
 
 typedef struct ProcessTable{
@@ -87,6 +87,7 @@ typedef struct SleepingTable{
     SleepingProcess * last;
 }SleepingTable;
 
+
 Process * create_process(void * function, int argc, char * argv[]);
 Process * create_shiny_process(void * function, int argc, char * argv[], int priority, boolean orphan, uint16_t stdin, uint16_t stdout);
 
@@ -98,7 +99,7 @@ void stackTest(int myrsp);
 void createStack(void);
 void stackPrep(void);
 void stackUnprep(void);
-uint64_t initializeStack(void * rsp, void * rip);
+uint64_t initializeStack(void * rsp, void * rip, int argc, char * argv[]);
 void initialize_pcb(void);
 void initializeScheduler(void);
 void _cli();
