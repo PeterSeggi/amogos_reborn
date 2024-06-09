@@ -59,18 +59,18 @@ void initializeScheduler(){
         }
     }
     //createProcess(&my_main);   
-    create_shiny_process(&_idle, 0, TRUE);     //proceso vigilante _hlt
-    create_shiny_process((void *)0x400000, 4, TRUE);
+    create_shiny_process(&_idle, 0, TRUE, KEY_FD, VID_FD);     //proceso vigilante _hlt
+    create_shiny_process((void *)0x400000, 4, TRUE, KEY_FD, VID_FD);
 
     schedule_lock = 0;
     _idle();
 }
 
 Process * create_process(void * function){
-    return create_shiny_process(function, DEFAULT_PRIORITY, FALSE);  //por defecto se crea con prioridad 4
+    return create_shiny_process(function, DEFAULT_PRIORITY, FALSE, KEY_FD, VID_FD);  //por defecto se crea con prioridad 4
 }
 
-Process * create_shiny_process(void * function, int priority, boolean orphan){
+Process * create_shiny_process(void * function, int priority, boolean orphan, uint16_t stdin, uint16_t stdout){
     _cli();
     Process * process = (Process *)my_malloc(INITIAL_PROCESS_SIZE);
     process->memory_size = INITIAL_PROCESS_SIZE;
@@ -84,6 +84,9 @@ Process * create_shiny_process(void * function, int priority, boolean orphan){
     process->registers.rip = (uint64_t)function;  //direccion de la funcion a ejecutar
     process->registers.rsp = initializeStack((void *)process->registers.rsp, (void *)process->registers.rip); 
     process->pid = new_pid();       //cada nuevo proceso recibe el pid siguiente en orden natural
+
+    process->stdin_fd = stdin;
+    process->stdout_fd = stdout;
     
     if(process->pid == -1){
         my_free(process);  //libero recursos utlizados
@@ -519,6 +522,21 @@ int wait_all_pid(){
     return wait_pid(((pcb->processes[pcb->runningPid]->children_amount)*(-1))-1);
 }
 
+int dup(pid_t pid, uint16_t from, uint16_t to){
+    if (pcb->processes[pid] == NULL) return -1;
+
+    if (from == 0){
+        pcb->processes[pid]->stdin_fd = to;
+        return 0;
+    }
+    
+    if (from == 1){
+        pcb->processes[pid]->stdout_fd = to;
+        return 0;
+    }
+
+    return -1;
+}
 
 //##################################################################################
 //the forsaken zone

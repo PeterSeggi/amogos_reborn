@@ -6,6 +6,9 @@
 #include <stdint.h>
 #include <stddef.h>
 
+int init_sh(){
+    return create_process(&sh);
+}
 
 int sh(){
 

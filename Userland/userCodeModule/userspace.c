@@ -7,11 +7,11 @@
 #include <stdint.h>
 
 
+// proc init (allegedly)
 int main(){    
     
     while(1){
-        int (*sh_direc)() = sh;
-        int shell_pid = create_process((void *) sh_direc);
+        int shell_pid = init_sh(); 
         waitpid(shell_pid);
     }
 

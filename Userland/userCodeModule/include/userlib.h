@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+#define KEY_FD 4
+#define VID_FD 7
+
 //================================================================================================================================
 // Writting
 //================================================================================================================================
@@ -237,7 +240,7 @@ void ps(void);
 
 ProcessView ** get_processes(uint16_t * proc_amount);
 int create_process(void * function);
-int create_shiny_process(void * function, int priority, boolean orphan);
+int create_shiny_process(void * function, int priority, boolean orphan, uint16_t stdin, uint16_t stdout);
 int waitpid(pid_t pid);
 void kill(pid_t pid);
 void exit(void);

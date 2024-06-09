@@ -36,6 +36,17 @@ pipe_t * check_valid_fd(uint16_t fd, pipe_action action);
 pipe_t *search_pipe(uint16_t fd);
 void set_pipe_name(int num, char str[]);
 
+int init_pipe(){
+    int fds[2];
+
+    // primero hago el de teclado que termina en pipes[2]
+    if(pipe(fds)) return -1;
+
+    // segundo va el de video que termina en pipes[3]
+    if(pipe(fds)) return -1;
+    return 0;
+}
+
 int pipe(int pipefd[2]){
     if(highest_fd+2 > MAX_FD) return -1;
     pipe_t *aux_pipe = create_pipe(highest_fd+1, highest_fd+2);
