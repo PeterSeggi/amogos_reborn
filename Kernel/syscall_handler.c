@@ -74,7 +74,7 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
     break;
 
   case (0xA1):
-    sys_create_process(rdi, rsi, rdx);
+    sys_create_process(rdi, rsi, rdx, rcx);
     break;
   
   case (0xA2):
@@ -267,9 +267,8 @@ void failure_free(ProcessView ** ptr_list, int size){
   }
 }
 
-int sys_create_process(uint64_t function, uint64_t priority, uint64_t orphan){
-  int check_case = (int) priority;
-  if(check_case<0){
+int sys_create_process(uint64_t function, uint64_t priority, uint64_t orphan, uint64_t custom){
+  if((boolean)custom == FALSE){
     Process* aux = create_process((void *) function);
     return aux->pid;
   } 
