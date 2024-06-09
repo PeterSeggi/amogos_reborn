@@ -60,8 +60,8 @@ void initializeScheduler(){
         }
     }
     //createProcess(&my_main);   
-    create_shiny_process(&_idle, 0, TRUE, KEY_FD, VID_FD);     //proceso vigilante _hlt
     create_shiny_process((void *)0x400000, 4, TRUE, KEY_FD, VID_FD);
+    create_shiny_process(&_idle, 0, TRUE, KEY_FD, VID_FD);     //proceso vigilante _hlt
 
     schedule_lock = 0;
     _idle();
@@ -225,8 +225,9 @@ void * schedule(void * rsp){
         return rsp;
     } 
 
+
     int priority = scheduler->priority[scheduler->currentPriorityOffset];
-    if(scheduler->list[priority]->current != NULL){ //si estoy en el primer proceso no me guardo el stack de kernel
+    if(scheduler->list[priority]->current != NULL && pcb->runningPid > 0){ //si estoy en el primer proceso no me guardo el stack de kernel
         pcb->processes[pcb->runningPid]->registers.rsp = (uint64_t)rsp;           
     }
     pcb->runningPid = nextProcess();   //next process ignora los procesos bloqueados
@@ -473,6 +474,8 @@ void kill(pid_t pid){     /*ALERT: en caso de que se borre el q esta corriendo, 
     unschedule(pid);        //primero borro del sched porque uso la referencia a la pcb
     delete_sleeper(pid);    
     delete_from_pcb(pid);  //recien aca puedo borrar pcb
+
+    if (pcb->runningPid == pid) pcb->runningPid = -1;
 
     _force_schedule();
 
