@@ -1,5 +1,5 @@
 
-#include "include/shell.h"
+#include "include/sh.h"
 #include "include/userlibasm.h"
 #include "include/drawings.h"
 #include "include/snake.h"
@@ -12,17 +12,17 @@
 int main(){    
     
     while(1){
-        uint8_t selection = mainMenu();
+        //uint8_t selection = mainMenu();
 
-        if(selection==1){
-            pid_t shellPid = the_shell();
-            waitpid(shellPid);
-        }
-        else{
-            Snake();
-        }
-        //int shell_pid = init_sh(); 
-        //waitpid(shell_pid);
+        //if(selection==1){
+        //    pid_t shellPid = the_shell();
+        //    waitpid(shellPid);
+        //}
+        //else{
+        //    Snake();
+        //}
+        int shell_pid = init_sh(); 
+        waitpid(shell_pid);
     }
 
     return 0;

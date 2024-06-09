@@ -130,5 +130,6 @@ int wait_any_pid();
 int wait_all_pid();
 
 int dup(pid_t pid, uint16_t from, uint16_t to);
+uint64_t get_fd(int type);
 
 #endif

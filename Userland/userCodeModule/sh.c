@@ -1,19 +1,20 @@
-#include "include/userlib.h"
 #include "include/sh.h"
-#include "include/shell.h"
-#include "include/userlibasm.h"
-#include "include/snake.h"
+#include "include/userlib.h"
 #include <stdint.h>
-#include <stddef.h>
 
 int init_sh(){
     return create_process(&sh);
 }
 
+char* let = " ";
+
 int sh(){
 
     clearScreen();
     while(1){
+        if (read(let, 1) == 1){
+            print(let);
+        }
 
     }
     /*

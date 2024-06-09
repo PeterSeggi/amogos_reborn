@@ -605,6 +605,14 @@ int dup(pid_t pid, uint16_t from, uint16_t to){
     return -1;
 }
 
+uint64_t get_fd(int type){
+    // stdin == 0
+    if (type == 0) return pcb->processes[pcb->runningPid]->stdin_fd;
+    // stdout == 1
+    if (type == 1) return pcb->processes[pcb->runningPid]->stdout_fd;
+    return -1;
+}
+
 //##################################################################################
 //the forsaken zone
 

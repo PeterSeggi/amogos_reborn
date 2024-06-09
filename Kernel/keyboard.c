@@ -1,13 +1,16 @@
+#include "include/pipe.h"
 #include <keyboard.h>
 #include <lib.h>
 #include <naiveConsole.h>
 #include <stdint.h>
 #include <videoDriver.h>
+#include <pipe.h>
 
 #define KEY_BUF_SIZE 16
 #define STDIN 0
 #define STDKEYS 3
 #define STDLAST 4
+#define OUT_FD 5
 
 const unsigned char scan_chars[128] = {
     0,    27,   '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-',  '=',
@@ -53,12 +56,17 @@ void key_handler() { insert_key(_getKey()); }
 void insert_key(int key) {
 
   checkShift(key);
+  char toWrite;
 
   if (key <= 0x52 && scan_chars[key] != 0) {
-    if (shifted || (caps && key >= 0x10))
+    if (shifted || (caps && key >= 0x10)){
       ascii_buf[ascii_insert_index++] = scan_chars_shift[key];
-    else
+      toWrite = scan_chars_shift[key];
+    }
+    else{
       ascii_buf[ascii_insert_index++] = scan_chars[key];
+      toWrite = scan_chars[key];
+    }
     if (ascii_insert_index == KEY_BUF_SIZE)
       ascii_insert_index = 0;
 
@@ -69,6 +77,8 @@ void insert_key(int key) {
   key_buf[insert_index++] = key;
   if (insert_index == KEY_BUF_SIZE)
     insert_index = 0;
+
+  write_pipe(OUT_FD, &toWrite, 1);
 }
 
 // returns the actual key, 0 if nothing was read

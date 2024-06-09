@@ -1,6 +1,8 @@
 #ifndef PIPE_H
 #define PIPE_H
 
+#include <stdint.h>
+
 /**
 *@brief     Creates a unidirectional data channel.
 *@param[in] pipefd pipefd[0] to be used as read end, pipefd[1] as write end.

@@ -149,9 +149,10 @@ void sys_write(uint64_t fd, uint64_t message, uint64_t length) {
 int sys_read(uint64_t fd, uint64_t buffer, uint64_t length) {
   switch(fd){
     case (STDIN):
-      int retVal = 0;
-      retVal = read_chars(fd, (char *)buffer, length);
-      return retVal;
+      //int retVal = 0;
+      //retVal = read_chars(fd, (char *)buffer, length);
+      //return retVal;
+      fd = get_fd(STDIN);
 
     default:
       return read_pipe((int) fd, (char *) buffer, (uint16_t) length);

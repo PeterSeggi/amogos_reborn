@@ -182,7 +182,8 @@ pid_t get_pid_to_unblock(sem_t *sem){
     pid_t found = 0;
     int i = 0;
     while(!found && i<MAX_PROCESS_COUNT){
-        if(sem->blocked_processes[i]) found = sem->blocked_processes[i];
+        if(sem->blocked_processes[i]) found = i;
+        i++;
     }
     return found;
 }

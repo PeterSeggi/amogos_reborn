@@ -270,6 +270,7 @@ haltcpu:
 	ret
 
 _idle:
+    sti
     hlt
     jmp _idle
 
