@@ -243,7 +243,7 @@ ProcessView ** get_processes(uint16_t * proc_amount){
 }
 
 int create_process(void * function){
-    return create_shiny_process(function, -1, 0);
+    return create_shiny_process(function, 4, 0);
 }
 
 int create_shiny_process(void * function, int priority, boolean orphan){

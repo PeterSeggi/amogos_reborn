@@ -3,6 +3,7 @@
 #include <processManager.h>
 #include <interrupts.h>
 #include <lib.h>
+#include <sem.h>
 
 
 ProcessNode * delete_from_sched(ProcessNode * current, pid_t pid);
@@ -280,7 +281,7 @@ void listInsert(ProcessList * list, ProcessNode * process){
     if(process==NULL){  //no se admiten nodos vacios
         return;
     }
-    //se asume que el proceso ya fue creado exitosamente, solo resta agregarlo a la cola de scheduling
+    //se asume que el proceso ya fue creado samente, solo resta agregarlo a la cola de scheduling
     if(list!=NULL){
         if(list->firstProcess==NULL){   //caso lista vacia
             list->firstProcess = process;
@@ -421,7 +422,7 @@ void block_process(pid_t pid){
     if(pid<1 || pid>=MAX_PROCESS_COUNT){
         return;
     }
-    pcb->processes[pcb->runningPid]->state = BLOCKED;
+    pcb->processes[pid]->state = BLOCKED;
     scheduler->runnableProcs--;
     _force_schedule();
 }
@@ -430,7 +431,7 @@ void unblock_process(pid_t pid){
     if(pid<1 || pid>=MAX_PROCESS_COUNT){
         return;
     }
-    pcb->processes[pcb->runningPid]->state = READY;
+    pcb->processes[pid]->state = READY;
     scheduler->runnableProcs++;
     _force_schedule();
 }
@@ -444,9 +445,9 @@ void kill(pid_t pid){     /*ALERT: en caso de que se borre el q esta corriendo, 
         pid_t fatherPid = pcb->processes[pid]->fatherPid;
         pcb->processes[fatherPid]->children[pid] = 0;
     }
+    delete_pid_from_sems(pid);
     unschedule(pid);        //primero borro del sched porque uso la referencia a la pcb
-    delete_sleeper(pid);
-    
+    delete_sleeper(pid);    
     delete_from_pcb(pid);  //recien aca puedo borrar pcb
 
     //############TODO################## 
@@ -484,24 +485,25 @@ void delete_from_pcb(pid_t pid){
 
 void exit_process(){
     _cli();
-    pid_t fatherPid = pcb->processes[get_pid()]->fatherPid;
     pid_t childPid = get_pid();
-    if(pcb->processes[fatherPid]->waiting_for<-1){
-        pcb->processes[fatherPid]->waiting_for++;
-    }
-    boolean found = FALSE;
-    for(int i=0; i<MAX_CHILDREN_COUNT && found==FALSE; i++){    //busqueda lineal
-        if(pcb->processes[fatherPid]->children[i]==childPid){
-            pcb->processes[fatherPid]->children[i]=0;
-            found = TRUE;
+    pid_t fatherPid = pcb->processes[childPid]->fatherPid;
+    if(fatherPid>0){
+        if(pcb->processes[fatherPid]->waiting_for<-1){
+            pcb->processes[fatherPid]->waiting_for++;
+        }
+        boolean found = FALSE;
+        for(int i=0; i<MAX_CHILDREN_COUNT && found==FALSE; i++){    //busqueda lineal
+            if(pcb->processes[fatherPid]->children[i]==childPid){
+                pcb->processes[fatherPid]->children[i]=0;
+                found = TRUE;
+            }
+        }
+        if(pcb->processes[fatherPid]->waiting_for==childPid || pcb->processes[fatherPid]->waiting_for==-1){
+            pcb->processes[fatherPid]->waiting_for=0;
+            unblock_process(fatherPid);
         }
     }
-    if(pcb->processes[fatherPid]->waiting_for==childPid || pcb->processes[fatherPid]->waiting_for==-1){
-        pcb->processes[fatherPid]->waiting_for=0;
-        unblock_process(fatherPid);
-    }
     kill(childPid);
-    _sti();
     _force_schedule();
 }
 

@@ -1,7 +1,8 @@
-#include <userlib.h>
+
 #include "include/shell.h"
 #include "include/userlibasm.h"
 #include "include/snake.h"
+#include "include/userlib.h"
 #include <stdint.h>
 #include <stddef.h>
 
@@ -172,8 +173,8 @@ int shell(){
         //sleep_once();
     }
 
-    clearScreen();
-
+    //clearScreen();
+    //exit();
     return 0;
 }
 
@@ -226,6 +227,7 @@ void process_command(char* buffer){
                     exit_command = 1;
                     write_out("Bye now! Hope you enjoyed your stay!");
                     //sleep(2, 0);
+                    exit();         /*OJO AL PIOJO ESTE EXIT ES EXITANTE*/
                     break;
                 case 1:
                     clearScreen(); 

@@ -463,15 +463,8 @@ _saveRegs:
 
 
 _force_schedule:
-	push rbp
-	mov rbp, rsp
-
+	sti
 	int 20h	;force a tick 
-
-.end:
-	popf
-	mov rsp, rbp
-	pop rbp
 	ret
 
 ;================================================================================================================================

@@ -52,6 +52,13 @@ int sem_post(sem_t *sem);
 */
 int sem_wait(sem_t *sem);
 
+/**
+*@brief     Looks for the target PID in all semaphores, and erases any participation.  To be used
+*           when deleting processes.
+*@param[in] pid_to_delete Process ID to delete.
+*/
+void delete_pid_from_sems(pid_t pid_to_delete);
+
 /*----------------------
   | ASM functions
   -----------------------*/
