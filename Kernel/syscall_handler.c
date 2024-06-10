@@ -101,6 +101,10 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
   case (0xA7):
     sys_block_proc(rdi);
 
+  case (0xA8):
+    sys_get_pid();
+    break;
+
   case (0xB0):
     sys_sem_open(rdi, rsi);
     break;
@@ -299,6 +303,10 @@ int sys_create_shiny_process(uint64_t function, uint64_t argc, uint64_t argv, ui
         (uint64_t)createArgs->stdout
     );
   return aux->pid;
+}
+
+pid_t sys_get_pid(){
+  return get_pid();
 }
 
 sem_t * sys_sem_open(uint64_t name, uint64_t value){

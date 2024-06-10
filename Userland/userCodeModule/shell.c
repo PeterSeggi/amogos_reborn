@@ -24,8 +24,15 @@ static char* commands[COMMANDS] = {"exit", "clear", "inc-size", "dec-size", "tim
 char char_buffer[1];
 
 //cproc test stuf TODO SACAR Y MODULAR BIEN!
-void dummy_process(){
-    write_out("im dummy\n");
+void dummy_process(int argc, char **argv){
+    if(argc==0) exit();
+    int count=argv[0][0]-'0';
+    while(count){
+        write_out("im dummy\n");
+        sleep(1, 0);
+        count++;
+    }
+    exit();
 }
 
 //TODO ps stuff
@@ -504,14 +511,21 @@ void process_command(char* buffer){
 
                 case 21:
                     write_out("Probamos crear un proceso\n");
-                    create_process(&dummy_process, 0, NULL);
+                    //ya no
+                    //create_process(&dummy_process, aux_argc, aux_argv);
                     break;
+
                 case 22:
                     int aux_argc = 1;
-                    char *aux_text = "5";
+                    uintToBase(get_pid(), aux, 10);
+                    char *aux_text = aux;
                     char *aux_argv[aux_argc];
                     aux_argv[0] = aux_text;
+                    write_out("pid: ");
+                    write_out(aux);
+                    write_out("\n");
                     sexo(aux_argc, aux_argv);
+                    break;
             }   
             return;
         }
@@ -628,7 +642,7 @@ void desize(){
 }
 
 void sexo_command(int argc, char **argv){
-    write_out("La cantidad de argumentos es: ");
+    /*write_out("La cantidad de argumentos es: ");
     uintToBase(argc, aux, 10);
     write_out(aux);
     write_out("\n");
@@ -637,6 +651,13 @@ void sexo_command(int argc, char **argv){
     write_out("\n");
     if(argv[0][0] == '5'){
         write_out("por el culo te la hinco\n");
+    }*/
+    if(argc==0) exit();
+    while(1){
+        write_out("hola proceso n: ");
+        write_out(argv[0]);
+        write_out("!\n");
+        sleep(2,0);
     }
     exit();
 }

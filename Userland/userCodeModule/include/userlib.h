@@ -251,6 +251,7 @@ void kill(pid_t pid);
 void exit(void);
 void nice(pid_t pid, int priority);
 void block_proc(pid_t pid);
+pid_t get_pid();
 
 //================================================================================================================================
 // Semaphores
