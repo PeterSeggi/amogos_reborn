@@ -266,3 +266,5 @@ pid_t init_pipe(int argc, char * argv[], int read_fd, int write_fd, boolean fore
     boolean orphan = FALSE;
     return create_shiny_process(&test_pipe, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
+
+

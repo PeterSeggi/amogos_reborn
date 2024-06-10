@@ -5,14 +5,14 @@
 #include <stddef.h>
 #include "include/commands.h"
 
-#define COMMANDS 8
+#define COMMANDS 5
 
 
 int init_sh(int read_fd, int write_fd){
     char * name = strdup("shell");
     return create_shiny_process(&sh, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
 }
-static char* commands[COMMANDS] = {"ps", "loop","mem", "malloc", "free", "bt", "pipe", "exit"};
+static char* commands[COMMANDS] = {"ps", "loop","mem", "help", "exit"};
 
 char* let = " ";
 //char prompt_start[] = {127, 0};
@@ -39,6 +39,20 @@ int sh(){
 
     }
     return 0;
+}
+
+void help(int argc, char * argv[]){
+    print("Los comandos existentes son:\n");
+    for(int i=0; i<COMMANDS; i++){
+        print(commands[i]);
+        print("\n");
+    }
+    exit();
+}
+
+pid_t init_help(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
+    boolean orphan = FALSE;
+    return create_shiny_process(&help, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
 
 void process(char key){
@@ -155,28 +169,10 @@ void parse_command(const char *input, char *c1, char **argv, int *argc) {
                     if(foreground==TRUE)waitpid(memPid);
                     break;
 
-                case 3: //malloc
+                case 3: //help
 
-                    pid_t mallocPid = init_malloc(*argc, argv, pipe_out[1], pipe_in[0], foreground);
-                    if(foreground==TRUE)waitpid(mallocPid);
-                    break;      
-
-                case 4: //free
-
-                    pid_t freePid = init_free(*argc, argv, pipe_out[1], pipe_in[0], foreground);
-                    if(foreground==TRUE)waitpid(freePid);
-                    break;
-
-                case 5: //block
-
-                    pid_t blockPid = init_block(*argc, argv, pipe_out[1], pipe_in[0], foreground);
-                    if(foreground==TRUE)waitpid(blockPid);
-                    break;
-
-                case 6: //pipe
-
-                    pid_t pipePid = init_pipe(*argc, argv, pipe_out[1], pipe_in[0], foreground);
-                    if(foreground==TRUE)waitpid(pipePid);
+                    pid_t helpPid = init_help(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    if(foreground==TRUE)waitpid(helpPid);
                     break;
 
                 case COMMANDS-1:
