@@ -197,6 +197,7 @@ boolean add_child(pid_t fatherPid, pid_t childPid){
     for(int i=0; i<MAX_CHILDREN_COUNT; i++){
         if(pcb->processes[fatherPid]->children[i]==0){
             pcb->processes[fatherPid]->children[i] = childPid;
+            pcb->processes[fatherPid]->children_amount++;
             return TRUE;
         }
     }
@@ -514,6 +515,7 @@ void kill(pid_t pid){     /*ALERT: en caso de que se borre el q esta corriendo, 
         for(int i=0; i<MAX_CHILDREN_COUNT && found==FALSE; i++){    //busqueda lineal
             if(pcb->processes[fatherPid]->children[i]==pid){
                 pcb->processes[fatherPid]->children[i]=0;
+                pcb->processes[fatherPid]->children_amount--;
                 found = TRUE;
             }
         }

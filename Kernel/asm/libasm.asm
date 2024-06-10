@@ -107,8 +107,8 @@ initializeStack:
 	push 0x202 ;RFLAGS
 	push 0x8   ;CS
 	push rsi ;RIP
-	mov rsi, rdx	;quiero dejar rdx en rdi --> argc primer arg
-	mov rdx, rcx 	;rcx en rsi --> argv segundo arg
+	mov rdi, rdx	;quiero dejar rdx en rdi --> argc primer arg
+	mov rsi, rcx 	;rcx en rsi --> argv segundo arg
 	push rax
 	push rbx
 	push rcx
