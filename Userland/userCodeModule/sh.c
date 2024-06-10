@@ -82,6 +82,12 @@ void parse_command(const char *input, char *c1, char **a1, int *a1_size) {
     }
 
     while (token != NULL) {
+
+        if (token[0] == '|'){
+            token = strchr(input, '|');
+        }
+
+        
         a1[index] = strdup(token);
         if (a1[index] == NULL) {
             return;
