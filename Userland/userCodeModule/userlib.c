@@ -242,12 +242,12 @@ ProcessView ** get_processes(uint16_t * proc_amount){
     return _get_processes(proc_amount);
 }
 
-int create_process(void * function, int argc, char * argv[]){
-    return _create_process(function, argc, argv);
+int create_process(void * function, int argc, int number){
+    return _create_process(function, argc, number);
 }
 
-int create_shiny_process(void * function, int argc, char * argv[], int priority, boolean orphan, st_fds standard_fds){
-    return _create_shiny_process(function, argc, argv, priority, orphan, standard_fds);
+int create_shiny_process(void * function, int argc, int number, CreateArguments * args){
+    return _create_shiny_process(function, argc, number, args);
 }
 
 int waitpid(pid_t pid){

@@ -1,4 +1,8 @@
+#ifndef USERLIBASM_H
+#define USERLIBASM_H
+
 #include <stdint.h>
+#include "userlib.h"
 
 void _print(int fd, char * string, int length);
 int _read(int fd, char * buffer, int length);
@@ -17,8 +21,8 @@ void * _my_malloc(uint16_t size);
 void _my_free(void * addr_to_free);
 
 ProcessView ** _get_processes(uint16_t * proc_amount);
-int _create_process(void * function, int argc, char * argv[]);
-int _create_shiny_process(void * function, int argc, char * argv[], int priority, boolean orphan, st_fds standard_fds);
+int _create_process(void * function, int argc, int number);
+int _create_shiny_process(void * function, int argc, int number, CreateArguments * args);
 int _waitpid(pid_t pid);
 void _kill(pid_t pid);
 void _exit(void);
@@ -34,3 +38,5 @@ int _pipe(int pipefd[2]);
 int _pclose(int fd);
 
 int _write(int fd, char *message, uint16_t length);
+
+#endif

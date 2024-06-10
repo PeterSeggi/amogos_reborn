@@ -30,7 +30,7 @@ void dummy_process(){
 
 //TODO ps stuff
 void ps(void);
-void sexo(int argc, char * argv[]);
+void sexo(int numero);
 
 char * get_process_status(State state){
     switch(state){
@@ -153,7 +153,7 @@ char byteUnit[2]={0};
 int * aux_mem_pointer = NULL;
 
 pid_t the_shell(){
-    return create_process(&shell);
+    return create_process(&shell, 0, 0);
 }
 
 int shell(){
@@ -504,10 +504,10 @@ void process_command(char* buffer){
 
                 case 21:
                     write_out("Probamos crear un proceso\n");
-                    create_process(&dummy_process);
+                    create_process(&dummy_process, 0, 0);
                     break;
                 case 22:
-                    sexo();
+                    sexo(5);
             }   
             return;
         }
@@ -623,16 +623,18 @@ void desize(){
 
 }
 
-void sexo_command(int argc, char * argv[]){
-    for(int i=0; i<argc; i++){
-        write_out(argv[i]);
-    }
-    write_out("que campeon del lol es ese loco? es adc o mid? cuanto danio ap tiene?");
+void sexo_command(int argc, int numero){
+    write_out("La cantidad de argumentos es: ");
+    aux[0] = argc + '0';
+    write_out(aux);
     write_out("\n");
+    if(numero == 5){
+        write_out("por el culo te la hinco ( ͡° ͜ʖ ͡°)\n");
+    }
     exit();
 }
 
-void sexo(int argc, char * argv[]){
-    create_process(&sexo_command, int argc, char * argv[]);
+void sexo(int numero){
+    create_process(&sexo_command, 1, numero);
 }
 

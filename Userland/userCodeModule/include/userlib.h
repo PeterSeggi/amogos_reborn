@@ -3,6 +3,17 @@
 
 #include <stdint.h>
 
+typedef enum boolean{
+    FALSE,
+    TRUE
+}boolean;
+
+typedef struct CreateArguments{
+    int priority;
+    boolean orphan;
+    uint16_t stdin;
+    uint16_t stdout; 
+}CreateArguments;
 //================================================================================================================================
 // Writting
 //================================================================================================================================
@@ -203,10 +214,6 @@ char byteConverter(uint64_t * amount);
 
 typedef int pid_t;
 
-typedef enum boolean{
-    FALSE,
-    TRUE
-}boolean;
 
 typedef enum State{
     READY,
@@ -237,8 +244,8 @@ typedef struct st_fds{
 }st_fds;
 
 ProcessView ** get_processes(uint16_t * proc_amount);
-int create_process(void * function, int argc, char * argv[]);
-int create_shiny_process(void * function, int argc, char * argv[], int priority, boolean orphan, st_fds standard_fds);
+int create_process(void * function, int argc, int numero);
+int create_shiny_process(void * function, int argc, int numero, CreateArguments * args);
 int waitpid(pid_t pid);
 void kill(pid_t pid);
 void exit(void);
