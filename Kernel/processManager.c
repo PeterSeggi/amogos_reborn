@@ -5,9 +5,6 @@
 #include <lib.h>
 #include <sem.h>
 
-
-//---|FUNCIONES PRIVADAS|---\\
-
 ProcessNode * delete_from_sched(ProcessNode * current, pid_t pid);
 void delete_from_pcb(pid_t pid);
 void destroyProcess(Process * process);

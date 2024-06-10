@@ -1,11 +1,30 @@
 #include "include/sh.h"
+#include "include/userlibasm.h"
 #include "include/userlib.h"
 #include <stdint.h>
 #include <stddef.h>
 
+#define COMMANDS 2
+
+typedef enum Commands{
+    PS,
+    EXIT
+}Commands;
+
+
+void ps(void);
+int sh(void);
+
+
 int init_sh(){
-    return create_process(&sh, 0, 0);
+    return create_process(&sh, 0, NULL);
 }
+
+pid_t init_ps(){
+   return create_process(&ps, 0, NULL);
+}
+
+static char* commands[COMMANDS] = {"ps", "exit"};
 
 char* let = " ";
 //char prompt_start[] = {127, 0};
@@ -20,6 +39,24 @@ const char delim[2] = {32, 0};
 int argc1;
 
 
+//cosas de ps :D================================================3
+char * get_process_status(State state){
+    switch(state){
+        case READY:
+            return "READY";
+        case RUNNING:
+            return "RUNNING";
+        case BLOCKED:
+            return "BLOCKED";
+        default:
+            return "UNKOWN";
+    }
+}
+char * get_process_foreground(uint8_t foreground){
+    if(foreground==TRUE) return "YES";
+    else return "NO";
+}
+//B=================================================D
 int sh(){
 
     clearScreen();
@@ -33,6 +70,52 @@ int sh(){
     return 0;
 }
 
+void ps(){
+    uint16_t process_amount = 0;
+    ProcessView ** processes  = get_processes(&process_amount);
+    char aux_aux[BUFFER_SIZE];
+    if(!processes){
+        print("No processes\n");
+        print("amount:");
+        uintToBase(process_amount, aux_aux, 10);
+        print(aux_aux);
+        print("\n");
+        return;
+    }
+    print("PID\t | STATE\t | PRIORITY\t | RSP\t | RBP\t | RIP\t | FOREGROUND\t | PARENT\t | CHILDREN\n");
+    char aux[BUFFER_SIZE];
+    for(int i = 0; i<process_amount; i++){
+        uintToBase(processes[i]->pid, aux, 10);
+        print(aux);
+        print("\t |");
+        print(get_process_status(processes[i]->state));
+        print("\t |");
+        uintToBase(processes[i]->priority, aux, 10);
+        print(aux);
+        print("\t |");
+        uintToBase(processes[i]->registers.rsp, aux, 16);
+        print(aux);
+        print("\t |");
+        uintToBase(processes[i]->registers.rbp, aux, 16);
+        print(aux);
+        print("\t |");
+        uintToBase(processes[i]->registers.rip, aux, 16);
+        print(aux);
+        print("\t |");
+        print(get_process_foreground(processes[i]->foreground));
+        print("\t |");
+        uintToBase(processes[i]->fatherPid, aux, 10);
+        print(aux);
+        print("\t |");
+        uintToBase(processes[i]->children_amount, aux, 10);
+        print(aux);
+        print("\n");
+
+        my_free(processes[i]);
+    }
+    my_free(processes);
+    exit();
+}
 
 void process(char key){
     if (key == '\n') process_command();
@@ -68,7 +151,7 @@ void process_command(){
 }
 
 
-void parse_command(const char *input, char *c1, char **a1, int *a1_size) {
+void parse_command(const char *input, char *c1, char **argv, int *argc) {
     char *temp = strdup(input);
     if (temp == NULL) {
         return;
@@ -88,21 +171,21 @@ void parse_command(const char *input, char *c1, char **a1, int *a1_size) {
         }
 
         
-        a1[index] = strdup(token);
-        if (a1[index] == NULL) {
+        argv[index] = strdup(token);
+        if (argv[index] == NULL) {
             return;
         }
         index++;
         token = strtok(NULL, delim);
     }
 
-    *a1_size = index;
+    *argc = index;
     print("Command es: ");
-    print(c1);
+    print(argv[0]);
     print("\n");
 
     print("Argc es es: ");
-    printDec(index);
+    printDec(*argc);
     print("\n");
 
     print("Argv son: ");
@@ -111,5 +194,18 @@ void parse_command(const char *input, char *c1, char **a1, int *a1_size) {
         print("\n");
     }
 
+    //COMIENZO DEL FIN
+    for(int i=0; i<COMMANDS; i++){
+        if(!strcmp(argv[0], commands[i])){
+            switch(i){
+                case 0:
+                    pid_t psPid = init_ps();
+                    waitpid(psPid);
+                    break;
+                case COMMANDS-1:
+                    exit();
+            }
+        }
+    }
     my_free(temp);
 }
