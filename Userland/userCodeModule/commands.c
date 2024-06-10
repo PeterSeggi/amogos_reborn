@@ -69,9 +69,9 @@ void ps(){
 
 
 
-pid_t init_ps(int read_fd, int write_fd){
+pid_t init_ps(int read_fd, int write_fd, boolean foreground){
     char * name = strdup("ps");
-    return create_shiny_process(&ps, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
+    return create_shiny_process(&ps, 1, &name, 4, FALSE, foreground, read_fd, write_fd);
 }
 
 
@@ -99,8 +99,7 @@ void loop(int argc, char * argv[]){
     exit();
 }
 
-pid_t init_loop(int argc, char * argv[], int read_fd, int write_fd){
+pid_t init_loop(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
     boolean orphan = FALSE;
-    boolean foreground = TRUE;
     return create_shiny_process(&loop, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }

@@ -5,14 +5,14 @@
 #include <stddef.h>
 #include "include/commands.h"
 
-#define COMMANDS 3
+#define COMMANDS 10
 
 
 int init_sh(int read_fd, int write_fd){
     char * name = strdup("shell");
     return create_shiny_process(&sh, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
 }
-static char* commands[COMMANDS] = {"ps", "loop", "exit"};
+static char* commands[COMMANDS] = {"ps", "loop","mem", "malloc", "free", "ps", "bt", "pipe", "cproc", "exit"};
 
 char* let = " ";
 //char prompt_start[] = {127, 0};
@@ -71,6 +71,7 @@ void process_command(){
     //if(command_buffer[0] == 'q') exit();
 
     parse_command(command_buffer, c1_buf, argv1, &argc1);
+    command_cursor = 0;
     //print("\n");
     print(prompt_start);
 
@@ -78,11 +79,18 @@ void process_command(){
 
 
 void parse_command(const char *input, char *c1, char **argv, int *argc) {
+    boolean foreground = TRUE;
+    if(input[command_cursor-1]=='&'){
+        foreground = FALSE;
+    }
+    printDec(foreground==TRUE);
+    printDec(foreground==TRUE);
+    printDec(foreground==FALSE);
     char *temp = strdup(input);
     if (temp == NULL) {
         return;
     }
-
+    
     char *token = strtok(temp, delim);
     int index = 0;
 
@@ -102,7 +110,7 @@ void parse_command(const char *input, char *c1, char **argv, int *argc) {
             return;
         }
         index++;
-        token = strtok(NULL, delim);
+        token = strtok(NULL, delim); 
     }
 
     *argc = index;
@@ -131,14 +139,48 @@ void parse_command(const char *input, char *c1, char **argv, int *argc) {
     for(int i=0; i<COMMANDS; i++){
         if(!strcmp(argv[0], commands[i])){
             switch(i){
-                case 0:
-                    pid_t psPid = init_ps(pipe_out[1], pipe_in[0]);
+                case 0: //ps
+
+                    pid_t psPid = init_ps(pipe_out[1], pipe_in[0], foreground);
                     waitpid(psPid);
                     break;
-                case 1:
-                    pid_t loopPid = init_loop(*argc, argv, pipe_out[1], pipe_in[0]);
+
+                case 1: //loop
+
+
+                    pid_t loopPid = init_loop(*argc, argv, pipe_out[1], pipe_in[0], foreground);
                     waitpid(loopPid);
-                case COMMANDS-1:
+                    break;
+
+                case 2:
+
+                break;
+
+                case 3:
+
+                break;
+
+                case 4:
+
+                break;
+
+                case 5:
+
+                break;
+
+                case 6:
+
+                break;
+
+                case 7: 
+                
+                break;
+
+                case 8:
+
+                break;
+
+                case COMMANDS-1:    
                     exit();
             }
         }
