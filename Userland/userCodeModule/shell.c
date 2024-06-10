@@ -524,7 +524,8 @@ void process_command(char* buffer){
                     write_out("pid: ");
                     write_out(aux);
                     write_out("\n");
-                    sexo(aux_argc, aux_argv);
+                    sexo(aux_argc, aux_argv);   //el equivalente al fork
+                    waitpid(4);
                     break;
             }   
             return;
@@ -653,11 +654,13 @@ void sexo_command(int argc, char **argv){
         write_out("por el culo te la hinco\n");
     }*/
     if(argc==0) exit();
-    while(1){
+    int i=0;
+    while(i<10){
         write_out("hola proceso n: ");
         write_out(argv[0]);
         write_out("!\n");
-        sleep(2,0);
+        i++;
+        sleep(1,0);
     }
     exit();
 }

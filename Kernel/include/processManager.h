@@ -6,6 +6,7 @@
 #define INITIAL_PROCESS_SIZE 8192
 #define MAX_PROCESS_COUNT 100
 #define MAX_CHILDREN_COUNT 50
+#define MAX_PROCESS_NAME 20
 #define DEFAULT_PRIORITY 4
 
 #define KEY_FD 4
@@ -41,6 +42,7 @@ typedef struct Process{
     Registers registers;
     boolean foreground;
     pid_t children[MAX_CHILDREN_COUNT];
+    char name[MAX_PROCESS_NAME];
     int children_amount;
     pid_t waiting_for;
     uint16_t stdin_fd;
