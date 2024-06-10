@@ -5,7 +5,7 @@
 #include <lib.h>
 #include <sem.h>
 
-ProcessNode * delete_from_sched(ProcessNode * current, pid_t pid);
+ProcessNde * delete_from_sched(ProcessNode * current, pid_t pid);
 void delete_from_pcb(pid_t pid);
 void destroyProcess(Process * process);
 pid_t new_pid();
@@ -21,6 +21,7 @@ void free_argv(int argc, char ** argv);
 ProcessTable * pcb = NULL;
 PriorityArray * scheduler = NULL;
 SleepingTable * sleepingTable = NULL;
+ProcessList * foregroundProcess = NULL;
 
 int schedule_lock = 1;
 
@@ -34,6 +35,13 @@ void initialize_pcb(void){
     for(int i=0; i<MAX_PROCESS_COUNT; i++){
         pcb->processes[i] = NULL;
     }
+
+    
+    foregroundProcess = (ProcessList *) my_malloc(sizeof(ProcessList));
+    foregroundProcess->firstProcess = NULL;
+    foregroundProcess->last = NULL;
+    foregroundProcess->current = NULL;
+    foregroundProcess->size = 0;
 }
 
 void executeProcess(uint64_t rip){
@@ -60,15 +68,15 @@ void initializeScheduler(){
         }
     }
     //createProcess(&my_main);   
-    create_shiny_process((void *)0x400000, 0, NULL, 4, TRUE, KEY_FD, VID_FD);
-    create_shiny_process(&_idle, 0, NULL, 0, TRUE, KEY_FD, VID_FD);     //proceso vigilante _hlt
+    create_shiny_process((void *)0x400000, 0, NULL, 4, TRUE, FALSE, KEY_FD, VID_FD);
+    create_shiny_process(&_idle, 0, NULL, 0, TRUE, FALSE, KEY_FD, VID_FD);     //proceso vigilante _hlt
 
     schedule_lock = 0;
     _idle();
 }
 
 Process * create_process(void * function, int argc, char ** argv){
-    return create_shiny_process(function, argc, argv, DEFAULT_PRIORITY, FALSE, KEY_FD, VID_FD);  //por defecto se crea con prioridad 4
+    return create_shiny_process(function, argc, argv, DEFAULT_PRIORITY, FALSE, FALSE, KEY_FD, VID_FD);  //por defecto se crea con prioridad 4
 }
 
 void failure_free_chars(char ** ptr_list, int size){
@@ -77,7 +85,7 @@ void failure_free_chars(char ** ptr_list, int size){
   }
 }
 
-Process * create_shiny_process(void * function, int argc, char ** argv, int priority, boolean orphan, uint16_t stdin, uint16_t stdout){
+Process * create_shiny_process(void * function, int argc, char ** argv, int priority, boolean orphan, boolean foreground, uint16_t stdin, uint16_t stdout){
     _cli();
     Process * process = (Process *)my_malloc(INITIAL_PROCESS_SIZE);
     if(process == NULL){
@@ -85,7 +93,7 @@ Process * create_shiny_process(void * function, int argc, char ** argv, int prio
     }
     process->memory_size = INITIAL_PROCESS_SIZE;
     process->state = READY;  
-    process->foreground = FALSE;
+    process->foreground = foreground;
     process->children_amount = 0;
     process->argc = argc;
     if(process->argc){
@@ -166,6 +174,10 @@ Process * create_shiny_process(void * function, int argc, char ** argv, int prio
         return NULL;
     }
     scheduler_add(process->pid, priority, node);  //agrega el proceso a la cola de scheduling con la prioridad deseada
+
+    if (foreground == TRUE){
+       add_foreground(process->pid);
+    }
     
     _sti();
     return process;                     
@@ -279,50 +291,6 @@ pid_t nextProcess(){
     return nextProcessInList(scheduler->list[priority], TRUE);
 }
 
-
-/*pid_t nextProcessInList(ProcessList * list){
-
-    // si no tengo nada q correr voy directo a idle
-    if(scheduler->runnableProcs == 0){
-        // basically el pid del idle
-        return scheduler->list[0]->firstProcess->pid;
-    }
-
-    if(list->size == 0){            //si la prioridad no tiene procesos, sigue buscando
-        
-        // * int priority = scheduler->priority[scheduler->currentPriorityOffset];
-        // * int newPrior;
-        // * while((newPrior=getNextPriority()) == priority){
-        // *      skippeo todos los 333 si es que en la lista 3 no hay ningun proceso
-        // * }
-        
-        return nextProcessInList(scheduler->list[getNextPriority()]);
-    }
-    else if(list->current == NULL){     //primera vez poniendo un proceso de la lista en marcha || reseteo lista
-        list->current = list->firstProcess; 
-        if (pcb->processes[list->current->pid]->state == BLOCKED){
-            return nextProcessInList(list); //el primero estaba bloqueado, le paso la misma lista para que tome al siguiente 
-        }
-        else{
-            return list->current->pid;
-        }
-    }
-    else{
-        if(list->current->next == NULL){    //ultimo proceso de la lista
-            list->current = NULL; //reseteo la lista
-            return nextProcessInList(scheduler->list[getNextPriority()]);  //esto deja seteado
-        }
-        else{
-            list->current = list->current->next;    //quiero retornar el pid del SIGUIENTE
-            if (pcb->processes[list->current->pid]->state == BLOCKED){
-                return nextProcessInList(list); //paso al siguiente de la lista
-            }
-            else{
-                return list->current->pid;
-            }
-        }
-    }
-}*/
 
 pid_t nextProcessInList(ProcessList * list, boolean wasRunning){
     // si no tengo nada q correr voy directo a idle
@@ -535,15 +503,6 @@ void kill(pid_t pid){
     _cli();
     pid_t fatherPid = pcb->processes[pid]->fatherPid;
 
-    if(fatherPid>0){                                        
-        if(pcb->processes[fatherPid]->waiting_for<-1){
-            pcb->processes[fatherPid]->waiting_for++;
-        }
-        if(pcb->processes[fatherPid]->waiting_for==pid || pcb->processes[fatherPid]->waiting_for==-1){
-            pcb->processes[fatherPid]->waiting_for=0;
-            unblock_process(fatherPid);
-        }
-    }
     if(fatherPid!=-1){     //borro entry en array de children de padre
         boolean found = FALSE;
         for(int i=0; i<MAX_CHILDREN_COUNT && found==FALSE; i++){    //busqueda lineal
@@ -555,11 +514,23 @@ void kill(pid_t pid){
         }
     }
     delete_pid_from_sems(pid);
+    delete_from_foreground(pid);
     unschedule(pid);        //primero borro del sched porque uso la referencia a la pcb
     delete_sleeper(pid);    
     delete_from_pcb(pid);  //recien aca puedo borrar pcb
 
     if (pcb->runningPid == pid) pcb->runningPid = -1;
+
+    if(fatherPid>0){                                        
+        if(pcb->processes[fatherPid]->waiting_for<-1){
+            pcb->processes[fatherPid]->waiting_for++;
+        }
+        if(pcb->processes[fatherPid]->waiting_for==pid || pcb->processes[fatherPid]->waiting_for==-1){
+            pcb->processes[fatherPid]->waiting_for=0;
+            unblock_process(fatherPid);
+        }
+    }
+
 
     _force_schedule();
 
@@ -646,6 +617,59 @@ uint64_t get_fd(int type){
     // stdout == 1
     if (type == 1) return pcb->processes[pcb->runningPid]->stdout_fd;
     return -1;
+}
+
+
+// Foreground methods
+int add_foreground(pid_t pid){
+    ProcessNode* to_add = (ProcessNode*) my_malloc(sizeof(ProcessNode));
+    if (!to_add) return -1;
+
+    to_add->next = foregroundProcess->firstProcess;
+    to_add->pid = pid;
+
+    pcb->processes[foregroundProcess->firstProcess->pid]->foreground = FALSE;
+
+    foregroundProcess->firstProcess = to_add;
+    foregroundProcess->size++;
+    return 0;
+}
+
+
+int get_foreground(){
+    if (!foregroundProcess->size) return -1;
+    return foregroundProcess->firstProcess->pid;
+}
+
+int delete_from_foreground(int pid){
+    if (!foregroundProcess->size) return 0;
+
+    ProcessNode* current = (ProcessNode *) my_malloc(sizeof(ProcessNode));
+    if (!current) return -1;
+
+    current->next = foregroundProcess->firstProcess;
+    int found = 0;
+    
+    while(current->next && !found){
+        if (current->next->pid == pid){
+            ProcessNode* toFree = current->next;
+            current->next = toFree->next;
+
+            if (foregroundProcess->firstProcess->pid == pid) foregroundProcess->firstProcess = current->next;
+            foregroundProcess->size--;
+
+            my_free(toFree);
+            found = 1;
+        }
+        else{
+            current = current->next;
+        }
+    }
+
+    // me aseguro de que el que esta en foreground tenga setteado correctamente el flag
+    if (foregroundProcess->size) pcb->processes[foregroundProcess->firstProcess->pid]->foreground = TRUE;
+
+    return 0;
 }
 
 //##################################################################################

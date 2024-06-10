@@ -11,6 +11,7 @@ typedef enum boolean{
 typedef struct CreateArguments{
     int priority;
     boolean orphan;
+    boolean foreground;
     uint16_t stdin;
     uint16_t stdout; 
 }CreateArguments;
@@ -260,7 +261,7 @@ typedef struct st_fds{
 
 ProcessView ** get_processes(uint16_t * proc_amount);
 int create_process(void * function, int argc, char **argv);
-int create_shiny_process(void * function, int argc, char **argv, CreateArguments * args);
+int create_shiny_process(void * function, int argc, char ** argv, int priority, boolean orphan, boolean foreground, uint16_t stdin, uint16_t stdout);
 int waitpid(pid_t pid);
 void kill(pid_t pid);
 void exit(void);

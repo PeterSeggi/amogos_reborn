@@ -16,8 +16,9 @@ void ps(void);
 int sh(void);
 
 
-int init_sh(){
-    return create_process(&sh, 0, NULL);
+int init_sh(int read_fd, int write_fd){
+    char * name = strdup("shell");
+    return create_shiny_process(&sh, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
 }
 
 pid_t init_ps(){
@@ -143,6 +144,8 @@ void process_command(){
     //print(command_buffer);
     //strcpy(command_buffer, "");
     command_cursor = 0;
+
+    if(command_buffer[0] == 'q') exit();
 
     parse_command(command_buffer, c1_buf, argv1, &argc1);
     //print("\n");

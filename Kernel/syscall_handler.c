@@ -135,7 +135,8 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
 void sys_write(uint64_t fd, uint64_t message, uint64_t length) {
   switch (fd) {
       case (STDOUT):
-        printCant((char *)message, length);
+        if (get_pid() == get_foreground()) printCant((char *)message, length);
+        else write_pipe(get_fd(STDOUT), (char*) message, (uint16_t) length);
         break;
 
       case (STDERR):
@@ -154,10 +155,10 @@ void sys_write(uint64_t fd, uint64_t message, uint64_t length) {
 int sys_read(uint64_t fd, uint64_t buffer, uint64_t length) {
   switch(fd){
     case (STDIN):
-      //int retVal = 0;
-      //retVal = read_chars(fd, (char *)buffer, length);
-      //return retVal;
       fd = get_fd(STDIN);
+    
+      // si el programa esta en foregroudn quiero que lea del teclado, no de su pipe
+      if (get_foreground() == get_pid()) fd = KEY_FD;
 
     default:
       return read_pipe((int) fd, (char *) buffer, (uint16_t) length);
@@ -300,6 +301,7 @@ int sys_create_shiny_process(uint64_t function, uint64_t argc, uint64_t argv, ui
         (char **)argv, 
         (int)createArgs->priority, 
         (boolean)createArgs->orphan, 
+        (boolean)createArgs->foreground,
         (uint64_t)createArgs->stdin, 
         (uint64_t)createArgs->stdout
     );

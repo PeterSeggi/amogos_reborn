@@ -20,6 +20,7 @@ typedef struct ProcessView{
 typedef struct CreateArguments{
     int priority;
     boolean orphan;
+    boolean foreground;
     uint16_t stdin;
     uint16_t stdout; 
 }CreateArguments;

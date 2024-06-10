@@ -4,7 +4,7 @@
 #define BUFFER_SIZE 128
 
 int sh();
-int init_sh();
+int init_sh(int read_fd, int write_fd);
 void process_command();
 void process(char key);
 void parse_command(const char *input, char *c1, char **a1, int *a1_size);
