@@ -3,26 +3,13 @@
 #include "include/userlib.h"
 #include <stdint.h>
 #include <stddef.h>
-
-#define COMMANDS 2
-
-typedef enum Commands{
-    PS,
-    EXIT
-}Commands;
+#include "include/commands.h"
 
 
-void ps(void);
-int sh(void);
+#define COMMANDS 3
 
 
-int init_sh(){
-    return create_process(&sh, 0, NULL);
-}
 
-pid_t init_ps(){
-   return create_process(&ps, 0, NULL);
-}
 
 static char* commands[COMMANDS] = {"ps", "exit"};
 
@@ -39,24 +26,7 @@ const char delim[2] = {32, 0};
 int argc1;
 
 
-//cosas de ps :D================================================3
-char * get_process_status(State state){
-    switch(state){
-        case READY:
-            return "READY";
-        case RUNNING:
-            return "RUNNING";
-        case BLOCKED:
-            return "BLOCKED";
-        default:
-            return "UNKOWN";
-    }
-}
-char * get_process_foreground(uint8_t foreground){
-    if(foreground==TRUE) return "YES";
-    else return "NO";
-}
-//B=================================================D
+
 int sh(){
 
     clearScreen();
@@ -70,51 +40,8 @@ int sh(){
     return 0;
 }
 
-void ps(){
-    uint16_t process_amount = 0;
-    ProcessView ** processes  = get_processes(&process_amount);
-    char aux_aux[BUFFER_SIZE];
-    if(!processes){
-        print("No processes\n");
-        print("amount:");
-        uintToBase(process_amount, aux_aux, 10);
-        print(aux_aux);
-        print("\n");
-        return;
-    }
-    print("PID\t | STATE\t | PRIORITY\t | RSP\t | RBP\t | RIP\t | FOREGROUND\t | PARENT\t | CHILDREN\n");
-    char aux[BUFFER_SIZE];
-    for(int i = 0; i<process_amount; i++){
-        uintToBase(processes[i]->pid, aux, 10);
-        print(aux);
-        print("\t |");
-        print(get_process_status(processes[i]->state));
-        print("\t |");
-        uintToBase(processes[i]->priority, aux, 10);
-        print(aux);
-        print("\t |");
-        uintToBase(processes[i]->registers.rsp, aux, 16);
-        print(aux);
-        print("\t |");
-        uintToBase(processes[i]->registers.rbp, aux, 16);
-        print(aux);
-        print("\t |");
-        uintToBase(processes[i]->registers.rip, aux, 16);
-        print(aux);
-        print("\t |");
-        print(get_process_foreground(processes[i]->foreground));
-        print("\t |");
-        uintToBase(processes[i]->fatherPid, aux, 10);
-        print(aux);
-        print("\t |");
-        uintToBase(processes[i]->children_amount, aux, 10);
-        print(aux);
-        print("\n");
-
-        my_free(processes[i]);
-    }
-    my_free(processes);
-    exit();
+int init_sh(){
+    return create_process(&sh, 0, NULL);
 }
 
 void process(char key){
@@ -202,6 +129,9 @@ void parse_command(const char *input, char *c1, char **argv, int *argc) {
                     pid_t psPid = init_ps();
                     waitpid(psPid);
                     break;
+                case 1:
+                    pid_t loopPid = init_loop(*argc, argv);
+                    waitpid(loopPid);
                 case COMMANDS-1:
                     exit();
             }
