@@ -512,6 +512,10 @@ void unblock_process(pid_t pid){
 
 void kill(pid_t pid){         
     _cli();
+
+    // bloqueamos el kill de init y de idle
+    if (pid <= 2) return;
+
     pid_t fatherPid = pcb->processes[pid]->fatherPid;
 
     if(fatherPid!=-1){     //borro entry en array de children de padre
@@ -563,7 +567,9 @@ ProcessNode * delete_from_sched(ProcessNode * current, pid_t pid){
         my_free(current);
         scheduler->size--;
         scheduler->list[pcb->processes[pid]->priority]->size--;
-        scheduler->runnableProcs--;             
+
+        // Si estaba bloqueado no le hago el runnableProcs-- 
+        if (pcb->processes[pid]->state != BLOCKED) scheduler->runnableProcs--;             
         return toReturn;
     }
     else{
@@ -650,6 +656,11 @@ int add_foreground(pid_t pid){
 int get_foreground(){
     if (!foregroundProcess->size) return -1;
     return foregroundProcess->firstProcess->pid;
+}
+
+int get_foreground_fd(){
+    if (!foregroundProcess->size) return -1;
+    return pcb->processes[foregroundProcess->firstProcess->pid]->stdin_fd;
 }
 
 int delete_from_foreground(int pid){

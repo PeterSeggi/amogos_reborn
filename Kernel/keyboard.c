@@ -1,16 +1,20 @@
-#include "include/pipe.h"
+#include "include/processManager.h"
 #include <keyboard.h>
 #include <lib.h>
 #include <naiveConsole.h>
 #include <stdint.h>
 #include <videoDriver.h>
 #include <pipe.h>
+#include <processManager.h>
+#include <sem.h>
 
 #define KEY_BUF_SIZE 16
 #define STDIN 0
 #define STDKEYS 3
 #define STDLAST 4
 #define OUT_FD 5
+
+sem_t * key_mutex; 
 
 const unsigned char scan_chars[128] = {
     0,    27,   '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-',  '=',
@@ -53,6 +57,11 @@ int ascii_to_read = 0;
 
 void key_handler() { insert_key(_getKey()); }
 
+void key_init(){
+    char * mutex_name = "keyboard";
+    key_mutex = sem_open(mutex_name, 1);
+}
+
 void insert_key(int key) {
 
   checkShift(key);
@@ -78,7 +87,15 @@ void insert_key(int key) {
   if (insert_index == KEY_BUF_SIZE)
     insert_index = 0;
 
-  write_pipe(OUT_FD, &toWrite, 1);
+  int fore = get_foreground();
+  int fore_fd = get_foreground_fd() + 1;
+    
+  if (control == 1 && (toWrite == 'c' || toWrite == 'C')){
+     kill(fore);
+  } 
+
+  write_pipe(fore_fd, &toWrite, 1);
+
 }
 
 // returns the actual key, 0 if nothing was read

@@ -17,5 +17,6 @@ void checkRegs(int key);
 
 int altPressed();
 
+void key_init();
 
 #endif // !KEYBOARD

@@ -17,12 +17,12 @@ static char* commands[COMMANDS] = {"ps", "loop","mem", "help", "sleep", "exit"};
 char* let = " ";
 //char prompt_start[] = {127, 0};
 char* prompt_start = "> ";
-char command_buffer[BUFFER_SIZE];
+char command_buffer[BUFFER_SIZE] = {0};
 int command_cursor = 0;
 
 // buffers para el parse_command
-char c1_buf[BUFFER_SIZE];
-char * argv1[BUFFER_SIZE / 3];
+char c1_buf[BUFFER_SIZE] = {0};
+char * argv1[BUFFER_SIZE / 3] = {0};
 const char delim[2] = {32, 0};
 int argc1;
 
@@ -57,6 +57,7 @@ pid_t init_help(int argc, char * argv[], int read_fd, int write_fd, boolean fore
 
 void process(char key){
     if (key == '\n') process_command();
+
     else if (key == '\b'){
         if (command_cursor){
             print(let);
@@ -68,7 +69,7 @@ void process(char key){
      return;
     }
 
-    else if (key <= 126 && key >= 20){
+    else if (key <= 126 && key >= 32){
         print(let);
         command_buffer[command_cursor++] = key;
     }
