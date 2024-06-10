@@ -628,6 +628,9 @@ int add_foreground(pid_t pid){
 
     to_add->next = foregroundProcess->firstProcess;
     to_add->pid = pid;
+
+    pcb->processes[foregroundProcess->firstProcess->pid]->foreground = FALSE;
+
     foregroundProcess->firstProcess = to_add;
     foregroundProcess->size++;
     return 0;
@@ -663,6 +666,9 @@ int delete_from_foreground(int pid){
             current = current->next;
         }
     }
+
+    // me aseguro de que el que esta en foreground tenga setteado correctamente el flag
+    if (foregroundProcess->size) pcb->processes[foregroundProcess->firstProcess->pid]->foreground = TRUE;
 
     return 0;
 }

@@ -64,6 +64,8 @@ void process_command(){
 
     if(command_buffer[0] == 'q') exit();
 
+    if(command_buffer[0] == 'e') exec(); 
+
     parse_command(command_buffer, c1_buf, argv1, &argc1);
     //print("\n");
     print(prompt_start);
@@ -115,4 +117,11 @@ void parse_command(const char *input, char *c1, char **a1, int *a1_size) {
     }
 
     my_free(temp);
+}
+
+
+int exec(){
+    char * name = strdup("test");
+    return create_shiny_process(&sh, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
+
 }
