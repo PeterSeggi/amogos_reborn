@@ -3,6 +3,17 @@
 
 #include <stdint.h>
 
+typedef enum boolean{
+    FALSE,
+    TRUE
+}boolean;
+
+typedef struct CreateArguments{
+    int priority;
+    boolean orphan;
+    uint16_t stdin;
+    uint16_t stdout; 
+}CreateArguments;
 //================================================================================================================================
 // Writting
 //================================================================================================================================
@@ -218,10 +229,6 @@ char byteConverter(uint64_t * amount);
 
 typedef int pid_t;
 
-typedef enum boolean{
-    FALSE,
-    TRUE
-}boolean;
 
 typedef enum State{
     READY,
@@ -246,18 +253,20 @@ typedef struct ProcessView{
     int children_amount;
 }ProcessView;
 
-/*
-void ps(void);
-*/
+typedef struct st_fds{
+    uint16_t stdin;
+    uint16_t stdout; 
+}st_fds;
 
 ProcessView ** get_processes(uint16_t * proc_amount);
-int create_process(void * function);
-int create_shiny_process(void * function, int priority, boolean orphan, uint16_t stdin, uint16_t stdout);
+int create_process(void * function, int argc, char **argv);
+int create_shiny_process(void * function, int argc, char **argv, CreateArguments * args);
 int waitpid(pid_t pid);
 void kill(pid_t pid);
 void exit(void);
 void nice(pid_t pid, int priority);
 void block_proc(pid_t pid);
+pid_t get_pid();
 
 //================================================================================================================================
 // Semaphores

@@ -4,7 +4,7 @@
 #include <stddef.h>
 
 int init_sh(){
-    return create_process(&sh);
+    return create_process(&sh, 0, 0);
 }
 
 char* let = " ";

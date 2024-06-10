@@ -1,5 +1,5 @@
-#ifndef USERLIBASM
-#define USERLIBASM
+#ifndef USERLIBASM_H
+#define USERLIBASM_H
 
 #include <stdint.h>
 #include "userlib.h"
@@ -21,13 +21,14 @@ void * _my_malloc(uint16_t size);
 void _my_free(void * addr_to_free);
 
 ProcessView ** _get_processes(uint16_t * proc_amount);
-int _create_process(void * function);
-int _create_shiny_process(void * function, int priority, boolean orphan, uint16_t stdin, uint16_t stdout);
+int _create_process(void * function, int argc, char **argv);
+int _create_shiny_process(void * function, int argc, char **argv, CreateArguments * args);
 int _waitpid(pid_t pid);
 void _kill(pid_t pid);
 void _exit(void);
 void _change_proc_priority(pid_t pid, int priority);
 void _block_proc(pid_t pid);
+pid_t _get_pid();
 
 sem_t * _sem_open(const char *name, uint16_t value);
 int _sem_close(sem_t *sem);

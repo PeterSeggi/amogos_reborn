@@ -1,6 +1,11 @@
+#ifndef SYSCALL_HANDLER_H
+#define SYSCALL_HANDLER_H
+
+
 #include <stdint.h>
 #include <processManager.h>
 #include <sem.h>
+
 typedef struct ProcessView{
     unsigned int memory_size;
     pid_t pid;
@@ -11,6 +16,13 @@ typedef struct ProcessView{
     pid_t fatherPid;
     int children_amount;
 }ProcessView;
+
+typedef struct CreateArguments{
+    int priority;
+    boolean orphan;
+    uint16_t stdin;
+    uint16_t stdout; 
+}CreateArguments;
 
 
 void syscall_handler();
@@ -39,13 +51,14 @@ void sys_speak(uint64_t frequence, uint64_t duration);
 void sys_changeSize(uint8_t newSize, uint8_t fd);
 
 ProcessView ** sys_get_processes(uint64_t proc_amount);
-int sys_create_process(uint64_t function);
-int sys_create_shiny_process(uint64_t function, uint64_t priority, uint64_t orphan, uint16_t stdin, uint16_t stdout);
+int sys_create_process(uint64_t function, uint64_t argc, uint64_t argv);
+int sys_create_shiny_process(uint64_t function, uint64_t argc, uint64_t argv, uint64_t args);
 int sys_waitpid(uint64_t pid);
 void sys_exit(void);
 void sys_kill(uint64_t pid);
 void sys_change_proc_priority(uint64_t pid, uint64_t priority);
 void sys_block_proc(uint64_t pid);
+pid_t sys_get_pid();
 
 sem_t * sys_sem_open(uint64_t name, uint64_t value);
 int sys_sem_close(uint64_t sem);
@@ -54,3 +67,6 @@ int sys_sem_down(uint64_t sem);
 
 int sys_pipe(uint64_t pipefd);
 int sys_pclose(uint64_t fd);
+
+
+#endif

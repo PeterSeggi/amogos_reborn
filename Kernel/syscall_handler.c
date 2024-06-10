@@ -14,6 +14,7 @@
 #define STDOUT 1
 #define STDERR 2
 
+
 void failure_free(ProcessView ** ptr_list, int size);
 ProcessView ** set_processes(uint16_t * proc_amount);
 int waitpid_handler(pid_t pid);
@@ -74,11 +75,11 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
     break;
 
   case (0xA1):
-    sys_create_process(rdi);
+    sys_create_process(rdi, rsi, rdx);
     break;
 
   case (0xA2):
-    sys_create_shiny_process(rdi, rsi, rdx, rcx, r8);
+    sys_create_shiny_process(rdi, rsi, rdx, rcx);
     break;
   
   case (0xA3):
@@ -99,6 +100,10 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
 
   case (0xA7):
     sys_block_proc(rdi);
+
+  case (0xA8):
+    sys_get_pid();
+    break;
 
   case (0xB0):
     sys_sem_open(rdi, rsi);
@@ -280,14 +285,29 @@ void failure_free(ProcessView ** ptr_list, int size){
   }
 }
 
-int sys_create_process(uint64_t function){
-  Process* aux = create_process((void *) function);
+int sys_create_process(uint64_t function, uint64_t argc, uint64_t argv){
+  Process* aux = create_process((void *) function, (int)argc, (char **)argv);
   return aux->pid;
 }
 
-int sys_create_shiny_process(uint64_t function, uint64_t priority, uint64_t orphan, uint16_t stdin, uint16_t stdout){
-  Process* aux = create_shiny_process((void *) function, (int) priority, (boolean) orphan, stdin, stdout);
+int sys_create_shiny_process(uint64_t function, uint64_t argc, uint64_t argv, uint64_t args){
+  CreateArguments *createArgs = (CreateArguments *)args;
+
+    // Use the members of the structure via the pointer
+    Process* aux = create_shiny_process(
+        (void *)function, 
+        (int)argc, 
+        (char **)argv, 
+        (int)createArgs->priority, 
+        (boolean)createArgs->orphan, 
+        (uint64_t)createArgs->stdin, 
+        (uint64_t)createArgs->stdout
+    );
   return aux->pid;
+}
+
+pid_t sys_get_pid(){
+  return get_pid();
 }
 
 sem_t * sys_sem_open(uint64_t name, uint64_t value){

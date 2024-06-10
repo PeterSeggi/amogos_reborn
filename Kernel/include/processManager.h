@@ -6,6 +6,7 @@
 #define INITIAL_PROCESS_SIZE 8192
 #define MAX_PROCESS_COUNT 100
 #define MAX_CHILDREN_COUNT 50
+#define MAX_PROCESS_NAME 20
 #define DEFAULT_PRIORITY 4
 
 #define KEY_FD 4
@@ -41,10 +42,13 @@ typedef struct Process{
     Registers registers;
     boolean foreground;
     pid_t children[MAX_CHILDREN_COUNT];
+    char name[MAX_PROCESS_NAME];
     int children_amount;
     pid_t waiting_for;
     uint16_t stdin_fd;
     uint16_t stdout_fd;
+    int argc;
+    char ** argv;
 }Process;
 
 typedef struct ProcessTable{
@@ -85,8 +89,9 @@ typedef struct SleepingTable{
     SleepingProcess * last;
 }SleepingTable;
 
-Process * create_process(void * function);
-Process * create_shiny_process(void * function, int priority, boolean orphan, uint16_t stdin, uint16_t stdout);
+
+Process * create_process(void * function, int argc, char ** argv);
+Process * create_shiny_process(void * function, int argc, char ** argv, int priority, boolean orphan, uint16_t stdin, uint16_t stdout);
 
 void scheduler_add(pid_t pid, int priority, ProcessNode * node);
 pid_t nextProcess(void);
@@ -96,10 +101,9 @@ void stackTest(int myrsp);
 void createStack(void);
 void stackPrep(void);
 void stackUnprep(void);
-uint64_t initializeStack(void * rsp, void * rip);
+uint64_t initializeStack(void * rsp, void * rip, int argc, char ** argv);
 void initialize_pcb(void);
 void initializeScheduler(void);
-Process * createProcessWithpriority(void * function, unsigned int priority);
 void _cli();
 void _sti();
 void _hlt();
