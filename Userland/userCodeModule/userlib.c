@@ -2,6 +2,7 @@
 #include "include/userlibasm.h"
 #include "include/file_descriptors.h"
 #include <stdint.h>
+#include <stddef.h>
 
 static char buffer[64] = {'0'};
 static char* char_buffer = " ";
@@ -132,6 +133,77 @@ void strcpy(char *destination, const char *source) {
 int mod(int val, int base){
     if (val < 0) return (val + base) % base;
     return val % base;
+}
+
+char *strchr(const char *str, int c) {
+    // Iterate through the string
+    while (*str) {
+        if (*str == (char)c) {
+            return (char *)str; // Return the address of the first occurrence
+        }
+        str++;
+    }
+
+    // Check for the null terminator
+    if (*str == (char)c) {
+        return (char *)str;
+    }
+
+    return NULL; // Return NULL if the character is not found
+}
+
+char *strtok(char *str, const char *delim) {
+    static char *last;
+    char *start;
+    
+    if (str) {
+        start = str;
+    } else {
+        start = last;
+    }
+
+    if (!start) {
+        return NULL;
+    }
+
+    // Skip leading delimiters
+    while (*start && strchr(delim, *start)) {
+        start++;
+    }
+
+    if (!*start) {
+        last = NULL;
+        return NULL;
+    }
+
+    // Find the end of the current token
+    char *token_end = start;
+    while (*token_end && !strchr(delim, *token_end)) {
+        token_end++;
+    }
+
+    // Null-terminate the token if needed
+    if (*token_end) {
+        *token_end = '\0';
+        last = token_end + 1;
+    } else {
+        last = NULL;
+    }
+
+    return start;
+}
+
+char *strdup(const char *s) {
+    size_t len = strlen((char *)s) + 1;
+
+    char *dup = (char *)my_malloc(len);
+    if (dup == NULL) {
+        return NULL; 
+    }
+
+    strcpy(dup, s);
+
+    return dup; 
 }
 
 //================================================================================================================================
