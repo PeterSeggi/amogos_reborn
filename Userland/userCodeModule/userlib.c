@@ -318,8 +318,19 @@ int create_process(void * function, int argc, char **argv){
     return _create_process(function, argc, argv);
 }
 
-int create_shiny_process(void * function, int argc, char **argv, CreateArguments * args){
-    return _create_shiny_process(function, argc, argv, args);
+int create_shiny_process(void * function, int argc, char ** argv, int priority, boolean orphan, boolean foreground, uint16_t stdin, uint16_t stdout){
+    CreateArguments* args = (CreateArguments *)my_malloc(sizeof(CreateArguments));
+    if (!args) return -1;
+
+    args->priority=priority;
+    args->orphan=orphan;
+    args->foreground=foreground;
+    args->stdin=stdin;
+    args->stdout=stdout;
+
+    pid_t cpid = _create_shiny_process(function, argc, argv, args);
+    my_free(args);
+    return cpid;
 }
 
 int waitpid(pid_t pid){

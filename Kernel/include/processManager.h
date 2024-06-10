@@ -91,7 +91,7 @@ typedef struct SleepingTable{
 
 
 Process * create_process(void * function, int argc, char ** argv);
-Process * create_shiny_process(void * function, int argc, char ** argv, int priority, boolean orphan, uint16_t stdin, uint16_t stdout);
+Process * create_shiny_process(void * function, int argc, char ** argv, int priority, boolean orphan, boolean foreground, uint16_t stdin, uint16_t stdout);
 
 void scheduler_add(pid_t pid, int priority, ProcessNode * node);
 pid_t nextProcess(void);
@@ -135,5 +135,8 @@ int wait_all_pid();
 
 int dup(pid_t pid, uint16_t from, uint16_t to);
 uint64_t get_fd(int type);
+
+int add_foreground(pid_t pid);
+int get_foreground();
 
 #endif

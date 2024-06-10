@@ -643,7 +643,7 @@ void desize(){
 }
 
 void sexo_command(int argc, char **argv){
-    /*write_out("La cantidad de argumentos es: ");
+    write_out("La cantidad de argumentos es: ");
     uintToBase(argc, aux, 10);
     write_out(aux);
     write_out("\n");
@@ -652,7 +652,7 @@ void sexo_command(int argc, char **argv){
     write_out("\n");
     if(argv[0][0] == '5'){
         write_out("por el culo te la hinco\n");
-    }*/
+    }
     if(argc==0) exit();
     int i=0;
     while(i<10){

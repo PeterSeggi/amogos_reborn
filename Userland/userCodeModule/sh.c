@@ -3,8 +3,9 @@
 #include <stdint.h>
 #include <stddef.h>
 
-int init_sh(){
-    return create_process(&sh, 0, 0);
+int init_sh(int read_fd, int write_fd){
+    char * name = strdup("shell");
+    return create_shiny_process(&sh, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
 }
 
 char* let = " ";
