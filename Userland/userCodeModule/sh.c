@@ -7,27 +7,12 @@
 
 #define COMMANDS 3
 
-typedef enum Commands{
-    PS,
-    EXIT
-}Commands;
-
-
-void ps(void);
-int sh(void);
-
 
 int init_sh(int read_fd, int write_fd){
     char * name = strdup("shell");
     return create_shiny_process(&sh, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
 }
-
-pid_t init_ps(int read_fd, int write_fd){
-    char * name = strdup("ps");
-    return create_shiny_process(&ps, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
-}
-
-static char* commands[COMMANDS] = {"ps", "exit"};
+static char* commands[COMMANDS] = {"ps", "loop", "exit"};
 
 char* let = " ";
 //char prompt_start[] = {127, 0};
@@ -54,10 +39,6 @@ int sh(){
 
     }
     return 0;
-}
-
-int init_sh(){
-    return create_process(&sh, 0, NULL);
 }
 
 void process(char key){
@@ -155,7 +136,7 @@ void parse_command(const char *input, char *c1, char **argv, int *argc) {
                     waitpid(psPid);
                     break;
                 case 1:
-                    pid_t loopPid = init_loop(*argc, argv);
+                    pid_t loopPid = init_loop(*argc, argv, pipe_out[1], pipe_in[0]);
                     waitpid(loopPid);
                 case COMMANDS-1:
                     exit();
