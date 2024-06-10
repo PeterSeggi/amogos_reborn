@@ -5,14 +5,14 @@
 #include <stddef.h>
 #include "include/commands.h"
 
-#define COMMANDS 10
+#define COMMANDS 8
 
 
 int init_sh(int read_fd, int write_fd){
     char * name = strdup("shell");
     return create_shiny_process(&sh, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
 }
-static char* commands[COMMANDS] = {"ps", "loop","mem", "malloc", "free", "ps", "bt", "pipe", "cproc", "exit"};
+static char* commands[COMMANDS] = {"ps", "loop","mem", "malloc", "free", "bt", "pipe", "exit"};
 
 char* let = " ";
 //char prompt_start[] = {127, 0};
@@ -43,16 +43,14 @@ int sh(){
 
 void process(char key){
     if (key == '\n') process_command();
-
-    else if(command_cursor == BUFFER_SIZE - 1){
-     return;
-    }
-
     else if (key == '\b'){
         if (command_cursor){
             print(let);
             command_buffer[--command_cursor] = 0;
         }
+    }
+    else if(command_cursor == BUFFER_SIZE - 1){
+        return;
     }
     else if (key <= 126 && key >= 20){
         print(let);
@@ -142,45 +140,46 @@ void parse_command(const char *input, char *c1, char **argv, int *argc) {
                 case 0: //ps
 
                     pid_t psPid = init_ps(pipe_out[1], pipe_in[0], foreground);
-                    waitpid(psPid);
+                    if(foreground==TRUE)waitpid(psPid);
                     break;
 
                 case 1: //loop
 
-
                     pid_t loopPid = init_loop(*argc, argv, pipe_out[1], pipe_in[0], foreground);
-                    waitpid(loopPid);
+                    if(foreground==TRUE)waitpid(loopPid);
                     break;
 
-                case 2:
+                case 2: //mem
 
-                break;
+                    pid_t memPid = init_mem(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    if(foreground==TRUE)waitpid(memPid);
+                    break;
 
-                case 3:
+                case 3: //malloc
 
-                break;
+                    pid_t mallocPid = init_malloc(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    if(foreground==TRUE)waitpid(mallocPid);
+                    break;      
 
-                case 4:
+                case 4: //free
 
-                break;
+                    pid_t freePid = init_free(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    if(foreground==TRUE)waitpid(freePid);
+                    break;
 
-                case 5:
+                case 5: //block
 
-                break;
+                    pid_t blockPid = init_block(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    if(foreground==TRUE)waitpid(blockPid);
+                    break;
 
-                case 6:
+                case 6: //pipe
 
-                break;
+                    pid_t pipePid = init_pipe(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    if(foreground==TRUE)waitpid(pipePid);
+                    break;
 
-                case 7: 
-                
-                break;
-
-                case 8:
-
-                break;
-
-                case COMMANDS-1:    
+                case COMMANDS-1:
                     exit();
             }
         }
