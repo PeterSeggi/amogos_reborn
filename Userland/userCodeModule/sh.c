@@ -5,11 +5,27 @@
 #include <stddef.h>
 #include "include/commands.h"
 
-
 #define COMMANDS 3
 
+typedef enum Commands{
+    PS,
+    EXIT
+}Commands;
 
 
+void ps(void);
+int sh(void);
+
+
+int init_sh(int read_fd, int write_fd){
+    char * name = strdup("shell");
+    return create_shiny_process(&sh, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
+}
+
+pid_t init_ps(int read_fd, int write_fd){
+    char * name = strdup("ps");
+    return create_shiny_process(&ps, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
+}
 
 static char* commands[COMMANDS] = {"ps", "exit"};
 
@@ -71,6 +87,8 @@ void process_command(){
     //strcpy(command_buffer, "");
     command_cursor = 0;
 
+    //if(command_buffer[0] == 'q') exit();
+
     parse_command(command_buffer, c1_buf, argv1, &argc1);
     //print("\n");
     print(prompt_start);
@@ -121,12 +139,19 @@ void parse_command(const char *input, char *c1, char **argv, int *argc) {
         print("\n");
     }
 
+    int pipe_out[2] = {0};
+    int pipe_in[2] = {0};
+
+    if(pipe(pipe_out)) return; 
+    if(pipe(pipe_in)) return; 
+
+
     //COMIENZO DEL FIN
     for(int i=0; i<COMMANDS; i++){
         if(!strcmp(argv[0], commands[i])){
             switch(i){
                 case 0:
-                    pid_t psPid = init_ps();
+                    pid_t psPid = init_ps(pipe_out[1], pipe_in[0]);
                     waitpid(psPid);
                     break;
                 case 1:
@@ -137,5 +162,7 @@ void parse_command(const char *input, char *c1, char **argv, int *argc) {
             }
         }
     }
+
+    // aca tendria que cerrar los pipes si o si 
     my_free(temp);
 }
