@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <lib.h>
+#include <stddef.h>
 
 void * memset(void * destination, int32_t c, uint64_t length)
 {
@@ -126,4 +127,17 @@ void k_strcpy(char *destination, const char *source) {
         *destination++ = *source++;
     }
     *destination = '\0';
+}
+
+char *k_strdup(const char *s) {
+    uint64_t len = k_strlen((char *)s) + 1;
+
+    char *dup = (char *)my_malloc(len);
+    if (dup == NULL) {
+        return NULL; 
+    }
+
+    k_strcpy(dup, s);
+
+    return dup; 
 }

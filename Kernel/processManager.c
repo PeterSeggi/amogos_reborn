@@ -68,8 +68,10 @@ void initializeScheduler(){
         }
     }
     //createProcess(&my_main);   
-    create_shiny_process((void *)0x400000, 0, NULL, 4, TRUE, FALSE, KEY_FD, VID_FD);
-    create_shiny_process(&_idle, 0, NULL, 0, TRUE, FALSE, KEY_FD, VID_FD);     //proceso vigilante _hlt
+    char* idle_name = "idle";
+    char* init_name = k_strdup("init");
+    create_shiny_process((void *)0x400000, 1, &init_name, 4, TRUE, FALSE, KEY_FD, VID_FD);
+    create_shiny_process(&_idle, 1, &idle_name, 0, TRUE, FALSE, KEY_FD, VID_FD);     //proceso vigilante _hlt
 
     schedule_lock = 0;
     _idle();

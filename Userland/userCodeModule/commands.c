@@ -32,34 +32,64 @@ void ps(){
         print("\n");
         return;
     }
-    print("PID\t | STATE\t | PRIORITY\t | RSP\t | RBP\t | RIP\t | FOREGROUND\t | PARENT\t | CHILDREN\n");
+    print("PID | NAME\t| STATE\t | PRI\t|   RSP  |   RBP  | FOR | PAR | CHI |\n");
     char aux[BUFFER_SIZE];
+    int dif;
     for(int i = 0; i<process_amount; i++){
+
+        // pid
         uintToBase(processes[i]->pid, aux, 10);
+        print(" ");
         print(aux);
         print("\t |");
+
+        // name
+        print(processes[i]->name);
+        dif = 7 - strlen(processes[i]->name);
+        for (int i = 0; i < dif; i++) print(" ");
+        print("|");
+
+        // state
         print(get_process_status(processes[i]->state));
-        print("\t |");
+        dif = 9 - strlen(get_process_status(processes[i]->state));
+        for (int i = 0; i < dif; i++) print(" ");
+        print("|");
+
+        // priority
         uintToBase(processes[i]->priority, aux, 10);
+        print("  ");
         print(aux);
         print("\t |");
-        uintToBase(processes[i]->registers.rsp, aux, 16);
+
+        // rsp
+        uintToBase(processes[i]->registers.rsp, aux, 16); 
+        print(" ");
         print(aux);
-        print("\t |");
+        print(" |");
+
+        // rbp
         uintToBase(processes[i]->registers.rbp, aux, 16);
+        print(" ");
         print(aux);
-        print("\t |");
-        uintToBase(processes[i]->registers.rip, aux, 16);
-        print(aux);
-        print("\t |");
+        print(" |");
+
+        // foreground
+        print(" ");
         print(get_process_foreground(processes[i]->foreground));
-        print("\t |");
+        if (!processes[i]->foreground) print(" ");
+        print(" |");
+
+        // father
         uintToBase(processes[i]->fatherPid, aux, 10);
+        print("  ");
         print(aux);
-        print("\t |");
+        print("  |");
+
+        //children
         uintToBase(processes[i]->children_amount, aux, 10);
+        print("  ");
         print(aux);
-        print("\n");
+        print("  |\n");
 
         my_free(processes[i]);
     }

@@ -252,6 +252,7 @@ typedef struct ProcessView{
     boolean foreground;
     pid_t fatherPid;
     int children_amount;
+    char * name;
 }ProcessView;
 
 typedef struct st_fds{
