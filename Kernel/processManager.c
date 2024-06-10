@@ -273,16 +273,20 @@ void change_pid_priority(pid_t pid, int priority){
 
 void * schedule(void * rsp){
 
+
     if (schedule_lock == 1){
         return rsp;
     } 
 
+    if (pcb->runningPid != 0 && pcb->processes[pcb->runningPid]->state != BLOCKED) pcb->processes[pcb->runningPid]->state = READY;
 
     int priority = scheduler->priority[scheduler->currentPriorityOffset];
     if(scheduler->list[priority]->current != NULL && pcb->runningPid > 0){ //si estoy en el primer proceso no me guardo el stack de kernel
         pcb->processes[pcb->runningPid]->registers.rsp = (uint64_t)rsp;           
     }
+
     pcb->runningPid = nextProcess();   //next process ignora los procesos bloqueados
+    pcb->processes[pcb->runningPid]->state = RUNNING;
     return (void *)pcb->processes[pcb->runningPid]->registers.rsp;
     //return rsp;
 }
