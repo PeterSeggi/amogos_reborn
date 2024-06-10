@@ -88,19 +88,20 @@ Process * create_shiny_process(void * function, int argc, char ** argv, int prio
     process->foreground = FALSE;
     process->children_amount = 0;
     process->argc = argc;
-    process->argv = (char **) my_malloc(sizeof(char *) * argc);
-    if(!process->argv) return NULL;
-    //TODO fREES AL LIBERAR EL PROCESO
-    for(int i=0; i<argc; i++){
-        process->argv[i] = (char *) my_malloc(sizeof(k_strlen(argv[i])));
-        if(!process->argv[i]){
-            failure_free_chars(process->argv, i-1);
-            my_free(process->argv);
-            return NULL;
+    if(process->argc){
+        process->argv = (char **) my_malloc(sizeof(char *) * argc);
+        if(!process->argv) return NULL;
+        //TODO fREES AL LIBERAR EL PROCESO
+        for(int i=0; i<argc; i++){
+            process->argv[i] = (char *) my_malloc(sizeof(k_strlen(argv[i])));
+            if(!process->argv[i]){
+                failure_free_chars(process->argv, i-1);
+                my_free(process->argv);
+                return NULL;
+            }
+            k_strcpy(process->argv[i], argv[i]);
         }
-        k_strcpy(process->argv[i], argv[i]);
     }
-
     
     //inicializa el stack
     process->registers.rbp = ( (uint64_t)process + INITIAL_PROCESS_SIZE ); 
