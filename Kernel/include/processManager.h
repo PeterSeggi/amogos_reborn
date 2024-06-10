@@ -138,5 +138,6 @@ uint64_t get_fd(int type);
 
 int add_foreground(pid_t pid);
 int get_foreground();
+int delete_from_foreground(int pid);
 
 #endif

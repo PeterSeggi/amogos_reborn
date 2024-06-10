@@ -22,7 +22,7 @@ void free_argv(int argc, char ** argv);
 ProcessTable * pcb = NULL;
 PriorityArray * scheduler = NULL;
 SleepingTable * sleepingTable = NULL;
-ProcessList * foregroudnProcess = NULL;
+ProcessList * foregroundProcess = NULL;
 
 int schedule_lock = 1;
 
@@ -38,11 +38,11 @@ void initialize_pcb(void){
     }
 
     
-    foregroudnProcess = (ProcessList *) my_malloc(sizeof(ProcessList));
-    foregroudnProcess->firstProcess = NULL;
-    foregroudnProcess->last = NULL;
-    foregroudnProcess->current = NULL;
-    foregroudnProcess->size = 0;
+    foregroundProcess = (ProcessList *) my_malloc(sizeof(ProcessList));
+    foregroundProcess->firstProcess = NULL;
+    foregroundProcess->last = NULL;
+    foregroundProcess->current = NULL;
+    foregroundProcess->size = 0;
 }
 
 void executeProcess(uint64_t rip){
@@ -504,15 +504,6 @@ void kill(pid_t pid){
     _cli();
     pid_t fatherPid = pcb->processes[pid]->fatherPid;
 
-    if(fatherPid>0){                                        
-        if(pcb->processes[fatherPid]->waiting_for<-1){
-            pcb->processes[fatherPid]->waiting_for++;
-        }
-        if(pcb->processes[fatherPid]->waiting_for==pid || pcb->processes[fatherPid]->waiting_for==-1){
-            pcb->processes[fatherPid]->waiting_for=0;
-            unblock_process(fatherPid);
-        }
-    }
     if(fatherPid!=-1){     //borro entry en array de children de padre
         boolean found = FALSE;
         for(int i=0; i<MAX_CHILDREN_COUNT && found==FALSE; i++){    //busqueda lineal
@@ -524,12 +515,23 @@ void kill(pid_t pid){
         }
     }
     delete_pid_from_sems(pid);
+    delete_from_foreground(pid);
     unschedule(pid);        //primero borro del sched porque uso la referencia a la pcb
     delete_sleeper(pid);    
     delete_from_pcb(pid);  //recien aca puedo borrar pcb
-    delete_from_foreground(pid);
 
     if (pcb->runningPid == pid) pcb->runningPid = -1;
+
+    if(fatherPid>0){                                        
+        if(pcb->processes[fatherPid]->waiting_for<-1){
+            pcb->processes[fatherPid]->waiting_for++;
+        }
+        if(pcb->processes[fatherPid]->waiting_for==pid || pcb->processes[fatherPid]->waiting_for==-1){
+            pcb->processes[fatherPid]->waiting_for=0;
+            unblock_process(fatherPid);
+        }
+    }
+
 
     _force_schedule();
 
@@ -624,26 +626,26 @@ int add_foreground(pid_t pid){
     ProcessNode* to_add = (ProcessNode*) my_malloc(sizeof(ProcessNode));
     if (!to_add) return -1;
 
-    to_add->next = foregroudnProcess->firstProcess;
+    to_add->next = foregroundProcess->firstProcess;
     to_add->pid = pid;
-    foregroudnProcess->firstProcess = to_add;
-    foregroudnProcess->size++;
+    foregroundProcess->firstProcess = to_add;
+    foregroundProcess->size++;
     return 0;
 }
 
 
 int get_foreground(){
-    if (!foregroudnProcess->size) return -1;
-    return foregroudnProcess->firstProcess->pid;
+    if (!foregroundProcess->size) return -1;
+    return foregroundProcess->firstProcess->pid;
 }
 
 int delete_from_foreground(int pid){
-    if (!foregroudnProcess->size) return 0;
+    if (!foregroundProcess->size) return 0;
 
     ProcessNode* current = (ProcessNode *) my_malloc(sizeof(ProcessNode));
     if (!current) return -1;
 
-    current->next = foregroudnProcess->firstProcess;
+    current->next = foregroundProcess->firstProcess;
     int found = 0;
     
     while(current->next && !found){
@@ -651,8 +653,8 @@ int delete_from_foreground(int pid){
             ProcessNode* toFree = current->next;
             current->next = toFree->next;
 
-            if (foregroudnProcess->firstProcess->pid == pid) foregroudnProcess->firstProcess = current->next;
-            foregroudnProcess->size--;
+            if (foregroundProcess->firstProcess->pid == pid) foregroundProcess->firstProcess = current->next;
+            foregroundProcess->size--;
 
             my_free(toFree);
             found = 1;

@@ -19,6 +19,8 @@ int main(){
         if(pipe(pipe_shell_init)) return -1; 
 
         int shell_pid = init_sh(pipe_init_shell[1], pipe_shell_init[0]); 
+
+        
         waitpid(shell_pid);
     }
 

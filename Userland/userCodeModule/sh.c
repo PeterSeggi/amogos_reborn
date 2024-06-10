@@ -62,6 +62,8 @@ void process_command(){
     //strcpy(command_buffer, "");
     command_cursor = 0;
 
+    if(command_buffer[0] == 'q') exit();
+
     parse_command(command_buffer, c1_buf, argv1, &argc1);
     //print("\n");
     print(prompt_start);
