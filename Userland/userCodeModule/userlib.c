@@ -194,7 +194,7 @@ char *strtok(char *str, const char *delim) {
 }
 
 char *strdup(const char *s) {
-    size_t len = strlen((char *)s) + 1;
+    uint64_t len = strlen((char *)s) + 1;
 
     char *dup = (char *)my_malloc(len);
     if (dup == NULL) {

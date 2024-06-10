@@ -273,6 +273,7 @@ ProcessView ** set_processes(uint16_t * proc_amount){
       if(processes[i]->fatherPid==-1) to_ret[copied]->fatherPid=0;//no father
       else to_ret[copied]->fatherPid=processes[i]->fatherPid;
       to_ret[copied]->children_amount=processes[i]->children_amount;
+      to_ret[copied]->name=processes[i]->name;
       copied++;
     }
   }

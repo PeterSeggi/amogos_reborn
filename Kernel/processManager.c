@@ -68,8 +68,10 @@ void initializeScheduler(){
         }
     }
     //createProcess(&my_main);   
-    create_shiny_process((void *)0x400000, 0, NULL, 4, TRUE, FALSE, KEY_FD, VID_FD);
-    create_shiny_process(&_idle, 0, NULL, 0, TRUE, FALSE, KEY_FD, VID_FD);     //proceso vigilante _hlt
+    char* idle_name = "idle";
+    char* init_name = k_strdup("init");
+    create_shiny_process((void *)0x400000, 1, &init_name, 4, TRUE, FALSE, KEY_FD, VID_FD);
+    create_shiny_process(&_idle, 1, &idle_name, 0, TRUE, FALSE, KEY_FD, VID_FD);     //proceso vigilante _hlt
 
     schedule_lock = 0;
     _idle();
@@ -271,16 +273,20 @@ void change_pid_priority(pid_t pid, int priority){
 
 void * schedule(void * rsp){
 
+
     if (schedule_lock == 1){
         return rsp;
     } 
 
+    if (pcb->runningPid != 0 && pcb->processes[pcb->runningPid]->state != BLOCKED) pcb->processes[pcb->runningPid]->state = READY;
 
     int priority = scheduler->priority[scheduler->currentPriorityOffset];
     if(scheduler->list[priority]->current != NULL && pcb->runningPid > 0){ //si estoy en el primer proceso no me guardo el stack de kernel
         pcb->processes[pcb->runningPid]->registers.rsp = (uint64_t)rsp;           
     }
+
     pcb->runningPid = nextProcess();   //next process ignora los procesos bloqueados
+    pcb->processes[pcb->runningPid]->state = RUNNING;
     return (void *)pcb->processes[pcb->runningPid]->registers.rsp;
     //return rsp;
 }

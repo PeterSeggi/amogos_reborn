@@ -63,9 +63,11 @@ void process(char key){
             command_buffer[--command_cursor] = 0;
         }
     }
+
     else if(command_cursor == BUFFER_SIZE - 1){
-        return;
+     return;
     }
+
     else if (key <= 126 && key >= 20){
         print(let);
         command_buffer[command_cursor++] = key;
