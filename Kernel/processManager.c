@@ -60,15 +60,15 @@ void initializeScheduler(){
         }
     }
     //createProcess(&my_main);   
-    create_shiny_process((void *)0x400000, 0, 0, 4, TRUE, KEY_FD, VID_FD);
-    create_shiny_process(&_idle, 0, 0, 0, TRUE, KEY_FD, VID_FD);     //proceso vigilante _hlt
+    create_shiny_process((void *)0x400000, 0, NULL, 4, TRUE, KEY_FD, VID_FD);
+    create_shiny_process(&_idle, 0, NULL, 0, TRUE, KEY_FD, VID_FD);     //proceso vigilante _hlt
 
     schedule_lock = 0;
     _idle();
 }
 
-Process * create_process(void * function, int argc, int number){
-    return create_shiny_process(function, argc, number, DEFAULT_PRIORITY, FALSE, KEY_FD, VID_FD);  //por defecto se crea con prioridad 4
+Process * create_process(void * function, int argc, char ** argv){
+    return create_shiny_process(function, argc, argv, DEFAULT_PRIORITY, FALSE, KEY_FD, VID_FD);  //por defecto se crea con prioridad 4
 }
 
 void failure_free_chars(char ** ptr_list, int size){
@@ -77,7 +77,7 @@ void failure_free_chars(char ** ptr_list, int size){
   }
 }
 
-Process * create_shiny_process(void * function, int argc, int number, int priority, boolean orphan, uint16_t stdin, uint16_t stdout){
+Process * create_shiny_process(void * function, int argc, char ** argv, int priority, boolean orphan, uint16_t stdin, uint16_t stdout){
     _cli();
     Process * process = (Process *)my_malloc(INITIAL_PROCESS_SIZE);
     if(process == NULL){
@@ -88,13 +88,25 @@ Process * create_shiny_process(void * function, int argc, int number, int priori
     process->foreground = FALSE;
     process->children_amount = 0;
     process->argc = argc;
-    process->number = number;
+    process->argv = (char **) my_malloc(sizeof(char *) * argc);
+    if(!process->argv) return NULL;
+    //TODO fREES AL LIBERAR EL PROCESO
+    for(int i=0; i<argc; i++){
+        process->argv[i] = (char *) my_malloc(sizeof(k_strlen(argv[i])));
+        if(!process->argv[i]){
+            failure_free_chars(process->argv, i-1);
+            my_free(process->argv);
+            return NULL;
+        }
+        k_strcpy(process->argv[i], argv[i]);
+    }
+
     
     //inicializa el stack
     process->registers.rbp = ( (uint64_t)process + INITIAL_PROCESS_SIZE ); 
     process->registers.rsp = process->registers.rbp;        //inicialmente stack vacio
     process->registers.rip = (uint64_t)function;  //direccion de la funcion a ejecutar
-    process->registers.rsp = initializeStack((void *)process->registers.rsp, (void *)process->registers.rip, process->argc, process->number); 
+    process->registers.rsp = initializeStack((void *)process->registers.rsp, (void *)process->registers.rip, process->argc, process->argv); 
     process->pid = new_pid();       //cada nuevo proceso recibe el pid siguiente en orden natural
     process->stdin_fd = stdin;
     process->stdout_fd = stdout;

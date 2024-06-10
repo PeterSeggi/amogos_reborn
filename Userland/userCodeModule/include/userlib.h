@@ -244,8 +244,8 @@ typedef struct st_fds{
 }st_fds;
 
 ProcessView ** get_processes(uint16_t * proc_amount);
-int create_process(void * function, int argc, int numero);
-int create_shiny_process(void * function, int argc, int numero, CreateArguments * args);
+int create_process(void * function, int argc, char **argv);
+int create_shiny_process(void * function, int argc, char **argv, CreateArguments * args);
 int waitpid(pid_t pid);
 void kill(pid_t pid);
 void exit(void);

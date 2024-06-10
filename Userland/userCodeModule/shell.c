@@ -30,7 +30,7 @@ void dummy_process(){
 
 //TODO ps stuff
 void ps(void);
-void sexo(int numero);
+void sexo(int argc, char **argv);
 
 char * get_process_status(State state){
     switch(state){
@@ -153,7 +153,7 @@ char byteUnit[2]={0};
 int * aux_mem_pointer = NULL;
 
 pid_t the_shell(){
-    return create_process(&shell, 0, 0);
+    return create_process(&shell, 0, NULL);
 }
 
 int shell(){
@@ -504,10 +504,14 @@ void process_command(char* buffer){
 
                 case 21:
                     write_out("Probamos crear un proceso\n");
-                    create_process(&dummy_process, 0, 0);
+                    create_process(&dummy_process, 0, NULL);
                     break;
                 case 22:
-                    sexo(5);
+                    int aux_argc = 1;
+                    char *aux_text = "5";
+                    char *aux_argv[aux_argc];
+                    aux_argv[0] = aux_text;
+                    sexo(aux_argc, aux_argv);
             }   
             return;
         }
@@ -623,22 +627,21 @@ void desize(){
 
 }
 
-void sexo_command(int argc, int numero){
+void sexo_command(int argc, char **argv){
     write_out("La cantidad de argumentos es: ");
     uintToBase(argc, aux, 10);
     write_out(aux);
     write_out("\n");
     write_out("Numero es: ");
-    uintToBase(numero, aux, 10);
-    write_out(aux);
+    write_out(argv[0]);
     write_out("\n");
-    if(numero == 5){
+    if(argv[0][0] == '5'){
         write_out("por el culo te la hinco\n");
     }
     exit();
 }
 
-void sexo(int numero){
-    create_process(&sexo_command, 1, numero);
+void sexo(int argc, char **argv){
+    create_process(&sexo_command, argc, argv);
 }
 

@@ -17,6 +17,12 @@ typedef struct ProcessView{
     int children_amount;
 }ProcessView;
 
+typedef struct CreateArguments{
+    int priority;
+    boolean orphan;
+    uint16_t stdin;
+    uint16_t stdout; 
+}CreateArguments;
 
 
 void syscall_handler();
@@ -45,8 +51,8 @@ void sys_speak(uint64_t frequence, uint64_t duration);
 void sys_changeSize(uint8_t newSize, uint8_t fd);
 
 ProcessView ** sys_get_processes(uint64_t proc_amount);
-int sys_create_process(uint64_t function, uint64_t argc, uint64_t number);
-int sys_create_shiny_process(uint64_t function, uint64_t argc, uint64_t number, uint64_t args);
+int sys_create_process(uint64_t function, uint64_t argc, uint64_t argv);
+int sys_create_shiny_process(uint64_t function, uint64_t argc, uint64_t argv, uint64_t args);
 int sys_waitpid(uint64_t pid);
 void sys_exit(void);
 void sys_kill(uint64_t pid);

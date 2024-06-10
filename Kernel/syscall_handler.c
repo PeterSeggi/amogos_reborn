@@ -14,12 +14,6 @@
 #define STDOUT 1
 #define STDERR 2
 
-typedef struct CreateArguments{
-    int priority;
-    boolean orphan;
-    uint16_t stdin;
-    uint16_t stdout; 
-}CreateArguments;
 
 void failure_free(ProcessView ** ptr_list, int size);
 ProcessView ** set_processes(uint16_t * proc_amount);
@@ -286,19 +280,19 @@ void failure_free(ProcessView ** ptr_list, int size){
   }
 }
 
-int sys_create_process(uint64_t function, uint64_t argc, uint64_t number){
-  Process* aux = create_process((void *) function, (int)argc, (int)number);
+int sys_create_process(uint64_t function, uint64_t argc, uint64_t argv){
+  Process* aux = create_process((void *) function, (int)argc, (char **)argv);
   return aux->pid;
 }
 
-int sys_create_shiny_process(uint64_t function, uint64_t argc, uint64_t number, uint64_t args){
+int sys_create_shiny_process(uint64_t function, uint64_t argc, uint64_t argv, uint64_t args){
   CreateArguments *createArgs = (CreateArguments *)args;
 
     // Use the members of the structure via the pointer
     Process* aux = create_shiny_process(
         (void *)function, 
         (int)argc, 
-        (int)number, 
+        (char **)argv, 
         (int)createArgs->priority, 
         (boolean)createArgs->orphan, 
         (uint64_t)createArgs->stdin, 

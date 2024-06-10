@@ -46,7 +46,7 @@ typedef struct Process{
     uint16_t stdin_fd;
     uint16_t stdout_fd;
     int argc;
-    int number;
+    char ** argv;
 }Process;
 
 typedef struct ProcessTable{
@@ -88,8 +88,8 @@ typedef struct SleepingTable{
 }SleepingTable;
 
 
-Process * create_process(void * function, int argc, int number);
-Process * create_shiny_process(void * function, int argc, int number, int priority, boolean orphan, uint16_t stdin, uint16_t stdout);
+Process * create_process(void * function, int argc, char ** argv);
+Process * create_shiny_process(void * function, int argc, char ** argv, int priority, boolean orphan, uint16_t stdin, uint16_t stdout);
 
 void scheduler_add(pid_t pid, int priority, ProcessNode * node);
 pid_t nextProcess(void);
@@ -99,7 +99,7 @@ void stackTest(int myrsp);
 void createStack(void);
 void stackPrep(void);
 void stackUnprep(void);
-uint64_t initializeStack(void * rsp, void * rip, int argc, int number);
+uint64_t initializeStack(void * rsp, void * rip, int argc, char ** argv);
 void initialize_pcb(void);
 void initializeScheduler(void);
 void _cli();
