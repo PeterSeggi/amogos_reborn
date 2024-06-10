@@ -60,6 +60,8 @@ void initializeScheduler(){
         }
     }
     //createProcess(&my_main);   
+
+    // creacion del proceso init
     create_shiny_process((void *)0x400000, 4, TRUE, KEY_FD, VID_FD);
     create_shiny_process(&_idle, 0, TRUE, KEY_FD, VID_FD);     //proceso vigilante _hlt
 
