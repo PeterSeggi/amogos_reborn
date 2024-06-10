@@ -44,9 +44,6 @@ int sh(){
 void process(char key){
     if (key == '\n') process_command();
 
-    else if(command_cursor == BUFFER_SIZE - 1){
-     return;
-    }
 
     else if (key == '\b'){
         if (command_cursor){
@@ -54,6 +51,11 @@ void process(char key){
             command_buffer[--command_cursor] = 0;
         }
     }
+
+    else if(command_cursor == BUFFER_SIZE - 1){
+     return;
+    }
+
     else if (key <= 126 && key >= 20){
         print(let);
         command_buffer[command_cursor++] = key;

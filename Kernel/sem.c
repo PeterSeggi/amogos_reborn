@@ -60,30 +60,35 @@ int sem_close(sem_t *sem){
 }
 
 int sem_post(sem_t *sem){
+    int unblocked = 0;
+    pid_t pid_to_unblock;
     if(!check_valid_sem(sem)) return -1;
     sem_lock_wait(&(sem->lock));
     if(!sem->value && sem->blocked_size){
             (sem->blocked_size)--;
-            pid_t pid_to_unblock = get_pid_to_unblock(sem);
+            pid_to_unblock = get_pid_to_unblock(sem);
             sem->blocked_processes[pid_to_unblock] = 0;
-            unblock_process(pid_to_unblock);
+            unblocked = 1;
     }
     else sem->value++;
     sem_lock_post(&(sem->lock));
+    if (unblocked) unblock_process(pid_to_unblock);
     return 0;
 }
 
 int sem_wait(sem_t *sem){
+    int blocked = 0;
     if(!check_valid_sem(sem)) return -1;
     sem_lock_wait(&(sem->lock));
     if(sem->value) sem->value--;
     else{
         sem->blocked_processes[get_pid()] = 1;
         (sem->blocked_size)++;
+        blocked = 1;
         sem_lock_post(&(sem->lock));
-        block_process(get_pid());
     }
     sem_lock_post(&(sem->lock));
+    if (blocked) block_process(get_pid());
     return 0;
 }
 
