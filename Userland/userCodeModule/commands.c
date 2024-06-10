@@ -125,16 +125,19 @@ void loop(int argc, char * argv[]){
         print("por el culo te la hinco\n");
     }
     if(argc==0) exit();
-    int i=0;
-    while(i<10){
-        print("hola proceso n: ");
-        print(argv[0]);
-        print("!\n");
-        i++;
-        sleep(1,0);
+    else{
+        int i=0;
+        while(i<10){
+            print("hola proceso n: ");
+            print(argv[0]);
+            print("!\n");
+            i++;
+            sleep(1,0);
+        }
+        exit();
     }
-    exit();
-}
+    }
+    
 
 pid_t init_loop(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
     boolean orphan = FALSE;

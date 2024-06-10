@@ -412,22 +412,24 @@ int sleepingTableAppend(SleepingProcess * process){
 }
 
 void createSleeper(unsigned long until_ticks, int* timer_lock){
+    //_cli();
     SleepingProcess* newProc = (SleepingProcess *)my_malloc(sizeof(SleepingProcess));
+    if(newProc==NULL)return;
+    
+    newProc->until_ticks = until_ticks;
+    newProc->pid = pcb->runningPid;
+    newProc->next = NULL;
 
     // si no tengo lugar para mas procesos lo libero
     if (sleepingTableAppend(newProc)){
         my_free(newProc);
     }
-    newProc->until_ticks = until_ticks;
-    newProc->pid = pcb->runningPid;
+    
     pcb->processes[pcb->runningPid]->state = BLOCKED;
     scheduler->runnableProcs--;
     
-    // esto es para que se frene hasta que haya un timer tick
-    while(*timer_lock){
-        _hlt();
-    }
-
+    
+    _force_schedule();
 }
 
 void delete_sleeper(pid_t pid){
@@ -452,7 +454,7 @@ void check_sleepers(unsigned long current_tick){
 
     SleepingProcess* current_proc = sleepingTable->first;
     SleepingProcess* previous_proc = NULL;
-
+    if(sleepingTable->size == 0)return;
     while(current_proc != NULL){
         if (current_proc->until_ticks <= current_tick){
             pcb->processes[current_proc->pid]->state = READY;
@@ -471,10 +473,12 @@ void check_sleepers(unsigned long current_tick){
             // Solo si es el primer caso
             else{
                 sleepingTable->first = current_proc->next; 
+                sleepingTable->size--;
             }
 
+            SleepingProcess * aux = current_proc;
             current_proc = current_proc->next;
-            my_free(current_proc);
+            my_free(aux);
         }
 
         else{
@@ -482,6 +486,7 @@ void check_sleepers(unsigned long current_tick){
             current_proc = current_proc->next;
         }
     }
+
 }
 
 void block_process(pid_t pid){

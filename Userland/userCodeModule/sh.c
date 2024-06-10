@@ -5,14 +5,14 @@
 #include <stddef.h>
 #include "include/commands.h"
 
-#define COMMANDS 5
+#define COMMANDS 6
 
 
 int init_sh(int read_fd, int write_fd){
     char * name = strdup("shell");
     return create_shiny_process(&sh, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
 }
-static char* commands[COMMANDS] = {"ps", "loop","mem", "help", "exit"};
+static char* commands[COMMANDS] = {"ps", "loop","mem", "help", "sleep", "exit"};
 
 char* let = " ";
 //char prompt_start[] = {127, 0};
@@ -92,14 +92,15 @@ void process_command(){
 }
 
 
-void parse_command(const char *input, char *c1, char **argv, int *argc) {
+void parse_command(char *input, char *c1, char **argv, int *argc) {
     boolean foreground = TRUE;
-    if(input[command_cursor-1]=='&'){
+    if(input[strlen(input)-2]=='&'){
         foreground = FALSE;
     }
-    printDec(foreground==TRUE);
-    printDec(foreground==TRUE);
-    printDec(foreground==FALSE);
+    //printDec(foreground==TRUE);
+    //printDec(foreground==TRUE);
+    //printDec(foreground==FALSE);
+    
     char *temp = strdup(input);
     if (temp == NULL) {
         return;
@@ -175,6 +176,11 @@ void parse_command(const char *input, char *c1, char **argv, int *argc) {
 
                     pid_t helpPid = init_help(*argc, argv, pipe_out[1], pipe_in[0], foreground);
                     if(foreground==TRUE)waitpid(helpPid);
+                    break;
+
+                case 4: //SLEEP
+                    print("me duermo\n");
+                    sleep(1,0);
                     break;
 
                 case COMMANDS-1:
