@@ -140,22 +140,31 @@ void remove_phylo(){
 
 void phylo_command(int argc, char **argv){
     srand(time());
-    char c = 'e';
+    char *c = " ";
     init_phylos();
     while(1){
-        //sem_down(mutex);
-        /*if (read(&c, 1) == 1){
-            switch (c){
-                case 'a':
-                    add_phylo();
-                    break;
-                case 'r':
-                    remove_phylo();
-                    break;
-                default:
-                    break;
+        if(peek_read_pipe()>0){
+            print("AAAAAAAAAAA\n");
+            if (read(c, 1) == 1){
+                print("BBBBBBBB\n");
+                switch (c[0]){
+                    case 'a':
+                        sem_down(mutex);
+                        add_phylo();
+                        sem_up(mutex);
+                        break;
+                    case 'r':
+                        sem_down(mutex);
+                        remove_phylo();
+                        sem_up(mutex);
+                        break;
+                    default:
+                        print("heyo\n");
+                        break;
+                }
             }
-        }*/
+        }
+        
         sem_down(mutex);
         if(new_state==TRUE){
             show_phylo_table();

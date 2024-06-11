@@ -79,6 +79,13 @@ int read_pipe(int fd, char *buffer, uint16_t amount){
     return amount_read;
 }
 
+int peek_read_pipe(int fd){
+    pipe_t *aux_pipe = check_valid_fd(fd, READ);
+    if(!aux_pipe) return -1;
+
+    return aux_pipe->sem_to_read->value;
+}
+
 int write_pipe(int fd, char *message, uint16_t length){
     pipe_t *aux_pipe = check_valid_fd(fd, WRITE);
     if(!aux_pipe) return -1;

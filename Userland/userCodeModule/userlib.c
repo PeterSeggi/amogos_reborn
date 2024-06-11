@@ -389,6 +389,10 @@ int pclose(int fd){
     return _pclose(fd);
 }
 
+int peek_read_pipe(){
+    return _peek_read_pipe(STDIN);
+}
+
 int read_fd(int fd, char *buffer, uint16_t length){
     return _read(fd, buffer, length);
 }

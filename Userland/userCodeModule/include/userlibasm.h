@@ -37,6 +37,7 @@ int _sem_down(sem_t *sem);
 
 int _pipe(int pipefd[2]);
 int _pclose(int fd);
+int _peek_read_pipe(int fd);
 
 int _write(int fd, char *message, uint16_t length);
 
