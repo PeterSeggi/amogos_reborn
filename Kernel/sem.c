@@ -1,3 +1,4 @@
+#include "include/processManager.h"
 #include <mman.h>
 #include <sem.h>
 #include <lib.h>
@@ -47,7 +48,7 @@ sem_t *sem_open(const char *name, uint16_t value){
 }
 
 int sem_close(sem_t *sem){
-    if(check_valid_sem(sem)) return -1;
+    if(!check_valid_sem(sem)) return -1;
     sem_lock_wait(&(list.lock));
     sem_lock_wait(&(sem->lock));
     sem->openings--;
@@ -193,3 +194,17 @@ pid_t get_pid_to_unblock(sem_t *sem){
     return found;
 }
 
+
+
+void release_pids(sem_t * sem){
+        // saco despierto a todos los procesos que esto tenia dormido
+        if (sem->blocked_size){
+            int amount = sem->blocked_size;
+            for (int i = 0; i<MAX_PROCESS_NAME && amount; i++){
+                if (sem->blocked_processes[i]){
+                    silent_unblock(i);
+                    amount--;  
+                }
+            }
+        }
+}

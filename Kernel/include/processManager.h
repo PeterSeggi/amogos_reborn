@@ -120,6 +120,7 @@ int get_pcb_size();
 Process ** get_processes();
 pid_t get_pid();
 void block_process(pid_t pid);
+void silent_unblock(pid_t pid);
 void unblock_process(pid_t pid);
 
 boolean check_valid_pid(pid_t pid);
@@ -138,6 +139,7 @@ uint64_t get_fd(int type);
 
 int add_foreground(pid_t pid);
 int get_foreground();
+int get_foreground_fd();
 int delete_from_foreground(int pid);
 
 #endif

@@ -153,12 +153,10 @@ void sys_write(uint64_t fd, uint64_t message, uint64_t length) {
 }
 
 int sys_read(uint64_t fd, uint64_t buffer, uint64_t length) {
+    
   switch(fd){
     case (STDIN):
       fd = get_fd(STDIN);
-    
-      // si el programa esta en foregroudn quiero que lea del teclado, no de su pipe
-      if (get_foreground() == get_pid()) fd = KEY_FD;
 
     default:
       return read_pipe((int) fd, (char *) buffer, (uint16_t) length);

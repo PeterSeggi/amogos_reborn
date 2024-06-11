@@ -448,7 +448,6 @@ SleepingProcess * remove_sleeper(SleepingProcess * current, pid_t pid){
     if(current->pid == pid){
         SleepingProcess * toRet = current->next;
         my_free(current);
-        scheduler->runnableProcs++;
         return toRet;
     }
     current->next = remove_sleeper(current->next, pid);
@@ -503,6 +502,14 @@ void block_process(pid_t pid){
     _force_schedule();
 }
 
+void silent_unblock(pid_t pid){
+    if(pid<1 || pid>=MAX_PROCESS_COUNT){
+        return;
+    }
+    pcb->processes[pid]->state = READY;
+    scheduler->runnableProcs++;
+}
+
 void unblock_process(pid_t pid){
     if(pid<1 || pid>=MAX_PROCESS_COUNT){
         return;
@@ -517,6 +524,10 @@ void unblock_process(pid_t pid){
 
 void kill(pid_t pid){         
     _cli();
+
+    // bloqueamos el kill de init y de idle
+    if (pid <= 2) return;
+
     pid_t fatherPid = pcb->processes[pid]->fatherPid;
 
     if(fatherPid!=-1){     //borro entry en array de children de padre
@@ -529,11 +540,18 @@ void kill(pid_t pid){
             }
         }
     }
+
+    pclose(pcb->processes[pid]->stdin_fd);
+    pclose(pcb->processes[pid]->stdin_fd + 1);
+    pclose(pcb->processes[pid]->stdout_fd);
+    pclose(pcb->processes[pid]->stdout_fd - 1);
+
     delete_pid_from_sems(pid);
+    delete_sleeper(pid);    
     delete_from_foreground(pid);
     unschedule(pid);        //primero borro del sched porque uso la referencia a la pcb
-    delete_sleeper(pid);    
     delete_from_pcb(pid);  //recien aca puedo borrar pcb
+
 
     if (pcb->runningPid == pid) pcb->runningPid = -1;
 
@@ -543,16 +561,11 @@ void kill(pid_t pid){
         }
         if(pcb->processes[fatherPid]->waiting_for==pid || pcb->processes[fatherPid]->waiting_for==-1){
             pcb->processes[fatherPid]->waiting_for=0;
-            unblock_process(fatherPid);
+            silent_unblock(fatherPid);
         }
     }
 
-
     _force_schedule();
-
-    //############TODO################## 
-    //cerrar pipes involucrados
-    
 }
 
 void unschedule(pid_t pid){
@@ -568,7 +581,9 @@ ProcessNode * delete_from_sched(ProcessNode * current, pid_t pid){
         my_free(current);
         scheduler->size--;
         scheduler->list[pcb->processes[pid]->priority]->size--;
-        scheduler->runnableProcs--;             
+
+        // Si estaba bloqueado no le hago el runnableProcs-- 
+        if (pcb->processes[pid]->state != BLOCKED) scheduler->runnableProcs--;             
         return toReturn;
     }
     else{
@@ -655,6 +670,11 @@ int add_foreground(pid_t pid){
 int get_foreground(){
     if (!foregroundProcess->size) return -1;
     return foregroundProcess->firstProcess->pid;
+}
+
+int get_foreground_fd(){
+    if (!foregroundProcess->size) return -1;
+    return pcb->processes[foregroundProcess->firstProcess->pid]->stdin_fd;
 }
 
 int delete_from_foreground(int pid){

@@ -1,4 +1,3 @@
-#include "include/lib.h"
 #include <pipe.h>
 #include <stdint.h>
 #include <sound.h>
@@ -67,6 +66,7 @@ int main()
 	initialize_pcb();
     init_pipe();
 	initializeScheduler();
+    key_init();
 
 	//_sti();
 	//while(1){

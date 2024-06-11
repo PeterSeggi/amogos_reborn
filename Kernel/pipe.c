@@ -98,20 +98,20 @@ int write_pipe(int fd, char *message, uint16_t length){
 }
 
 int pclose(int fd){
+
+    if (fd < 2) return -1;
+
     pipe_t * aux_pipe = search_pipe(fd);
     if(!aux_pipe) return -1;
     if(aux_pipe->read_fd==fd){
-        if(!aux_pipe->write_fd){
-            if(delete_pipe(fd)==-1) return -1;
-        }
-        else aux_pipe->read_fd=0;
+        aux_pipe->read_fd=0;
+        release_pids(aux_pipe->sem_to_read);
     }
     else{
-        if(!aux_pipe->read_fd){
-            if(delete_pipe(fd)==-1) return -1;
-        }
-        else aux_pipe->write_fd=0;
+        aux_pipe->write_fd=0;
     }
+
+    if (aux_pipe->read_fd == 0 && aux_pipe->write_fd == 0) return delete_pipe(fd);
     return 0;
 }
 

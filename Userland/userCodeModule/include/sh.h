@@ -4,7 +4,7 @@
 #define BUFFER_SIZE 128
 #define MAX_PROCESS_COUNT 100
 
-int sh();
+void sh();
 int init_sh(int read_fd, int write_fd);
 void process_command();
 void process(char key);
