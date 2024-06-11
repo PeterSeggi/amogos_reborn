@@ -47,7 +47,7 @@ sem_t *sem_open(const char *name, uint16_t value){
 }
 
 int sem_close(sem_t *sem){
-    if(check_valid_sem(sem)) return -1;
+    if(!check_valid_sem(sem)) return -1;
     sem_lock_wait(&(list.lock));
     sem_lock_wait(&(sem->lock));
     sem->openings--;

@@ -192,4 +192,8 @@ void parse_command(char *input, char *c1, char **argv, int *argc) {
 
     // aca tendria que cerrar los pipes si o si 
     my_free(temp);
+    pclose(pipe_in[0]);
+    pclose(pipe_out[0]);
+    pclose(pipe_in[1]);
+    pclose(pipe_out[1]);
 }
