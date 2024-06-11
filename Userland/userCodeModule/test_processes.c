@@ -35,7 +35,7 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
       argvAux[0] = "endless_loop";
-      p_rqs[rq].pid = my_create_process(, 0, argvAux);
+      p_rqs[rq].pid = my_create_process(&endless_loop, 1, argvAux);
 
       if (p_rqs[rq].pid == -1) {
         print("test_processes: ERROR creating process\n");

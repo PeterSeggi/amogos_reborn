@@ -74,7 +74,11 @@ uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
     my_wait(pids[i + TOTAL_PAIR_PROCESSES]);
   }
 
-  print("Final value: %d\n", global);
+  char aux[BUFFER_SIZE] = {0};
+  uintToBase(global, aux, 10)
+  print("Final value: ");
+  print(aux);
+  print("\n");
 
   return 0;
 }
