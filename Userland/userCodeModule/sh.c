@@ -185,6 +185,11 @@ void parse_command(char *input, char *c1, char **argv, int *argc) {
                     break;
 
                 case COMMANDS-1:
+                    my_free(temp);
+                    pclose(pipe_in[0]);
+                    pclose(pipe_out[0]);
+                    pclose(pipe_in[1]);
+                    pclose(pipe_out[1]);
                     exit();
             }
         }

@@ -528,11 +528,18 @@ void kill(pid_t pid){
             }
         }
     }
+
+    pclose(pcb->processes[pid]->stdin_fd);
+    pclose(pcb->processes[pid]->stdin_fd + 1);
+    pclose(pcb->processes[pid]->stdout_fd);
+    pclose(pcb->processes[pid]->stdout_fd - 1);
+
     delete_pid_from_sems(pid);
     delete_from_foreground(pid);
     unschedule(pid);        //primero borro del sched porque uso la referencia a la pcb
     delete_sleeper(pid);    
     delete_from_pcb(pid);  //recien aca puedo borrar pcb
+
 
     if (pcb->runningPid == pid) pcb->runningPid = -1;
 
@@ -546,12 +553,7 @@ void kill(pid_t pid){
         }
     }
 
-
     _force_schedule();
-
-    //############TODO################## 
-    //cerrar pipes involucrados
-    
 }
 
 void unschedule(pid_t pid){

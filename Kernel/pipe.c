@@ -98,6 +98,9 @@ int write_pipe(int fd, char *message, uint16_t length){
 }
 
 int pclose(int fd){
+
+    if (fd < 2) return -1;
+
     pipe_t * aux_pipe = search_pipe(fd);
     if(!aux_pipe) return -1;
     if(aux_pipe->read_fd==fd){

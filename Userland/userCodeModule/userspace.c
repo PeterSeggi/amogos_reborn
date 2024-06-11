@@ -22,10 +22,12 @@ int main(){
 
         if (shell_pid != -1) waitpid(shell_pid);
 
+        /*
         pclose(pipe_init_shell[0]);
         pclose(pipe_init_shell[1]);
         pclose(pipe_shell_init[0]);
         pclose(pipe_shell_init[1]);
+        */
     }
 
     return 0;
