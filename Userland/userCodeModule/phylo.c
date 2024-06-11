@@ -122,7 +122,7 @@ int add_phylo(){
     }
     aux_argv[0] = name;
     print("new phylo!\n");
-    create_shiny_process(&phylos, aux_argc, aux_argv, 4, FALSE, TRUE, 0, 0);
+    create_shiny_process(&phylos, aux_argc, aux_argv, 4, FALSE, FALSE, 0, 0);
     
     return 0;
 }
