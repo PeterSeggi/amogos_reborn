@@ -39,11 +39,11 @@ void set_phylo_name(int num, char str[]);
 int get_phylo_num(char str[]);
 
 void think(){
-    sleep(5*rand(), 0);
+    sleep(rand()%8, 0);
 }
 
 void eat(){
-    sleep(5*rand(), 0);
+    sleep(rand()%5, 0);
 }
 
 void phylos(int argc, char *argv[]){
@@ -160,6 +160,7 @@ void init_phylos(){
     sem_close(mutex);
     mutex = sem_open("phylo_sem", 1);
     phylo_amount = 0;
+    sem_down(mutex);
     for(int i=0; i<PHYLO_INIT; i++){
         add_phylo();
     }
@@ -182,10 +183,10 @@ void set_phylo_name(int num, char str[]){
     int digit3 = (num/10) % 100;
     int digit4 = num % 1000;
 
-    str[5] = '0' + digit1;
-    str[6] = '0' + digit2;
-    str[7] = '0' + digit3;
-    str[8] = '0' + digit4;
+    str[6] = '0' + digit1;
+    str[7] = '0' + digit2;
+    str[8] = '0' + digit3;
+    str[9] = '0' + digit4;
 }
 
 int get_phylo_num(char str[]){
