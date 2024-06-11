@@ -6,7 +6,7 @@
 
 #define PHYLO_MAX   30
 #define PHYLO_MIN   3
-#define PHYLO_INIT  3
+#define PHYLO_INIT  5
 
 #define THINKING    0
 #define HUNGRY      1
@@ -19,6 +19,8 @@ typedef struct Phylo{
 }Phylo;
 
 int phylo_amount = 0;
+
+boolean new_state = FALSE;
 
 Phylo phylo_table[PHYLO_MAX]={0};
 
@@ -53,13 +55,9 @@ void phylos(int argc, char *argv[]){
     int num = get_phylo_num(argv[0] + 6);
     phylo_table[num].pid = my_pid;
     while(1){
-        print("Im thinking\n");
         think();
-        print("about to eat\n");
         take_forks(num);
-        print("eating\n");
         eat();
-        print("finished\n");
         put_forks(num);
     }
 }
@@ -83,7 +81,7 @@ void put_forks(int phylo){
 void test(int phylo){
     if ((phylo_table[phylo].state == HUNGRY) && (phylo_table[(phylo+phylo_amount-1)%phylo_amount].state != EATING) && (phylo_table[(phylo+1)%phylo_amount].state != EATING)) {
         phylo_table[phylo].state = EATING;
-        show_phylo_table();
+        new_state=TRUE;
         sem_up(phylo_table[phylo].sem);
     }
 }
@@ -144,7 +142,7 @@ void phylo_command(int argc, char **argv){
     srand(time());
     char c = 'e';
     init_phylos();
-    //while(1){
+    while(1){
         //sem_down(mutex);
         /*if (read(&c, 1) == 1){
             switch (c){
@@ -158,19 +156,14 @@ void phylo_command(int argc, char **argv){
                     break;
             }
         }*/
-        /*sem_up(mutex);
-        sleep(1, 0);
         sem_down(mutex);
-        show_phylo_table();
-        sem_up(mutex);*/
-    //}
-    char aux_cant[5] = {0};
-    sem_down(mutex);
-    uintToBase(phylo_amount, aux_cant, 10);
-    print(aux_cant);
-    print("bai\n");
-    ps();
-    while(1);
+        if(new_state==TRUE){
+            show_phylo_table();
+            new_state=FALSE;
+        } 
+        sem_up(mutex);
+        sleep(1,0);
+    }
 }
 
 void init_phylos(){
