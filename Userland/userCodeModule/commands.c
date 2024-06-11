@@ -1,7 +1,6 @@
 #include <stddef.h>
 #include "include/commands.h"
 #include "include/phylo.h"
-#include "include/test_util.h"
 
 
 extern char endOfBinary;
