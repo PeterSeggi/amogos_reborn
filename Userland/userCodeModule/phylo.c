@@ -39,11 +39,13 @@ void set_phylo_name(int num, char str[]);
 int get_phylo_num(char str[]);
 
 void think(){
-    sleep(rand()%8, 0);
+    //sleep(rand()%8, 0);
+    //sleep(1,0);
 }
 
 void eat(){
-    sleep(rand()%5, 0);
+    //sleep(rand()%5, 0);
+    //sleep(1,0);
 }
 
 void phylos(int argc, char *argv[]){
@@ -51,9 +53,13 @@ void phylos(int argc, char *argv[]){
     int num = get_phylo_num(argv[0] + 6);
     phylo_table[num].pid = my_pid;
     while(1){
+        print("Im thinking\n");
         think();
+        print("about to eat\n");
         take_forks(num);
+        print("eating\n");
         eat();
+        print("finished\n");
         put_forks(num);
     }
 }
@@ -75,7 +81,7 @@ void put_forks(int phylo){
 }
 
 void test(int phylo){
-    if (phylo_table[phylo].state == HUNGRY && phylo_table[(phylo+phylo_amount-1)%phylo_amount].state != EATING && phylo_table[(phylo+1)%phylo_amount].state != EATING) {
+    if ((phylo_table[phylo].state == HUNGRY) && (phylo_table[(phylo+phylo_amount-1)%phylo_amount].state != EATING) && (phylo_table[(phylo+1)%phylo_amount].state != EATING)) {
         phylo_table[phylo].state = EATING;
         sem_up(phylo_table[phylo].sem);
     }
@@ -115,6 +121,7 @@ int add_phylo(){
         return -1;
     }
     aux_argv[0] = name;
+    print("new phylo!\n");
     create_shiny_process(&phylos, aux_argc, aux_argv, 4, FALSE, TRUE, 0, 0);
     
     return 0;
@@ -138,7 +145,7 @@ void phylo_command(int argc, char **argv){
     init_phylos();
     while(1){
         sem_down(mutex);
-        if (read(&c, 1) == 1){
+        /*if (read(&c, 1) == 1){
             switch (c){
                 case 'a':
                     add_phylo();
@@ -149,9 +156,9 @@ void phylo_command(int argc, char **argv){
                 default:
                     break;
             }
-        }
+        }*/
         sem_up(mutex);
-        sleep(5, 0);
+        sleep(1, 0);
         show_phylo_table();
     }
 }
