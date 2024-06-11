@@ -114,19 +114,13 @@ pid_t init_ps(int read_fd, int write_fd, boolean foreground){
 
 void loop(int argc, char * argv[]){
     
-    print("La cantidad de argumentos es: ");
-    uintToBase(argc, aux, 10);
-    print(aux);
-    print("\n");
-    print("Numero es: ");
-    print(argv[0]);
-    print("\n");
+    int pid = get_pid();
     if(argc==0) exit();
     else{
         int i=0;
         while(1){
-            print("hola proceso: ");
-            print(argv[0]);
+            print("hola proceso nro ");
+            printDec(pid);
             print("!\n");
             i++;
             sleep(1,0);
