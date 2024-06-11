@@ -53,6 +53,9 @@ int saved = 0;
 int ascii_insert_index = 0;
 int ascii_read_index = 0;
 int ascii_to_read = 0;
+char toWrite = 0;
+int fore_fd = 0;
+int fore = 0;
 
 
 void key_handler() { insert_key(_getKey()); }
@@ -65,36 +68,26 @@ void key_init(){
 void insert_key(int key) {
 
   checkShift(key);
-  char toWrite;
 
-  if (key <= 0x52 && scan_chars[key] != 0) {
+  if (key > 0x52 || scan_chars[key] == 0) return;
+
     if (shifted || (caps && key >= 0x10)){
-      ascii_buf[ascii_insert_index++] = scan_chars_shift[key];
       toWrite = scan_chars_shift[key];
     }
     else{
-      ascii_buf[ascii_insert_index++] = scan_chars[key];
       toWrite = scan_chars[key];
     }
-    if (ascii_insert_index == KEY_BUF_SIZE)
-      ascii_insert_index = 0;
 
-    ascii_to_read = 1;
-  }
 
-  to_read = 1;
-  key_buf[insert_index++] = key;
-  if (insert_index == KEY_BUF_SIZE)
-    insert_index = 0;
+  fore_fd = get_foreground_fd() + 1;
+  write_pipe(fore_fd, &toWrite, 1);
 
-  int fore = get_foreground();
-  int fore_fd = get_foreground_fd() + 1;
     
-  if (control == 1 && (toWrite == 'c' || toWrite == 'C')){
+  if (control == 1 && (toWrite == 'c')){
+     fore = get_foreground();
      kill(fore);
   } 
-
-  write_pipe(fore_fd, &toWrite, 1);
+    
 
 }
 
@@ -165,10 +158,6 @@ void checkShift(int key) {
     control = 1;
   if (key == 0x9D)
     control = 0;
-
-
-  if (key == 0x38)
-    saved = 1;
 }
 
 
