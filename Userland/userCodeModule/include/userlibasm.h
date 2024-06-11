@@ -26,7 +26,7 @@ int _create_shiny_process(void * function, int argc, char **argv, CreateArgument
 int _waitpid(pid_t pid);
 void _kill(pid_t pid);
 void _exit(void);
-void _change_proc_priority(pid_t pid);
+void _change_proc_priority(pid_t pid, int priority);
 void _block_proc(pid_t pid);
 pid_t _get_pid();
 
