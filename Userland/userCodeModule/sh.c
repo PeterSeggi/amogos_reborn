@@ -31,6 +31,9 @@ int argc1;
 int sh(){
 
     clearScreen();
+    strcpy(command_buffer, "");
+    strcpy(c1_buf, "");
+    command_cursor = 0;
     print(prompt_start);
     while(1){
         if (read(let, 1) == 1){
@@ -79,6 +82,10 @@ void process(char key){
 void process_command(){
     print(let);
     command_buffer[command_cursor] = 0;
+    if (command_cursor == 0){
+        print(prompt_start);
+        return;
+    }
     //print(command_buffer);
     //strcpy(command_buffer, "");
     command_cursor = 0;
