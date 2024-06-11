@@ -1,7 +1,8 @@
 #include <stdint.h>
 #include <stdio.h>
-#include "syscall.h"
-#include "test_util.h"
+#include "include/commands.h"
+#include "include/syscall.h"
+#include "include/test_util.h"
 
 #define SEM_ID "sem"
 #define TOTAL_PAIR_PROCESSES 2
@@ -31,7 +32,7 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
     return -1;
 
   if (use_sem)
-    if (!my_sem_open(SEM_ID, 1)) {
+    if (!sem_open(SEM_ID, 1)) {
       print("test_sync: ERROR opening semaphore\n");
       return -1;
     }
@@ -39,14 +40,14 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
   uint64_t i;
   for (i = 0; i < n; i++) {
     if (use_sem)
-      my_sem_wait(SEM_ID);
+      sem_down(SEM_ID);
     slowInc(&global, inc);
     if (use_sem)
-      my_sem_post(SEM_ID);
+      sem_up(SEM_ID);
   }
 
   if (use_sem)
-    my_sem_close(SEM_ID);
+    sem_close(SEM_ID);
 
   return 0;
 }
@@ -65,7 +66,7 @@ uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
   uint64_t i;
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
     pids[i] = create_s("my_process_inc", 3, argvDec);
-    pids[i + TOTAL_PAIR_PROCESSES] = my_create_process("my_process_inc", 3, argvInc);
+    pids[i + TOTAL_PAIR_PROCESSES] = create_shiny_process("my_process_inc", 3, argvInc);
   }
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
