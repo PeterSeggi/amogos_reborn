@@ -124,7 +124,7 @@ void unblock_process(pid_t pid);
 
 boolean check_valid_pid(pid_t pid);
 State get_pid_state(pid_t pid);
-void change_pid_priority(pid_t pid, int priority);
+void nice(pid_t pid);
 
 void exit_process();
 void kill(pid_t pid);

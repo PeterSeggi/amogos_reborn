@@ -5,14 +5,14 @@
 #include <stddef.h>
 #include "include/commands.h"
 
-#define COMMANDS 6
+#define COMMANDS 12
 
 
 int init_sh(int read_fd, int write_fd){
     char * name = strdup("shell");
     return create_shiny_process(&sh, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
 }
-static char* commands[COMMANDS] = {"ps", "loop","mem", "help", "sleep", "exit"};
+static char* commands[COMMANDS] = {"ps","loop","mem","help","sleep","kill","nice","block","cat","wc","filter","exit"};
 
 char* let = " ";
 //char prompt_start[] = {127, 0};
@@ -22,7 +22,7 @@ int command_cursor = 0;
 
 // buffers para el parse_command
 char c1_buf[BUFFER_SIZE];
-char * argv1[BUFFER_SIZE / 3];
+char * argv1[BUFFER_SIZE];
 const char delim[2] = {32, 0};
 int argc1;
 
@@ -92,7 +92,7 @@ void process_command(){
 }
 
 
-void parse_command(char *input, char *c1, char **argv, int *argc) {
+void parse_command(char *input, char *c1, char *argv[], int *argc) {
     boolean foreground = TRUE;
     if(input[strlen(input)-2]=='&'){
         foreground = FALSE;
@@ -183,6 +183,35 @@ void parse_command(char *input, char *c1, char **argv, int *argc) {
                     sleep(1,0);
                     break;
 
+                case 5:     //kill
+                    pid_t killPid = init_kill(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    waitpid(killPid);
+                    break;
+
+                case 6:     //nice
+                    pid_t nicePid = init_nice(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    waitpid(nicePid);
+                    break;
+
+                case 7:     //block
+                    pid_t blockPid = init_block(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    waitpid(blockPid);
+                    break;
+
+                case 8:     //cat
+                    pid_t catPid = init_cat(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    waitpid(catPid);
+                    break;
+
+                case 9:     //wc
+                    pid_t wcPid = init_wc(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    waitpid(wcPid);
+                    break;
+
+                case 10:    //filter
+                    pid_t filterPid = init_filter(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    waitpid(filterPid);
+                    break;
                 case COMMANDS-1:
                     exit();
             }
