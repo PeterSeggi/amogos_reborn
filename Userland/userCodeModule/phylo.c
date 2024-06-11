@@ -154,6 +154,7 @@ void init_phylos(){
     for(int i=0; i<PHYLO_INIT; i++){
         add_phylo();
     }
+    sem_up(mutex);
 }
 
 void show_phylo_table(){

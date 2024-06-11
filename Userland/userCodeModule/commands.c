@@ -1,5 +1,7 @@
 #include <stddef.h>
 #include "include/commands.h"
+#include "include/phylo.h"
+
 
 extern char endOfBinary;
 extern char bss;
@@ -279,14 +281,14 @@ pid_t init_filter(int argc, char * argv[], int read_fd, int write_fd, boolean fo
     return create_shiny_process(&filter, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
 
-void filter(int argc, char * argv[]){
-
+void the_real_phylo(int argc, char ** argv){
+    phylo_command(argc, argv);
     exit();
 }
 
-pid_t init_filter(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
+pid_t init_phylo(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
     boolean orphan = FALSE;
-    return create_shiny_process(&filter, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
+    return create_shiny_process(&the_real_phylo, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
 
 
