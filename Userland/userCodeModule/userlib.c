@@ -345,8 +345,8 @@ void exit(void){
     _exit();
 }
 
-void nice(pid_t pid, int priority){
-    _change_proc_priority(pid, priority);
+void nice(pid_t pid){
+    _change_proc_priority(pid);
 }
 
 void block_proc(pid_t pid){

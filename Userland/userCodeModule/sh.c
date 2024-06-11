@@ -5,14 +5,13 @@
 #include <stddef.h>
 #include "include/commands.h"
 
-#define COMMANDS 7
-
+#define COMMANDS 14
 
 int init_sh(int read_fd, int write_fd){
     char * name = strdup("shell");
     return create_shiny_process(&sh, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
 }
-static char* commands[COMMANDS] = {"ps", "loop","mem", "help", "sleep", "clear", "exit"};
+static char* commands[COMMANDS] = {"ps","loop","mem","help","sleep","kill","nice","block","cat","wc","filter", "phylo", "clear", "exit"};
 
 char* let = " ";
 //char prompt_start[] = {127, 0};
@@ -22,7 +21,7 @@ int command_cursor = 0;
 
 // buffers para el parse_command
 char c1_buf[BUFFER_SIZE] = {0};
-char * argv1[BUFFER_SIZE / 3] = {0};
+char * argv1[BUFFER_SIZE] = {0};
 const char delim[2] = {32, 0};
 int argc1;
 int ex;
@@ -106,7 +105,7 @@ void process_command(){
 }
 
 
-void parse_command(char *input, char *c1, char **argv, int *argc) {
+void parse_command(char *input, char *c1, char *argv[], int *argc) {
     boolean foreground = TRUE;
     if(input[strlen(input)-2]=='&'){
         foreground = FALSE;
@@ -201,7 +200,43 @@ void parse_command(char *input, char *c1, char **argv, int *argc) {
                     print(" me desperte! :D\n");
                     break;
 
-                case 5: //CLEAR
+
+                case 5:     //kill
+                    pid_t killPid = init_kill(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    if(foreground==TRUE)waitpid(killPid);
+                    break;
+
+                case 6:     //nice
+                    pid_t nicePid = init_nice(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    if(foreground==TRUE)waitpid(nicePid);
+                    break;
+
+                case 7:     //block
+                    pid_t blockPid = init_block(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    if(foreground==TRUE)waitpid(blockPid);
+                    break;
+
+                case 8:     //cat
+                    pid_t catPid = init_cat(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    if(foreground==TRUE)waitpid(catPid);
+                    break;
+
+                case 9:     //wc
+                    pid_t wcPid = init_wc(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    if(foreground==TRUE)waitpid(wcPid);
+                    break;
+
+                case 10:    //filter
+                    pid_t filterPid = init_filter(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    if(foreground==TRUE)waitpid(filterPid);
+                    break;
+
+                case 11:    //phylo
+                    pid_t phyloPid = init_phylo(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    if(foreground==TRUE)waitpid(phyloPid);
+                    break;
+
+                case 12: //CLEAR
                     clearScreen();
                     break;
 

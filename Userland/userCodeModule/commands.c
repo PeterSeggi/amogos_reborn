@@ -1,5 +1,7 @@
 #include <stddef.h>
 #include "include/commands.h"
+#include "include/phylo.h"
+
 
 extern char endOfBinary;
 extern char bss;
@@ -171,121 +173,143 @@ pid_t init_mem(int argc, char * argv[], int read_fd, int write_fd, boolean foreg
     return create_shiny_process(&mem, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
 
-void malloc(int argc, char * argv[]){
-    
-    print("Probamos malloc(sizeof(int))\n");
-    if(aux_mem_pointer) print("Eu, acordate del free antes, no?\n");
-    else{
-        getMemState(aux_mem_state);
-        print("Pre-Ocupada: ");
-        uintToBase(aux_mem_state[2], aux, 10);
-        print(aux);
-        print("B\n");
-        aux_mem_pointer=(int *) my_malloc(sizeof(int));
-        if(!aux_mem_pointer) print("No pudo guardar la memoria :(\n");
-        else{
-            *(aux_mem_pointer)=777;
-            print("aux_mem_pointer = ");
-            uintToBase((uint64_t) aux_mem_pointer, aux, 10);
-            print(aux);
-            print("\n");
-            print("*(aux_mem_pointer) = ");
-            uintToBase(*aux_mem_pointer, aux, 10);
-            print(aux);
-            print("\n");
-            getMemState(aux_mem_state);
-            print("Post-Ocupada: ");
-            uintToBase(aux_mem_state[2], aux, 10);
-            print(aux);
-            print("B\n");
-        }
+
+void command_kill(int argc, char * argv[]){
+
+    //se asume argv[1] como pid
+    pid_t myPid = *argv[1]-'0'; 
+    if(myPid>2 && myPid<MAX_PROCESS_COUNT && myPid!=get_pid()){
+        kill(myPid);
     }
     exit();
 }
 
-pid_t init_malloc(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
+pid_t init_kill(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
     boolean orphan = FALSE;
-    return create_shiny_process(&malloc, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
+    return create_shiny_process(&command_kill, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
 
-
-void free(int argc, char * argv[]){
-    print("Probamos free(sizeof(int)\n");
-    if(!aux_mem_pointer) print("Eu, acordate del malloc primero, no?\n");
-    else{
-        getMemState(aux_mem_state);
-        print("Pre-Ocupada: ");
-        uintToBase(aux_mem_state[2], aux, 10);
-        print(aux);
-        print("B\n");
-        my_free(aux_mem_pointer);
-        getMemState(aux_mem_state);
-        print("Post-Ocupada: ");
-        uintToBase(aux_mem_state[2], aux, 10);
-        print(aux);
-        print("B\n");
-        aux_mem_pointer=NULL;//reset
-    }
+void command_nice(int argc, char * argv[]){
+    pid_t myPid = *argv[1]-'0';
+    nice(myPid);    
     exit();
 }
 
-pid_t init_free(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
+pid_t init_nice(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
     boolean orphan = FALSE;
-    return create_shiny_process(&free, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
+    return create_shiny_process(&command_nice, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
 
-void block(int argc, char * argv[]){
-    print("Probamos bloquear : )\n");
-    print("Abrimos sem\n");
-    sem_t * my_sem = sem_open("my_sem", 0);
-    if(!my_sem){
-        print("algo salio mal\n");
-    }
-    print("up(sem)\n");
-    sem_up(my_sem);
-    print("down(sem)\n");
-    sem_down(my_sem);
-    print("down(sem)\n");
-    sem_down(my_sem);
-    print("????\n");
+void command_block(int argc, char * argv[]){
+    pid_t myPid = *argv[1]-'0'; 
+    if(myPid>2 && myPid<MAX_PROCESS_COUNT){
+        block_proc(myPid);
+    }    
     exit();
 }
 
 pid_t init_block(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
     boolean orphan = FALSE;
-    return create_shiny_process(&block, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
+    return create_shiny_process(&command_block, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
 
-void test_pipe(int argc, char * argv[]){
-    print("Probamos pipes (literalmente anda a saber)\n");
-    int aux_fds[2];
-    if(pipe(aux_fds)){
-        print("salio mal\n");
-        exit();
-    }
-    if(write(aux_fds[1], "holi\0", strlen("holi\0"))<0){
-        print("nao write\n");
-        exit();
-    }
-    if(read_fd(aux_fds[0], aux, 128)<=0){
-        print("nao read\n");
-        exit();
-    }
+void cat(int argc, char * argv[]){
+    //no se como accede un proceso a su propio stdin
+    print(argv[1]);
+    exit();
+}
 
-    print(aux);
-    print("\n");
+pid_t init_cat(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
+    boolean orphan = FALSE;
+    return create_shiny_process(&command_block, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
+}
 
-    print("before blocks");
-    if(read_fd(aux_fds[0], aux, 128)<=0){
-        print("nao read\n");
-        exit();
+void wc(int argc, char * argv[]){
+    //no se como accede un proceso a su propio stdin
+    int count = 0;
+    int offset = 0;
+    while(argv[1]!=NULL && argv[1][offset]!='\0'){
+        if(argv[1][offset]==' ') count++;
+        offset++;
     }
+    print("the count is: ");
+    uintToBase(count, aux, 10);
     print(aux);
     print("\n");
     exit();
 }
 
-pid_t init_pipe(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
+pid_t init_wc(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
     boolean orphan = FALSE;
-    return create_shiny_process(&test_pipe, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
+    return create_shiny_process(&wc, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
+
+void filter(int argc, char * argv[]){
+    if (argc != 2) {
+        print("Uso: filter <string>\n");
+        exit();
+    }
+    char * filtered = strdup(argv[1]);
+    int length = strlen(argv[1]);
+    int j = 0;
+    for (int i = 0; i < length; ++i) {
+        char c = argv[1][i];
+        // chequeo vocal
+        if (!(c == 'a' || c == 'A' || c == 'e' || c == 'E' || c == 'i' || c == 'I' ||
+              c == 'o' || c == 'O' || c == 'u' || c == 'U')) {
+            filtered[j++] = c;
+        }
+    }
+    filtered[j] = '\0'; // Null-terminate the filtered string
+    print(filtered);
+    print("\n");
+    my_free(filtered);
+    exit();
+}
+
+pid_t init_filter(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
+    boolean orphan = FALSE;
+    return create_shiny_process(&filter, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
+}
+
+void the_real_phylo(int argc, char ** argv){
+    phylo_command(argc, argv);
+    exit();
+}
+
+pid_t init_phylo(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
+    boolean orphan = FALSE;
+    return create_shiny_process(&the_real_phylo, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
+}
+
+
+/*void mem_test(int argc, char ** argv){
+    test_mm(argc, argv);
+    exit();
+}
+
+pid_t init_mm(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
+    boolean orphan = FALSE;
+    return create_shiny_process(&mem_test, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
+}
+
+void proc_test(int argc, char ** argv){
+    test_processes(argc, argv);
+    exit();
+}
+
+pid_t init_procs(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
+    boolean orphan = FALSE;
+    return create_shiny_process(&proc_test, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
+}
+
+void proc_test(int argc, char ** argv){
+    test_processes(argc, argv);
+    exit();
+}
+
+pid_t init_procs(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
+    boolean orphan = FALSE;
+    return create_shiny_process(&proc_test, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
+}*/
+

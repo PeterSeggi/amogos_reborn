@@ -4,6 +4,7 @@
 #include <interrupts.h>
 #include <lib.h>
 #include <sem.h>
+#include <pipe.h>
 
 ProcessNode * delete_from_sched(ProcessNode * current, pid_t pid);
 void delete_from_pcb(pid_t pid);
@@ -16,6 +17,7 @@ SleepingProcess * remove_sleeper(SleepingProcess * current, pid_t pid);
 void delete_sleeper(pid_t pid);
 boolean add_child(pid_t fatherPid, pid_t childPid);
 void free_argv(int argc, char ** argv);
+void change_priority(pid_t pid, int priority);
 
 //variables globales
 ProcessTable * pcb = NULL;
@@ -211,9 +213,13 @@ int pcb_append(Process * process){
     return 0;
 }
 
-void change_priority(pid_t pid, int priority){
-    if(pid<1 || pid>=MAX_PROCESS_COUNT || priority<0 || priority>4){
-        return;
+void nice(pid_t pid){
+    change_priority(pid, (pcb->processes[pid]->priority)-1);
+}
+
+void change_priority(pid_t pid, int priority){                          //si no existe el proceso
+    if(pid<3 || pid>=MAX_PROCESS_COUNT || priority<0 || priority>4 || pcb->processes[pid]==NULL){  
+        return;                                                 
     }
     
     int oldPriority = pcb->processes[pid]->priority;

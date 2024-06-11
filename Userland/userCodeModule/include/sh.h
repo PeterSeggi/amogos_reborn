@@ -2,6 +2,7 @@
 #define SH_H 
 
 #define BUFFER_SIZE 128
+#define MAX_PROCESS_COUNT 100
 
 void sh();
 int init_sh(int read_fd, int write_fd);

@@ -95,7 +95,7 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
     break;
 
   case (0xA6):
-    sys_change_proc_priority(rdi, rsi);
+    sys_change_proc_priority(rdi);
     break;
 
   case (0xA7):
@@ -352,10 +352,10 @@ void sys_kill(uint64_t pid){
   kill((pid_t) pid);
 }
 
-void sys_change_proc_priority(uint64_t pid, uint64_t priority){
+void sys_change_proc_priority(uint64_t pid){
 //TODO check logic
   if(get_pcb_size()==0 || check_valid_pid((pid_t) pid)==FALSE) return;
-  change_pid_priority((pid_t) pid, (int) priority);
+  nice((pid_t) pid);
 }
 
 void sys_block_proc(uint64_t pid){

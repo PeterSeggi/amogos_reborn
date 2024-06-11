@@ -3,6 +3,7 @@
         "syscall_handler.h": "c",
         "videodriver.h": "c",
         "userlib.h": "c",
-        "userlibasm.h": "c"
+        "userlibasm.h": "c",
+        "commands.h": "c"
     }
 }
