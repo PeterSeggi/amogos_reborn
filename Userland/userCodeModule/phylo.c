@@ -143,10 +143,8 @@ void phylo_command(int argc, char **argv){
     char *c = " ";
     init_phylos();
     while(1){
-        if(peek_read_pipe()>0){
-            print("AAAAAAAAAAA\n");
+        if(peek_read_pipe()){
             if (read(c, 1) == 1){
-                print("BBBBBBBB\n");
                 switch (c[0]){
                     case 'a':
                         sem_down(mutex);
@@ -164,7 +162,6 @@ void phylo_command(int argc, char **argv){
                 }
             }
         }
-        
         sem_down(mutex);
         if(new_state==TRUE){
             show_phylo_table();
