@@ -41,7 +41,8 @@ void ps(){
         print("\n");
         return;
     }
-    print("PID | NAME\t| STATE\t | PRI\t|   RSP  |   RBP  | FOR | PAR | CHI |\n");
+    print("\n");
+    print("PID | NAME  | STATE  | PRI |   RSP  |   RBP  | FOR | PAR | CHI |");
     char aux[BUFFER_SIZE];
     int dif;
     for(int i = 0; i<process_amount; i++){
@@ -50,7 +51,7 @@ void ps(){
         uintToBase(processes[i]->pid, aux, 10);
         print(" ");
         print(aux);
-        print("\t |");
+        print("  |");
 
         // name
         print(processes[i]->name);
@@ -68,7 +69,7 @@ void ps(){
         uintToBase(processes[i]->priority, aux, 10);
         print("  ");
         print(aux);
-        print("\t |");
+        print("  |");
 
         // rsp
         uintToBase(processes[i]->registers.rsp, aux, 16); 
@@ -224,7 +225,7 @@ void cat(int argc, char * argv[]){
 
 pid_t init_cat(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
     boolean orphan = FALSE;
-    return create_shiny_process(&command_block, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
+    return create_shiny_process(&cat, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
 
 void wc(int argc, char * argv[]){

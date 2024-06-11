@@ -254,24 +254,66 @@ void command_wrapper(char* input){
         c2[0] = 0;
     } 
 
+    if (piped){
 
-    int pipe_out[2] = {0};
-    int pipe_in[2] = {0};
+        int pipe_out[2] = {0};
+        int pipe_in[2] = {0};
+        int pipe_mid[2] = {0};
 
-    if(pipe(pipe_out)) return; 
-    if(pipe(pipe_in)) return; 
+        if(pipe(pipe_out)) return; 
+        if(pipe(pipe_in)) return; 
+        if(pipe(pipe_mid)) return; 
 
-    pid_t cpid = parse_command(c1, pipe_out[0], pipe_in[1], foreground);
-    
-    if (cpid > 1 && foreground) waitpid(cpid); 
+        pid_t cpid1 = parse_command(c1, pipe_out[0], pipe_mid[1], FALSE);
+        
+        pid_t cpid2 = parse_command(c2, pipe_mid[0], pipe_in[1], foreground);
 
-    else{
-        pclose(pipe_in[0]);
-        pclose(pipe_out[0]);
-        pclose(pipe_in[1]);
-        pclose(pipe_out[1]);
+        if (cpid2 > 1 && foreground) waitpid(cpid2); 
+
+        else{
+            pclose(pipe_mid[0]);
+            pclose(pipe_out[0]);
+            pclose(pipe_mid[1]);
+            pclose(pipe_out[1]);
+        }
+
+        if (cpid2 == 1) exit();
+
+
+        //if (cpid1 > 1) waitpid(cpid1); 
+
+        if (cpid1 <= 1){
+            pclose(pipe_mid[0]);
+            pclose(pipe_out[0]);
+            pclose(pipe_mid[1]);
+            pclose(pipe_out[1]);
+        }
+
+        if (cpid1 == 1) exit();
+        
+
+            
     }
 
-    if (cpid == 1) exit();
+    else {
+        int pipe_out[2] = {0};
+        int pipe_in[2] = {0};
 
+        if(pipe(pipe_out)) return; 
+        if(pipe(pipe_in)) return; 
+
+        pid_t cpid = parse_command(c1, pipe_out[0], pipe_in[1], foreground);
+        
+        if (cpid > 1 && foreground) waitpid(cpid); 
+
+        else{
+            pclose(pipe_in[0]);
+            pclose(pipe_out[0]);
+            pclose(pipe_in[1]);
+            pclose(pipe_out[1]);
+        }
+
+        if (cpid == 1) exit();
+
+    }
 }
