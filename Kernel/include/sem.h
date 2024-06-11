@@ -76,4 +76,5 @@ void sem_lock_wait(uint8_t * lock);
 void sem_lock_post(uint8_t * lock);
 
 
+void release_pids(sem_t * sem);
 #endif //SEM_H

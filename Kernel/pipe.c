@@ -105,6 +105,7 @@ int pclose(int fd){
     if(!aux_pipe) return -1;
     if(aux_pipe->read_fd==fd){
         aux_pipe->read_fd=0;
+        release_pids(aux_pipe->sem_to_read);
     }
     else{
         aux_pipe->write_fd=0;

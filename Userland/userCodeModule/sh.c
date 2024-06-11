@@ -25,23 +25,29 @@ char c1_buf[BUFFER_SIZE] = {0};
 char * argv1[BUFFER_SIZE / 3] = {0};
 const char delim[2] = {32, 0};
 int argc1;
+int ex;
+int exited = 0;
 
 
 
-int sh(){
+void sh(){
 
     clearScreen();
     strcpy(command_buffer, "");
     strcpy(c1_buf, "");
     command_cursor = 0;
     print(prompt_start);
-    while(1){
-        if (read(let, 1) == 1){
-            process(let[0]);
-        }
 
+    while(read(let, 1) != -1){
+        /*
+        ex = read(let, 1);
+        if (ex == -1) exited = 1;
+        else process(let[0]);
+        */
+        process(let[0]);
     }
-    return 0;
+
+    exit();
 }
 
 void help(int argc, char * argv[]){

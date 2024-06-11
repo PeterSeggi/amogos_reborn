@@ -498,6 +498,11 @@ void block_process(pid_t pid){
     _force_schedule();
 }
 
+void silent_unblock(pid_t pid){
+    pcb->processes[pid]->state = READY;
+    scheduler->runnableProcs++;
+}
+
 void unblock_process(pid_t pid){
     if(pid<1 || pid>=MAX_PROCESS_COUNT){
         return;

@@ -3,7 +3,7 @@
 
 #define BUFFER_SIZE 128
 
-int sh();
+void sh();
 int init_sh(int read_fd, int write_fd);
 void process_command();
 void process(char key);

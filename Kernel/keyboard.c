@@ -56,6 +56,7 @@ int ascii_to_read = 0;
 char toWrite = 0;
 int fore_fd = 0;
 int fore = 0;
+int to_close = 0;
 
 
 void key_handler() { insert_key(_getKey()); }
@@ -79,16 +80,21 @@ void insert_key(int key) {
     }
 
 
-  fore_fd = get_foreground_fd() + 1;
-  write_pipe(fore_fd, &toWrite, 1);
+  fore_fd = get_foreground_fd();
 
     
   if (control == 1 && (toWrite == 'c')){
+     control = 0;
      fore = get_foreground();
      kill(fore);
   } 
     
+  if (control == 1 && (toWrite == 'd')){
+     control = 0;
+     pclose(fore_fd);
+  } 
 
+  write_pipe(fore_fd + 1, &toWrite, 1);
 }
 
 // returns the actual key, 0 if nothing was read

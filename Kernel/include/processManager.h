@@ -120,6 +120,7 @@ int get_pcb_size();
 Process ** get_processes();
 pid_t get_pid();
 void block_process(pid_t pid);
+void silent_unblock(pid_t pid);
 void unblock_process(pid_t pid);
 
 boolean check_valid_pid(pid_t pid);
