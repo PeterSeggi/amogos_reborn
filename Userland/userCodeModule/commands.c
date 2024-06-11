@@ -1,7 +1,17 @@
 #include <stddef.h>
 #include "include/commands.h"
 #include "include/phylo.h"
+#include "include/test_util.h"
 
+#define MINOR_WAIT 1000000 // TODO: Change this value to prevent a process from flooding the screen
+#define WAIT 10000000      // TODO: Change this value to make the wait long enough to see theese processes beeing run at least twice
+
+#define TOTAL_PROCESSES 3
+#define LOWEST 0  // TODO: Change as required
+#define MEDIUM 1  // TODO: Change as required
+#define HIGHEST 2 // TODO: Change as required
+
+int64_t prio[TOTAL_PROCESSES] = {LOWEST, MEDIUM, HIGHEST};
 
 extern char endOfBinary;
 extern char bss;
@@ -282,8 +292,9 @@ pid_t init_phylo(int argc, char * argv[], int read_fd, int write_fd, boolean for
     return create_shiny_process(&the_real_phylo, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
 
+//================TEST DE CATEDRA====================
 
-/*void mem_test(int argc, char ** argv){
+void mem_test(int argc, char ** argv){
     test_mm(argc, argv);
     exit();
 }
@@ -303,13 +314,70 @@ pid_t init_procs(int argc, char * argv[], int read_fd, int write_fd, boolean for
     return create_shiny_process(&proc_test, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
 
-void proc_test(int argc, char ** argv){
+void test_prio(int argc, char *argv[], int read_fd, int write_fd, boolean foreground) {
+  int64_t pids[TOTAL_PROCESSES];
+  uint64_t i;
+
+  for (i = 0; i < TOTAL_PROCESSES; i++){
+    char * procName = "endless_loop_print";
+    pids[i] = create_shiny_process(&endless_loop, 0, &procName, DEFAULT_PRIORITY, FALSE, foreground, read_fd, write_fd);
+  }
+  bussy_wait(WAIT);
+  print("\nCHANGING PRIORITIES...\n");
+
+  for (i = 0; i < TOTAL_PROCESSES; i++)
+    nice(pids[i]); 
+
+  bussy_wait(WAIT);
+  print("\nBLOCKING...\n");
+
+  for (i = 0; i < TOTAL_PROCESSES; i++)
+    block_proc(pids[i]);
+
+  print("CHANGING PRIORITIES WHILE BLOCKED...\n");
+
+  for (i = 0; i < TOTAL_PROCESSES; i++)
+    nice(pids[i]);
+
+  print("UNBLOCKING...\n");
+
+  for (i = 0; i < TOTAL_PROCESSES; i++)
+    (pids[i]);
+
+  bussy_wait(WAIT);
+  print("\nKILLING...\n");
+
+  for (i = 0; i < TOTAL_PROCESSES; i++)
+    my_kill(pids[i]);
+}
+
+pid_t init_priority(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
+    boolean orphan = FALSE;
+    return create_shiny_process(&test_prio, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
+}
+
+
+//------TEST DE SINCRONIZACION------
+void sync_test(int argc, char ** argv){
+    test_sync(argc, argv);
+    exit();
+}
+
+pid_t init_sync(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
+    boolean orphan = FALSE;
+    return create_shiny_process(&sync_test, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
+}
+
+
+//-------TEST PROCESSES--------
+void test_my_processes(int argc, char ** argv){
     test_processes(argc, argv);
     exit();
 }
 
-pid_t init_procs(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
+pid_t init_sync(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
     boolean orphan = FALSE;
-    return create_shiny_process(&proc_test, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
-}*/
+    return create_shiny_process(&test_my_processes, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
+}
+
 
