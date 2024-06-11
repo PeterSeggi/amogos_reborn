@@ -200,11 +200,6 @@ void parse_command(char *input, char *c1, char *argv[], int *argc) {
                     sleep(1,0);
                     print(" me desperte! :D\n");
                     break;
-
-                case 5: //CLEAR
-                    clearScreen();
-                    break;
-
                 case 5:     //kill
                     pid_t killPid = init_kill(*argc, argv, pipe_out[1], pipe_in[0], foreground);
                     if(foreground==TRUE)waitpid(killPid);
