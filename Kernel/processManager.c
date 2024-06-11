@@ -213,8 +213,8 @@ int pcb_append(Process * process){
     return 0;
 }
 
-void nice(pid_t pid){
-    change_priority(pid, (pcb->processes[pid]->priority)-1);
+void nice(pid_t pid, int priority){
+    change_priority(pid, priority);
 }
 
 void change_priority(pid_t pid, int priority){                          //si no existe el proceso
