@@ -143,6 +143,7 @@ void parse_command(char *input, char *c1, char **argv, int *argc) {
     }
 
     *argc = index;
+    /*
     print("Command es: ");
     print(argv[0]);
     print("\n");
@@ -156,6 +157,8 @@ void parse_command(char *input, char *c1, char **argv, int *argc) {
         print(argv1[i]);
         print("\n");
     }
+
+    */
 
     int pipe_out[2] = {0};
     int pipe_in[2] = {0};

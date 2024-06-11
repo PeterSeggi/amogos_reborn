@@ -443,7 +443,6 @@ SleepingProcess * remove_sleeper(SleepingProcess * current, pid_t pid){
     if(current->pid == pid){
         SleepingProcess * toRet = current->next;
         my_free(current);
-        scheduler->runnableProcs++;
         return toRet;
     }
     current->next = remove_sleeper(current->next, pid);
@@ -499,6 +498,9 @@ void block_process(pid_t pid){
 }
 
 void silent_unblock(pid_t pid){
+    if(pid<1 || pid>=MAX_PROCESS_COUNT){
+        return;
+    }
     pcb->processes[pid]->state = READY;
     scheduler->runnableProcs++;
 }
@@ -540,9 +542,9 @@ void kill(pid_t pid){
     pclose(pcb->processes[pid]->stdout_fd - 1);
 
     delete_pid_from_sems(pid);
+    delete_sleeper(pid);    
     delete_from_foreground(pid);
     unschedule(pid);        //primero borro del sched porque uso la referencia a la pcb
-    delete_sleeper(pid);    
     delete_from_pcb(pid);  //recien aca puedo borrar pcb
 
 
@@ -554,7 +556,7 @@ void kill(pid_t pid){
         }
         if(pcb->processes[fatherPid]->waiting_for==pid || pcb->processes[fatherPid]->waiting_for==-1){
             pcb->processes[fatherPid]->waiting_for=0;
-            unblock_process(fatherPid);
+            silent_unblock(fatherPid);
         }
     }
 

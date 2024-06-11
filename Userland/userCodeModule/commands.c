@@ -121,14 +121,11 @@ void loop(int argc, char * argv[]){
     print("Numero es: ");
     print(argv[0]);
     print("\n");
-    if(argv[0][0] == '5'){
-        print("por el culo te la hinco\n");
-    }
     if(argc==0) exit();
     else{
         int i=0;
-        while(i<10){
-            print("hola proceso n: ");
+        while(1){
+            print("hola proceso: ");
             print(argv[0]);
             print("!\n");
             i++;
