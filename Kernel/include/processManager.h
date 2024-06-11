@@ -42,7 +42,7 @@ typedef struct Process{
     Registers registers;
     boolean foreground;
     pid_t children[MAX_CHILDREN_COUNT];
-    char name[MAX_PROCESS_NAME];
+    char* name;
     int children_amount;
     pid_t waiting_for;
     uint16_t stdin_fd;
@@ -120,6 +120,7 @@ int get_pcb_size();
 Process ** get_processes();
 pid_t get_pid();
 void block_process(pid_t pid);
+void silent_block(pid_t pid);
 void silent_unblock(pid_t pid);
 void unblock_process(pid_t pid);
 
@@ -141,5 +142,6 @@ int add_foreground(pid_t pid);
 int get_foreground();
 int get_foreground_fd();
 int delete_from_foreground(int pid);
+int getRunningProceses();
 
 #endif

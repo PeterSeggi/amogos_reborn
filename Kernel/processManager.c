@@ -1,3 +1,4 @@
+#include "include/lib.h"
 #include <stdint.h>
 #include <mman.h>
 #include <processManager.h>
@@ -103,20 +104,20 @@ Process * create_shiny_process(void * function, int argc, char ** argv, int prio
     if(process->argc){
         process->argv = (char **) my_malloc(sizeof(char *) * argc);
         if(!process->argv) return NULL;
-        //TODO fREES AL LIBERAR EL PROCESO
         for(int i=0; i<argc; i++){
-            process->argv[i] = (char *) my_malloc(sizeof(k_strlen(argv[i])));
+            process->argv[i] = k_strdup(argv[i]);
             if(!process->argv[i]){
                 failure_free_chars(process->argv, i-1);
                 my_free(process->argv);
                 return NULL;
             }
-            k_strcpy(process->argv[i], argv[i]);
         }
         //por convencion argv[0] es el nombre del proceso, se asume null ttd
-        k_strcpy(process->name, argv[0]);
+        process->name = process->argv[0];
+
     }
     
+    else return NULL;
     
 
     //inicializa el stack
@@ -431,8 +432,7 @@ void createSleeper(unsigned long until_ticks, int* timer_lock){
         my_free(newProc);
     }
     
-    pcb->processes[pcb->runningPid]->state = BLOCKED;
-    scheduler->runnableProcs--;
+    silent_block(pcb->runningPid);
     
     
     _force_schedule();
@@ -462,8 +462,7 @@ void check_sleepers(unsigned long current_tick){
     if(sleepingTable->size == 0)return;
     while(current_proc != NULL){
         if (current_proc->until_ticks <= current_tick){
-            pcb->processes[current_proc->pid]->state = READY;
-            scheduler->runnableProcs++;
+            silent_unblock(current_proc->pid);
 
             // aca llego si ya tuve alguna iteracion 
             if (previous_proc != NULL){
@@ -501,6 +500,14 @@ void block_process(pid_t pid){
     pcb->processes[pid]->state = BLOCKED;
     scheduler->runnableProcs--;
     _force_schedule();
+}
+
+void silent_block(pid_t pid){
+    if(pid<1 || pid>=MAX_PROCESS_COUNT){
+        return;
+    }
+    pcb->processes[pid]->state = BLOCKED;
+    scheduler->runnableProcs--;
 }
 
 void silent_unblock(pid_t pid){
@@ -566,6 +573,8 @@ void kill(pid_t pid){
         }
     }
 
+    scheduler->runnableProcs = getRunningProceses();
+
     _force_schedule();
 }
 
@@ -583,7 +592,7 @@ ProcessNode * delete_from_sched(ProcessNode * current, pid_t pid){
         scheduler->size--;
         scheduler->list[pcb->processes[pid]->priority]->size--;
 
-        // Si estaba bloqueado no le hago el runnableProcs-- 
+        // Si estaba bloqueado no modifico runnableProcs 
         if (pcb->processes[pid]->state != BLOCKED) scheduler->runnableProcs--;             
         return toReturn;
     }
@@ -709,6 +718,20 @@ int delete_from_foreground(int pid){
     return 0;
 }
 
+int getRunningProceses(){
+    int remaining = pcb->size;
+    int toRet = 0;
+    for(int i = 0; i < MAX_PROCESS_COUNT && remaining > 0; i++){
+        if(pcb->processes[i]){
+            if (pcb->processes[i]->priority > 0) toRet += (pcb->processes[i]->state != BLOCKED);
+            remaining--;
+        }
+    }
+
+    return toRet;
+
+}
+
 //##################################################################################
 //the forsaken zone
 
@@ -728,5 +751,6 @@ Process * getProcess(uint32_t pid){
     //aca adentro capaz tenga que recorrer la cola de procesos
     //o la tabla de procesos, segun lo que tenga
 }*/
+
 
 
