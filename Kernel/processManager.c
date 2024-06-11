@@ -4,6 +4,7 @@
 #include <interrupts.h>
 #include <lib.h>
 #include <sem.h>
+#include <pipe.h>
 
 ProcessNode * delete_from_sched(ProcessNode * current, pid_t pid);
 void delete_from_pcb(pid_t pid);

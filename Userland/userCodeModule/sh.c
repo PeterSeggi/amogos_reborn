@@ -7,12 +7,11 @@
 
 #define COMMANDS 14
 
-
 int init_sh(int read_fd, int write_fd){
     char * name = strdup("shell");
     return create_shiny_process(&sh, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
 }
-static char* commands[COMMANDS] = {"ps","loop","mem","help","sleep","kill","nice","block","cat","wc","filter", "phylo", "clear" ,"exit"};
+static char* commands[COMMANDS] = {"ps","loop","mem","help","sleep","kill","nice","block","cat","wc","filter", "phylo", "clear", "exit"};
 
 char* let = " ";
 //char prompt_start[] = {127, 0};
@@ -22,7 +21,7 @@ int command_cursor = 0;
 
 // buffers para el parse_command
 char c1_buf[BUFFER_SIZE] = {0};
-char * argv1[BUFFER_SIZE / 3] = {0};
+char * argv1[BUFFER_SIZE] = {0};
 const char delim[2] = {32, 0};
 int argc1;
 int ex;
@@ -200,6 +199,8 @@ void parse_command(char *input, char *c1, char *argv[], int *argc) {
                     sleep(1,0);
                     print(" me desperte! :D\n");
                     break;
+
+
                 case 5:     //kill
                     pid_t killPid = init_kill(*argc, argv, pipe_out[1], pipe_in[0], foreground);
                     if(foreground==TRUE)waitpid(killPid);
@@ -234,9 +235,11 @@ void parse_command(char *input, char *c1, char *argv[], int *argc) {
                     pid_t phyloPid = init_phylo(*argc, argv, pipe_out[1], pipe_in[0], foreground);
                     if(foreground==TRUE)waitpid(phyloPid);
                     break;
+
                 case 12: //CLEAR
                     clearScreen();
                     break;
+
                 case COMMANDS-1:
                     my_free(temp);
                     pclose(pipe_in[0]);
