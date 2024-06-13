@@ -296,11 +296,6 @@ void command_wrapper(char* input){
         
         if (cpid > 1 && foreground) waitpid(cpid); 
 
-        int remaining = peek(pipe_in[0]);
-        print("Remaining: ");
-        printDec(remaining);
-        print("\n");
-
         pclose(pipe_in[0]);
         pclose(pipe_in[1]);
 

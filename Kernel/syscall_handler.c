@@ -291,6 +291,7 @@ void failure_free(ProcessView ** ptr_list, int size){
 
 int sys_create_process(uint64_t function, uint64_t argc, uint64_t argv){
   Process* aux = create_process((void *) function, (int)argc, (char **)argv);
+  if(!aux) return -1;
   return aux->pid;
 }
 
@@ -308,6 +309,7 @@ int sys_create_shiny_process(uint64_t function, uint64_t argc, uint64_t argv, ui
         (uint64_t)createArgs->stdin, 
         (uint64_t)createArgs->stdout
     );
+  if(!aux) return -1;
   return aux->pid;
 }
 

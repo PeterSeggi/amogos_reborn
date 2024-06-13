@@ -42,6 +42,12 @@ void set_phylo_name(int num, char str[]);
 int get_phylo_num(char str[]);
 
 void phylo_command(int argc, char **argv){
+    char aux_aux[20] = {0};
+    int p = peek(STDIN);
+    uintToBase(p,aux_aux,10);
+    print("peek:");
+    print(aux_aux);
+    print("\n");
     srand(time());
     char *c = " ";
     init_phylos();
@@ -72,7 +78,6 @@ void phylo_command(int argc, char **argv){
         } 
         sem_up(mutex);
         sleep(1,0);
-       
     }
 }
 
@@ -185,8 +190,15 @@ int add_phylo(){
         return -1;
     }
     aux_argv[0] = name;
+    if(!create_shiny_process(&phylos, aux_argc, aux_argv, 4, FALSE, FALSE, 0, 0)){
+        print("Error creating phylo process\n");
+        my_free(name);
+        my_free(aux_argv);
+        sem_close(phylo_table[aux_phylo_num].sem);
+        phylo_table[aux_phylo_num].sem=NULL;
+        return -1;
+    }
     print("new phylo!\n");
-    create_shiny_process(&phylos, aux_argc, aux_argv, 4, FALSE, FALSE, 0, 0);
     phylo_amount++;
     
     return 0;
