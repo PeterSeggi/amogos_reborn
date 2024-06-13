@@ -2,6 +2,7 @@
 #include "include/userlib.h"
 #include "include/phylo.h"
 #include "include/rand.h"
+#include "include/file_descriptors.h"
 #include <stddef.h>
 
 #define PHYLO_MAX   30
@@ -45,25 +46,25 @@ void phylo_command(int argc, char **argv){
     char *c = " ";
     init_phylos();
     while(1){
-        if(peek_read_pipe()){
-            if (read(c, 1) == 1){
-                switch (c[0]){
-                    case 'a':
-                        sem_down(mutex);
-                        add_phylo();
-                        sem_up(mutex);
-                        break;
-                    case 'r':
-                        sem_down(mutex);
-                        remove_phylo();
-                        sem_up(mutex);
-                        break;
-                    default:
-                        print("heyo\n");
-                        break;
-                }
+        if(peek(STDIN)>0){
+            read(c,1);
+            switch (c[0]){
+                case 'a':
+                    sem_down(mutex);
+                    add_phylo();
+                    sem_up(mutex);
+                    break;
+                case 'r':
+                    sem_down(mutex);
+                    remove_phylo();
+                    sem_up(mutex);
+                    break;
+                default:
+                    print("heyo\n");
+                    break;
             }
         }
+        
         sem_down(mutex);
         if(new_state==TRUE){
             show_phylo_table();
@@ -71,6 +72,7 @@ void phylo_command(int argc, char **argv){
         } 
         sem_up(mutex);
         sleep(1,0);
+       
     }
 }
 

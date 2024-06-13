@@ -4,6 +4,7 @@
         "videodriver.h": "c",
         "userlib.h": "c",
         "userlibasm.h": "c",
-        "commands.h": "c"
+        "commands.h": "c",
+        "phylo.h": "c"
     }
 }
