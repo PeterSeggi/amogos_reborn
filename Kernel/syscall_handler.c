@@ -129,6 +129,10 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
     sys_pclose(rdi);
     break;
 
+  case (0xC3): 
+    sys_peek_pipe(rdi);
+    break;
+
   }
 }
 
@@ -371,4 +375,9 @@ int sys_pipe(uint64_t pipefd){
 
 int sys_pclose(uint64_t fd){
 	return pclose((int) fd);
+}
+
+int sys_peek_pipe(uint64_t fd){
+    if (fd == STDIN) fd = get_fd(STDIN);
+    return peek_pipe(fd);
 }

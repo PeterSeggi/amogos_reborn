@@ -266,33 +266,23 @@ void command_wrapper(char* input){
 
         pid_t cpid1 = parse_command(c1, pipe_out[0], pipe_mid[1], FALSE);
         
+        if (cpid1 > 1) waitpid(cpid1); 
+
         pid_t cpid2 = parse_command(c2, pipe_mid[0], pipe_in[1], foreground);
 
         if (cpid2 > 1 && foreground) waitpid(cpid2); 
 
-        else{
-            pclose(pipe_mid[0]);
-            pclose(pipe_out[0]);
-            pclose(pipe_mid[1]);
-            pclose(pipe_out[1]);
-        }
+        if (cpid1 == 1 || cpid2 == 1) exit();
 
-        if (cpid2 == 1) exit();
-
-
-        //if (cpid1 > 1) waitpid(cpid1); 
-
-        if (cpid1 <= 1){
-            pclose(pipe_mid[0]);
-            pclose(pipe_out[0]);
-            pclose(pipe_mid[1]);
-            pclose(pipe_out[1]);
-        }
-
-        if (cpid1 == 1) exit();
         
+        // cierro manualmente todos los pipes por si alguno de los comandos no cerro los suyos (builtin)
+        pclose(pipe_in[0]);
+        pclose(pipe_mid[0]);
+        pclose(pipe_out[0]);
 
-            
+        pclose(pipe_in[1]);
+        pclose(pipe_mid[1]);
+        pclose(pipe_out[1]);
     }
 
     else {
@@ -306,12 +296,16 @@ void command_wrapper(char* input){
         
         if (cpid > 1 && foreground) waitpid(cpid); 
 
-        else{
-            pclose(pipe_in[0]);
-            pclose(pipe_out[0]);
-            pclose(pipe_in[1]);
-            pclose(pipe_out[1]);
-        }
+        int remaining = peek(pipe_in[0]);
+        print("Remaining: ");
+        printDec(remaining);
+        print("\n");
+
+        pclose(pipe_in[0]);
+        pclose(pipe_in[1]);
+
+        pclose(pipe_out[0]);
+        pclose(pipe_out[1]);
 
         if (cpid == 1) exit();
 

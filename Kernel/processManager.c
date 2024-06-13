@@ -550,9 +550,11 @@ void kill(pid_t pid){
     }
 
     pclose(pcb->processes[pid]->stdin_fd);
-    pclose(pcb->processes[pid]->stdin_fd + 1);
     pclose(pcb->processes[pid]->stdout_fd);
-    pclose(pcb->processes[pid]->stdout_fd - 1);
+
+    // No cierro estas por si quiero leerlas desde otro lugar
+    //pclose(pcb->processes[pid]->stdin_fd + 1);
+    //pclose(pcb->processes[pid]->stdout_fd - 1);
 
     delete_pid_from_sems(pid);
     delete_sleeper(pid);    

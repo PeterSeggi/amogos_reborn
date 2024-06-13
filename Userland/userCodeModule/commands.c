@@ -217,7 +217,7 @@ pid_t init_block(int argc, char * argv[], int read_fd, int write_fd, boolean for
 void cat(int argc, char * argv[]){
     //no se como accede un proceso a su propio stdin
     char* let = " "; 
-    while(read(let, 1) != -1){
+    while(read(let, 1) > 0){
         print(let);
     }
     exit();

@@ -289,5 +289,6 @@ int pipe(int pipefd[2]);
 int pclose(int fd);
 
 int read_fd(int fd, char *buffer, uint16_t length);
+int peek(int fd);
 
 #endif

@@ -69,6 +69,7 @@ int sys_sem_down(uint64_t sem);
 
 int sys_pipe(uint64_t pipefd);
 int sys_pclose(uint64_t fd);
+int sys_peek_pipe(uint64_t fd);
 
 
 #endif
