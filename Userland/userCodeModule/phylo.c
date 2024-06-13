@@ -40,12 +40,12 @@ int get_phylo_num(char str[]);
 
 void think(){
     //sleep(rand()%8, 0);
-    //sleep(1,0);
+    sleep(1,0);
 }
 
 void eat(){
     //sleep(rand()%5, 0);
-    //sleep(1,0);
+    sleep(1,0);
 }
 
 void phylos(int argc, char *argv[]){
@@ -83,6 +83,7 @@ void put_forks(int phylo){
 void test(int phylo){
     if ((phylo_table[phylo].state == HUNGRY) && (phylo_table[(phylo+phylo_amount-1)%phylo_amount].state != EATING) && (phylo_table[(phylo+1)%phylo_amount].state != EATING)) {
         phylo_table[phylo].state = EATING;
+        show_phylo_table();
         sem_up(phylo_table[phylo].sem);
     }
 }
@@ -93,14 +94,13 @@ int add_phylo(){
     if(phylo_amount<PHYLO_MAX){
         aux_phylo_num = phylo_amount;
         phylo_table[aux_phylo_num].state = THINKING;
-        strcpy(aux_phylo_name, "phylo_0000");
+        strcpy(aux_phylo_name, "phylo_00");
         set_phylo_name(aux_phylo_num, aux_phylo_name);
         phylo_table[aux_phylo_num].sem = sem_open(aux_phylo_name, 1);
         if(!phylo_table[aux_phylo_num].sem){
             print("Error opening semaphore in add_phylo\n");
             return -1;
         }
-        phylo_amount++;
     }
     else print("Max amount of phylos reached\n");
     
@@ -123,6 +123,7 @@ int add_phylo(){
     aux_argv[0] = name;
     print("new phylo!\n");
     create_shiny_process(&phylos, aux_argc, aux_argv, 4, FALSE, FALSE, 0, 0);
+    phylo_amount++;
     
     return 0;
 }
@@ -143,8 +144,8 @@ void phylo_command(int argc, char **argv){
     srand(time());
     char c = 'e';
     init_phylos();
-    while(1){
-        sem_down(mutex);
+    //while(1){
+        //sem_down(mutex);
         /*if (read(&c, 1) == 1){
             switch (c){
                 case 'a':
@@ -157,10 +158,19 @@ void phylo_command(int argc, char **argv){
                     break;
             }
         }*/
-        sem_up(mutex);
+        /*sem_up(mutex);
         sleep(1, 0);
+        sem_down(mutex);
         show_phylo_table();
-    }
+        sem_up(mutex);*/
+    //}
+    char aux_cant[5] = {0};
+    sem_down(mutex);
+    uintToBase(phylo_amount, aux_cant, 10);
+    print(aux_cant);
+    print("bai\n");
+    ps();
+    while(1);
 }
 
 void init_phylos(){
@@ -175,31 +185,23 @@ void init_phylos(){
 }
 
 void show_phylo_table(){
-    sem_down(mutex);
     for(int i=0; i<phylo_amount; i++){
         if(phylo_table[i].state==EATING) print("E ");
         else print(". ");
     }
     print("\n");
-    sem_up(mutex);
 }
 
 void set_phylo_name(int num, char str[]){
-    int digit1 = num/1000;
-    int digit2 = (num/100) % 10;
-    int digit3 = (num/10) % 100;
-    int digit4 = num % 1000;
+    int digit1 = num/10;
+    int digit2 = num % 10;
 
     str[6] = '0' + digit1;
     str[7] = '0' + digit2;
-    str[8] = '0' + digit3;
-    str[9] = '0' + digit4;
 }
 
 int get_phylo_num(char str[]){
-    int to_ret = str[3]-'0';
-    to_ret += (str[2]-'0')*10;
-    to_ret += (str[1]-'0')*100;
-    to_ret += (str[0]-'0')*1000;
+    int to_ret = str[1]-'0';
+    to_ret += (str[0]-'0')*10;
     return to_ret;
 }
