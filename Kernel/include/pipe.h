@@ -44,10 +44,31 @@ int write_pipe(int fd, char *message, uint16_t length);
 int pclose(int fd);
 
 /**
+*@brief     Returns the value of the sem_to_read of a pipe with a given fd 
+*@param[in] fd Desired file descriptor to check.
+*@return    Value on success, -1 upon failure.
+*/
+int peek_pipe(int fd);
+
+
+/**
 *@brief     Checks if the next read would be possible.
 *@param[in] fd Desired file descriptor to read.
 *@return    >0 on success, -1 upon failure, 0 means it will block.
 */
 int peek_read_pipe(int fd);
 
+/**
+*@brief     Checks if the next read would be possible.
+*@param[in] fd Desired file descriptor to read.
+*@return    >0 on success, -1 upon failure, 0 means it will block.
+*/
+int peek_read_pipe(int fd);
+
+/**
+*@brief     Returns the value of the sem_to_read of a pipe with a given fd 
+*@param[in] fd Desired file descriptor to check.
+*@return    Value on success, -1 upon failure.
+*/
+int peek_pipe(int fd);
 #endif //PIPE_H

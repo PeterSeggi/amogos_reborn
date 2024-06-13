@@ -400,3 +400,7 @@ int read_fd(int fd, char *buffer, uint16_t length){
 int write(int fd, char *message, uint16_t length){
     return _write(fd, message, length);
 }
+
+int peek(int fd){
+    return _peek(fd);
+}

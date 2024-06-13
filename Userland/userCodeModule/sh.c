@@ -38,11 +38,6 @@ void sh(){
     print(prompt_start);
 
     while(read(let, 1) != -1){
-        /*
-        ex = read(let, 1);
-        if (ex == -1) exited = 1;
-        else process(let[0]);
-        */
         process(let[0]);
     }
 
@@ -91,170 +86,228 @@ void process_command(){
         print(prompt_start);
         return;
     }
-    //print(command_buffer);
-    //strcpy(command_buffer, "");
     command_cursor = 0;
 
-    //if(command_buffer[0] == 'q') exit();
-
-    parse_command(command_buffer, c1_buf, argv1, &argc1);
+    command_wrapper(command_buffer);
     command_cursor = 0;
-    //print("\n");
     print(prompt_start);
 
 }
 
 
-void parse_command(char *input, char *c1, char *argv[], int *argc) {
-    boolean foreground = TRUE;
-    if(input[strlen(input)-2]=='&'){
-        foreground = FALSE;
-    }
-    //printDec(foreground==TRUE);
-    //printDec(foreground==TRUE);
-    //printDec(foreground==FALSE);
+
+int parse_command(char *input, int r_fd, int w_fd, boolean foreground) {
+    int argc = 0;
     
     char *temp = strdup(input);
     if (temp == NULL) {
-        return;
+        return 0;
     }
     
     char *token = strtok(temp, delim);
-    int index = 0;
-
-    if (token != NULL) {
-        strcpy(c1, token);
-    }
 
     while (token != NULL) {
-
-        if (token[0] == '|'){
-            token = strchr(input, '|');
-        }
-
-        
-        argv[index] = strdup(token);
-        if (argv[index] == NULL) {
-            return;
-        }
-        index++;
+        argc++;
         token = strtok(NULL, delim); 
     }
 
-    *argc = index;
-    /*
-    print("Command es: ");
-    print(argv[0]);
-    print("\n");
+    my_free(temp);
 
-    print("Argc es es: ");
-    printDec(*argc);
-    print("\n");
 
-    print("Argv son: ");
-    for (int i = 0; i < index; i++){
-        print(argv1[i]);
-        print("\n");
+    // hago el strtok dos veces para tener bien argc
+
+
+    char ** argv = (char **) my_malloc(sizeof(char *) * argc);
+    temp = strdup(input);
+    if (temp == NULL) {
+        return 0;
+    }
+    
+    token = strtok(temp, delim);
+
+    int i = 0;
+    while (token != NULL) {
+        argv[i] = strdup(token);
+        if (argv[i] == NULL) {
+            return 0;
+        }
+        i++;
+        token = strtok(NULL, delim); 
     }
 
-    */
+    my_free(temp);
 
-    int pipe_out[2] = {0};
-    int pipe_in[2] = {0};
+    pid_t c_pid;
 
-    if(pipe(pipe_out)) return; 
-    if(pipe(pipe_in)) return; 
-
-
-    //COMIENZO DEL FIN
     for(int i=0; i<COMMANDS; i++){
         if(!strcmp(argv[0], commands[i])){
             switch(i){
                 case 0: //ps
 
-                    pid_t psPid = init_ps(pipe_out[1], pipe_in[0], foreground);
-                    if(foreground==TRUE)waitpid(psPid);
+                    c_pid = init_ps(r_fd, w_fd, foreground);
                     break;
 
                 case 1: //loop
 
-                    pid_t loopPid = init_loop(*argc, argv, pipe_out[1], pipe_in[0], foreground);
-                    if(foreground==TRUE)waitpid(loopPid);
+                    c_pid = init_loop(argc, argv, r_fd, w_fd, foreground);
                     break;
 
                 case 2: //mem
 
-                    pid_t memPid = init_mem(*argc, argv, pipe_out[1], pipe_in[0], foreground);
-                    if(foreground==TRUE)waitpid(memPid);
+                    c_pid = init_mem(argc, argv, r_fd, w_fd, foreground);
                     break;
 
                 case 3: //help
 
-                    pid_t helpPid = init_help(*argc, argv, pipe_out[1], pipe_in[0], foreground);
-                    if(foreground==TRUE)waitpid(helpPid);
+                    c_pid = init_help(argc, argv, r_fd, w_fd, foreground);
                     break;
 
                 case 4: //SLEEP
                     print("me duermo...");
                     sleep(1,0);
                     print(" me desperte! :D\n");
+                    c_pid = 0;
                     break;
 
 
                 case 5:     //kill
-                    pid_t killPid = init_kill(*argc, argv, pipe_out[1], pipe_in[0], foreground);
-                    if(foreground==TRUE)waitpid(killPid);
+                    c_pid = init_kill(argc, argv, r_fd, w_fd, foreground);
                     break;
 
                 case 6:     //nice
-                    pid_t nicePid = init_nice(*argc, argv, pipe_out[1], pipe_in[0], foreground);
-                    if(foreground==TRUE)waitpid(nicePid);
+                    c_pid = init_nice(argc, argv, r_fd, w_fd, foreground);
                     break;
 
                 case 7:     //block
-                    pid_t blockPid = init_block(*argc, argv, pipe_out[1], pipe_in[0], foreground);
-                    if(foreground==TRUE)waitpid(blockPid);
+                    c_pid = init_block(argc, argv, r_fd, w_fd, foreground);
                     break;
 
                 case 8:     //cat
-                    pid_t catPid = init_cat(*argc, argv, pipe_out[1], pipe_in[0], foreground);
-                    if(foreground==TRUE)waitpid(catPid);
+                    c_pid = init_cat(argc, argv, r_fd, w_fd, foreground);
                     break;
 
                 case 9:     //wc
-                    pid_t wcPid = init_wc(*argc, argv, pipe_out[1], pipe_in[0], foreground);
-                    if(foreground==TRUE)waitpid(wcPid);
+                    c_pid = init_wc(argc, argv, r_fd, w_fd, foreground);
                     break;
 
                 case 10:    //filter
-                    pid_t filterPid = init_filter(*argc, argv, pipe_out[1], pipe_in[0], foreground);
-                    if(foreground==TRUE)waitpid(filterPid);
+                    c_pid = init_filter(argc, argv, r_fd, w_fd, foreground);
                     break;
 
                 case 11:    //phylo
-                    pid_t phyloPid = init_phylo(*argc, argv, pipe_out[1], pipe_in[0], foreground);
-                    if(foreground==TRUE)waitpid(phyloPid);
+                    c_pid = init_phylo(argc, argv, r_fd, w_fd, foreground);
                     break;
 
                 case 12: //CLEAR
                     clearScreen();
+                    c_pid = 0;
                     break;
 
                 case COMMANDS-1:
-                    my_free(temp);
-                    pclose(pipe_in[0]);
-                    pclose(pipe_out[0]);
-                    pclose(pipe_in[1]);
-                    pclose(pipe_out[1]);
-                    exit();
+                    c_pid = 1;
             }
         }
     }
 
-    // aca tendria que cerrar los pipes si o si 
-    my_free(temp);
-    pclose(pipe_in[0]);
-    pclose(pipe_out[0]);
-    pclose(pipe_in[1]);
-    pclose(pipe_out[1]);
+    for (int i = 0; i < argc; i++){
+        my_free(argv[i]);
+    }
+    my_free(argv);
+    return c_pid;
+}
+
+
+
+void command_wrapper(char* input){
+    boolean foreground = TRUE;
+    boolean piped = FALSE;
+
+    char c1[BUFFER_SIZE / 2];
+    char c2[BUFFER_SIZE / 2];
+
+    if(input[strlen(input)-2]=='&'){
+        foreground = FALSE;
+    }
+
+    char *temp = strdup(input);
+    if (temp == NULL) {
+        return;
+    }
+
+    char *token = strtok(temp, "|");
+    if (token == NULL) {
+        my_free(temp);
+        return; 
+    }
+
+    strcpy(c1, token);
+
+    token = strtok(NULL, "");
+    if (token != NULL) {
+        piped = TRUE;
+        while (*token == ' ') {
+            token++;
+        }
+        strcpy(c2, token);
+    }
+    else{
+        c2[0] = 0;
+    } 
+
+    if (piped){
+
+        int pipe_out[2] = {0};
+        int pipe_in[2] = {0};
+        int pipe_mid[2] = {0};
+
+        if(pipe(pipe_out)) return; 
+        if(pipe(pipe_in)) return; 
+        if(pipe(pipe_mid)) return; 
+
+        pid_t cpid1 = parse_command(c1, pipe_out[0], pipe_mid[1], FALSE);
+        
+        if (cpid1 > 1) waitpid(cpid1); 
+
+        pid_t cpid2 = parse_command(c2, pipe_mid[0], pipe_in[1], foreground);
+
+        if (cpid2 > 1 && foreground) waitpid(cpid2); 
+
+        if (cpid1 == 1 || cpid2 == 1) exit();
+
+        
+        // cierro manualmente todos los pipes por si alguno de los comandos no cerro los suyos (builtin)
+        pclose(pipe_in[0]);
+        pclose(pipe_mid[0]);
+        pclose(pipe_out[0]);
+
+        pclose(pipe_in[1]);
+        pclose(pipe_mid[1]);
+        pclose(pipe_out[1]);
+    }
+
+    else {
+        int pipe_out[2] = {0};
+        int pipe_in[2] = {0};
+
+        if(pipe(pipe_out)) return; 
+        if(pipe(pipe_in)) return; 
+
+        pid_t cpid = parse_command(c1, pipe_out[0], pipe_in[1], foreground);
+        
+        if (cpid > 1 && foreground) waitpid(cpid); 
+
+        int remaining = peek(pipe_in[0]);
+        print("Remaining: ");
+        printDec(remaining);
+        print("\n");
+
+        pclose(pipe_in[0]);
+        pclose(pipe_in[1]);
+
+        pclose(pipe_out[0]);
+        pclose(pipe_out[1]);
+
+        if (cpid == 1) exit();
+
+    }
 }
