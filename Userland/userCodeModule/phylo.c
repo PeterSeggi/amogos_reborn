@@ -42,12 +42,6 @@ void set_phylo_name(int num, char str[]);
 int get_phylo_num(char str[]);
 
 void phylo_command(int argc, char **argv){
-    char aux_aux[20] = {0};
-    int p = peek(STDIN);
-    uintToBase(p,aux_aux,10);
-    print("peek:");
-    print(aux_aux);
-    print("\n");
     srand(time());
     char *c = " ";
     init_phylos();

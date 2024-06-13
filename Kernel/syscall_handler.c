@@ -133,6 +133,10 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
     sys_peek_read_pipe(rdi);
     break;
 
+  case (0xC3):
+    sys_peek_read_pipe(rdi);
+    break;
+
   }
 }
 
