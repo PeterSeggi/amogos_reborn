@@ -386,3 +386,7 @@ int sys_peek_read_pipe(uint64_t fd){
       return peek_read_pipe((int) fd)>0;
   }
 }
+int sys_peek_pipe(uint64_t fd){
+    if (fd == STDIN) fd = get_fd(STDIN);
+    return peek_pipe(fd);
+}
