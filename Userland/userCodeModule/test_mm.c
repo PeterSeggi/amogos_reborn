@@ -1,8 +1,9 @@
 #include "include/syscall.h"
 #include "include/test_util.h"
+#include "include/userlib.h"
+#include "include/userlibasm.h"
+
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #define MAX_BLOCKS 128
 
@@ -10,6 +11,17 @@ typedef struct MM_rq {
   void *address;
   uint32_t size;
 } mm_rq;
+
+void * u_memset(void * destination, int32_t c, uint64_t length)
+{
+	uint8_t chr = (uint8_t)c;
+	char * dst = (char*)destination;
+
+	while(length--)
+		dst[length] = chr;
+
+	return destination;
+}
 
 uint64_t test_mm(uint64_t argc, char *argv[]) {
 
@@ -21,7 +33,7 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
   if (argc != 1)
     return -1;
 
-  if ((max_memory = satoi(argv[0])) <= 0)
+  if ((max_memory = satoi(argv[1])) <= 0)
     return -1;
 
   while (1) {
@@ -43,7 +55,7 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
     uint32_t i;
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address)
-        memset(mm_rqs[i].address, i, mm_rqs[i].size);
+        u_memset(mm_rqs[i].address, i, mm_rqs[i].size);
 
     // Check
     for (i = 0; i < rq; i++)

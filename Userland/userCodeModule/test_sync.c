@@ -31,28 +31,31 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
   if ((use_sem = satoi(argv[2])) < 0)
     return -1;
 
-  if (use_sem)
-    if (!sem_open(SEM_ID, 1)) {
+
+  sem_t * mySem;
+  if (use_sem){
+    mySem = sem_open(SEM_ID, 1);
+    if (!mySem) {
       print("test_sync: ERROR opening semaphore\n");
       return -1;
     }
-
+  }
   uint64_t i;
   for (i = 0; i < n; i++) {
     if (use_sem)
-      sem_down(SEM_ID);
+      sem_down(mySem);
     slowInc(&global, inc);
     if (use_sem)
-      sem_up(SEM_ID);
+      sem_up(mySem);
   }
 
   if (use_sem)
-    sem_close(SEM_ID);
+    sem_close(mySem);
 
   return 0;
 }
 
-uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
+uint64_t test_sync(uint64_t argc, char *argv[], int stdin, int stdout) { //{n, use_sem, 0}
   uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
   if (argc != 2)
@@ -65,17 +68,17 @@ uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
 
   uint64_t i;
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    pids[i] = create_s("my_process_inc", 3, argvDec);
-    pids[i + TOTAL_PAIR_PROCESSES] = create_shiny_process("my_process_inc", 3, argvInc);
+    pids[i] = create_shiny_process(&my_process_inc, 3, argvDec, DEFAULT_PRIORITY, FALSE, TRUE, stdin, stdout);
+    pids[i + TOTAL_PAIR_PROCESSES] = create_shiny_process(&my_process_inc, 3, argvInc, DEFAULT_PRIORITY, FALSE, TRUE, stdin, stdout);
   }
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    my_wait(pids[i]);
-    my_wait(pids[i + TOTAL_PAIR_PROCESSES]);
+    waitpid(pids[i]);
+    waitpid(pids[i + TOTAL_PAIR_PROCESSES]);
   }
 
   char aux[BUFFER_SIZE] = {0};
-  uintToBase(global, aux, 10)
+  uintToBase(global, aux, 10);
   print("Final value: ");
   print(aux);
   print("\n");

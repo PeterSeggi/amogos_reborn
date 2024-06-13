@@ -6,16 +6,16 @@
 #include "include/userlib.h"
 #include "include/userlibasm.h"
 
-enum State { RUNNING,
-             BLOCKED,
-             KILLED };
+enum ThisState { THISRUNNING,
+             THISBLOCKED,
+             THISKILLED };
 
 typedef struct P_rq {
   int32_t pid;
-  enum State state;
+  enum ThisState state;
 } p_rq;
 
-int64_t test_processes(uint64_t argc, char *argv[]) {
+int64_t test_processes(uint64_t argc, char *argv[], int stdin, int stdout) {
   uint8_t rq;
   uint8_t alive = 0;
   uint8_t action;
@@ -35,13 +35,13 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
     // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
       argvAux[0] = "endless_loop";
-      p_rqs[rq].pid = my_create_process(&endless_loop, 1, argvAux);
+      p_rqs[rq].pid = create_shiny_process(&endless_loop, 1, argvAux, DEFAULT_PRIORITY, FALSE, TRUE,stdin, stdout);
 
       if (p_rqs[rq].pid == -1) {
         print("test_processes: ERROR creating process\n");
         return -1;
       } else {
-        p_rqs[rq].state = RUNNING;
+        p_rqs[rq].state = THISRUNNING;
         alive++;
       }
     }
@@ -54,23 +54,17 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
 
         switch (action) {
           case 0:
-            if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
-              if (kill(p_rqs[rq].pid) == -1) {
-                print("test_processes: ERROR killing process\n");
-                return -1;
-              }
-              p_rqs[rq].state = KILLED;
+            if (p_rqs[rq].state == THISRUNNING || p_rqs[rq].state == THISBLOCKED) {
+              kill(p_rqs[rq].pid);
+              p_rqs[rq].state = THISKILLED;
               alive--;
             }
             break;
 
           case 1:
-            if (p_rqs[rq].state == RUNNING) {
-              if (my_block(p_rqs[rq].pid) == -1) {
-                print("test_processes: ERROR blocking process\n");
-                return -1;
-              }
-              p_rqs[rq].state = BLOCKED;
+            if (p_rqs[rq].state == THISRUNNING) {
+              block_proc(p_rqs[rq].pid);
+              p_rqs[rq].state = THISBLOCKED;
             }
             break;
         }
@@ -78,12 +72,9 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
 
       // Randomly unblocks processes
       for (rq = 0; rq < max_processes; rq++)
-        if (p_rqs[rq].state == BLOCKED && GetUniform(100) % 2) {
-          if (block_proc(p_rqs[rq].pid) == -1) {
-            print("test_processes: ERROR unblocking process\n");
-            return -1;
-          }
-          p_rqs[rq].state = RUNNING;
+        if (p_rqs[rq].state == THISBLOCKED && GetUniform(100) % 2) {
+          block_proc(p_rqs[rq].pid);
+          p_rqs[rq].state = THISRUNNING;
         }
     }
   }

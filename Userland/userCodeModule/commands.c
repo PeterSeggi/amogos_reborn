@@ -201,7 +201,8 @@ pid_t init_kill(int argc, char * argv[], int read_fd, int write_fd, boolean fore
 
 void command_nice(int argc, char * argv[]){
     pid_t myPid = *argv[1]-'0';
-    nice(myPid);    
+    int newPriority = *argv[2]-'0';
+    nice(myPid, newPriority);    
     exit();
 }
 
@@ -304,8 +305,8 @@ pid_t init_mm(int argc, char * argv[], int read_fd, int write_fd, boolean foregr
     return create_shiny_process(&mem_test, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
 
-void proc_test(int argc, char ** argv){
-    test_processes(argc, argv);
+void proc_test(int argc, char ** argv, int read_fd, int write_fd){
+    test_processes(argc, argv, read_fd, write_fd);
     exit();
 }
 
@@ -326,7 +327,7 @@ void test_prio(int argc, char *argv[], int read_fd, int write_fd, boolean foregr
   print("\nCHANGING PRIORITIES...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
-    nice(pids[i]); 
+    nice(pids[i],prio[i]); 
 
   bussy_wait(WAIT);
   print("\nBLOCKING...\n");
@@ -337,18 +338,18 @@ void test_prio(int argc, char *argv[], int read_fd, int write_fd, boolean foregr
   print("CHANGING PRIORITIES WHILE BLOCKED...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
-    nice(pids[i]);
+    nice(pids[i], prio[i]);
 
   print("UNBLOCKING...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
-    (pids[i]);
+    nice(pids[i], prio[i]);
 
   bussy_wait(WAIT);
   print("\nKILLING...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
-    my_kill(pids[i]);
+    kill(pids[i]);
 }
 
 pid_t init_priority(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
@@ -358,8 +359,8 @@ pid_t init_priority(int argc, char * argv[], int read_fd, int write_fd, boolean 
 
 
 //------TEST DE SINCRONIZACION------
-void sync_test(int argc, char ** argv){
-    test_sync(argc, argv);
+void sync_test(int argc, char ** argv, int stdin, int stdout){
+    test_sync(argc, argv, stdin, stdout);
     exit();
 }
 
@@ -368,16 +369,5 @@ pid_t init_sync(int argc, char * argv[], int read_fd, int write_fd, boolean fore
     return create_shiny_process(&sync_test, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
 
-
-//-------TEST PROCESSES--------
-void test_my_processes(int argc, char ** argv){
-    test_processes(argc, argv);
-    exit();
-}
-
-pid_t init_sync(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
-    boolean orphan = FALSE;
-    return create_shiny_process(&test_my_processes, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
-}
 
 

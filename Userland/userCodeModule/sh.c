@@ -5,13 +5,13 @@
 #include <stddef.h>
 #include "include/commands.h"
 
-#define COMMANDS 14
+#define COMMANDS 18
 
 int init_sh(int read_fd, int write_fd){
     char * name = strdup("shell");
     return create_shiny_process(&sh, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
 }
-static char* commands[COMMANDS] = {"ps","loop","mem","help","sleep","kill","nice","block","cat","wc","filter", "phylo", "clear", "exit"};
+static char* commands[COMMANDS] = {"ps","loop","mem","help","sleep","kill","nice","block","cat","wc","filter", "phylo", "clear","test_mm","test_sync","test_processes","test_priority", "exit"};
 
 char* let = " ";
 //char prompt_start[] = {127, 0};
@@ -238,6 +238,26 @@ void parse_command(char *input, char *c1, char *argv[], int *argc) {
 
                 case 12: //CLEAR
                     clearScreen();
+                    break;
+
+                case 13: //test mm
+                    pid_t mmPid = init_mm(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    if(foreground==TRUE)waitpid(mmPid);
+                    break;
+
+                case 14: //test sync
+                    pid_t syncPid = init_sync(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    if(foreground==TRUE)waitpid(syncPid);
+                    
+                    break;
+                case 15: //test process
+                    pid_t procPid = init_procs(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    if(foreground==TRUE)waitpid(procPid);
+                    
+                    break;
+                case 16: //test prio
+                    pid_t prioPid = init_priority(*argc, argv, pipe_out[1], pipe_in[0], foreground);
+                    if(foreground==TRUE)waitpid(prioPid);
                     break;
 
                 case COMMANDS-1:
