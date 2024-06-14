@@ -265,9 +265,6 @@ void command_wrapper(char* input){
         if(pipe(pipe_mid)) return; 
 
         pid_t cpid1 = parse_command(c1, pipe_out[0], pipe_mid[1], FALSE);
-        
-        if (cpid1 > 1) waitpid(cpid1); 
-
         pid_t cpid2 = parse_command(c2, pipe_mid[0], pipe_in[1], foreground);
 
         if (cpid2 > 1 && foreground) waitpid(cpid2); 

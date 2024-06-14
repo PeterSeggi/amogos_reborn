@@ -183,6 +183,8 @@ Process * create_shiny_process(void * function, int argc, char ** argv, int prio
     if (foreground == TRUE){
        add_foreground(process->pid);
     }
+
+    if (priority > 0) scheduler->runnableProcs++;
     
     _sti();
     return process;                     
@@ -218,7 +220,8 @@ void nice(pid_t pid){
     change_priority(pid, (pcb->processes[pid]->priority)-1);
 }
 
-void change_priority(pid_t pid, int priority){                          //si no existe el proceso
+void change_priority(pid_t pid, int priority){                          
+    //si no existe el proceso
     if(pid<3 || pid>=MAX_PROCESS_COUNT || priority<0 || priority>4 || pcb->processes[pid]==NULL){  
         return;                                                 
     }
@@ -335,18 +338,10 @@ pid_t nextProcessInList(ProcessList * list, boolean wasRunning){
     return list->current->pid;
 }
 
-
-
-
-
 int getNextPriority(){
     scheduler->currentPriorityOffset = (scheduler->currentPriorityOffset+1)%10;
     return scheduler->priority[scheduler->currentPriorityOffset];
 }
-
-
-
-
 
 //###############################--END OF SCHEDULING ZONE--#########################################################
 
@@ -381,7 +376,6 @@ void scheduler_add(pid_t pid, int priority, ProcessNode * node){
     if(scheduler!=NULL){
         listInsert(scheduler->list[priority], node);  
     }
-    if (priority > 0) scheduler->runnableProcs++;
 }
 
 
@@ -418,7 +412,7 @@ int sleepingTableAppend(SleepingProcess * process){
     return 0;
 }
 
-void createSleeper(unsigned long until_ticks, int* timer_lock){
+void create_sleeper(unsigned long until_ticks, int* timer_lock){
     //_cli();
     SleepingProcess* newProc = (SleepingProcess *)my_malloc(sizeof(SleepingProcess));
     if(newProc==NULL)return;
@@ -457,51 +451,47 @@ SleepingProcess * remove_sleeper(SleepingProcess * current, pid_t pid){
 
 void check_sleepers(unsigned long current_tick){
 
-    SleepingProcess* current_proc = sleepingTable->first;
-    SleepingProcess* previous_proc = NULL;
-    if(sleepingTable->size == 0)return;
-    while(current_proc != NULL){
-        if (current_proc->until_ticks <= current_tick){
-            silent_unblock(current_proc->pid);
+    if (sleepingTable->size == 0) return;
 
-            // aca llego si ya tuve alguna iteracion 
-            if (previous_proc != NULL){
-                previous_proc->next = current_proc->next;
+    SleepingProcess* current  = (SleepingProcess *) my_malloc(sizeof(SleepingProcess));
+    SleepingProcess* toFree = current;
+    if (!current) return;
 
-                // me aseguro de cambiar el last aca 
-                if (current_proc->next == NULL){
-                    sleepingTable->last = previous_proc;
-                }
-            }
+    current->next = sleepingTable->first;
 
-            // Solo si es el primer caso
-            else{
-                sleepingTable->first = current_proc->next; 
-                sleepingTable->size--;
-            }
+    while(current->next){
+        if (current->next->until_ticks <= current_tick){
+            silent_unblock(current->next->pid);
+            sleepingTable->size--;
 
-            SleepingProcess * aux = current_proc;
-            current_proc = current_proc->next;
+            if (current->next == sleepingTable->first) sleepingTable->first = current->next->next;
+
+            if (current->next == sleepingTable->last) sleepingTable->last = (sleepingTable->size) ? current : NULL;
+
+            SleepingProcess * aux = current->next;
+            current->next = current->next->next;
             my_free(aux);
         }
 
         else{
-            previous_proc = current_proc;
-            current_proc = current_proc->next;
+            current = current->next;
         }
     }
-
+    
+    my_free(toFree);
 }
 
 void block_process(pid_t pid){
-    if(pid<1 || pid>=MAX_PROCESS_COUNT){
-        return;
-    }
-    pcb->processes[pid]->state = BLOCKED;
-    scheduler->runnableProcs--;
+    silent_block(pid);
     _force_schedule();
 }
 
+void unblock_process(pid_t pid){
+    silent_unblock(pid);
+    _force_schedule();
+}
+
+// Ninja block y unblock para no hacer el force_schedule()
 void silent_block(pid_t pid){
     if(pid<1 || pid>=MAX_PROCESS_COUNT){
         return;
@@ -518,14 +508,6 @@ void silent_unblock(pid_t pid){
     scheduler->runnableProcs++;
 }
 
-void unblock_process(pid_t pid){
-    if(pid<1 || pid>=MAX_PROCESS_COUNT){
-        return;
-    }
-    pcb->processes[pid]->state = READY;
-    scheduler->runnableProcs++;
-    _force_schedule();
-}
 //########################--CEMENTERIO DE PROCESOS--#################################################
 
 
@@ -594,8 +576,6 @@ ProcessNode * delete_from_sched(ProcessNode * current, pid_t pid){
         scheduler->size--;
         scheduler->list[pcb->processes[pid]->priority]->size--;
 
-        // Si estaba bloqueado no modifico runnableProcs 
-        if (pcb->processes[pid]->state != BLOCKED) scheduler->runnableProcs--;             
         return toReturn;
     }
     else{
