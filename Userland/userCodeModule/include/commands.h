@@ -10,6 +10,8 @@
 #define DEFAULT_PRIORITY 4
 
 
+
+
 pid_t init_ps(int read_fd, int write_fd, boolean foreground);
 pid_t init_loop(int argc, char * argv[], int read_fd, int write_fd, boolean foreground);
 pid_t init_mem(int argc, char * argv[], int read_fd, int write_fd, boolean foreground);
@@ -21,6 +23,7 @@ pid_t init_cat(int argc, char * argv[], int read_fd, int write_fd, boolean foreg
 pid_t init_wc(int argc, char * argv[], int read_fd, int write_fd, boolean foreground);
 pid_t init_filter(int argc, char * argv[], int read_fd, int write_fd, boolean foreground);
 pid_t init_phylo(int argc, char * argv[], int read_fd, int write_fd, boolean foreground);
+pid_t init_procs(int argc, char * argv[], int read_fd, int write_fd, boolean foreground);
 
 
 
