@@ -13,7 +13,7 @@
 typedef struct pipe_t{
     uint16_t read_fd;
     uint16_t write_fd;
-    char buffer[PIPE_BUFF];
+    char *buffer;
     uint16_t to_read_idx;
     uint16_t to_write_idx;
     sem_t *sem_to_read;
@@ -86,7 +86,7 @@ int peek_read_pipe(int fd){
     return aux_pipe->sem_to_read->value;
 }
 
-int write_pipe(int fd, char *message, uint16_t length){
+int write_pipe(int fd, const char *message, uint16_t length){
     pipe_t *aux_pipe = check_valid_fd(fd, WRITE);
     if(!aux_pipe) return -1;
     if(!aux_pipe->read_fd) return 0;
@@ -137,21 +137,34 @@ int pclose(int fd){
 pipe_t *create_pipe(int read_fd, int write_fd){
     pipe_t *aux_pipe = (pipe_t *) my_malloc(sizeof(pipe_t));
     if(!aux_pipe) return NULL;
+
     aux_pipe->read_fd = read_fd;
     aux_pipe->write_fd = write_fd;
     aux_pipe->to_read_idx = 0;
     aux_pipe->to_write_idx = 0;
+
+    aux_pipe->buffer = (char *) my_malloc(PIPE_BUFF);
+    if (!aux_pipe->buffer) return NULL;
+
+    // Nombre
     char aux_pipe_name[20] = "pipe_0000";
     set_pipe_name(read_fd/2, aux_pipe_name);
     k_strcpy(aux_pipe_name + 9, "_to_read");
+
+    // Sem to read
     aux_pipe->sem_to_read = sem_open(aux_pipe_name, 0);
     if(!aux_pipe->sem_to_read) return NULL;
+
+    // Sem to write
     k_strcpy(aux_pipe_name + 9, "_to_write");
     aux_pipe->sem_to_write = sem_open(aux_pipe_name, PIPE_BUFF);
     if(!aux_pipe->sem_to_write) return NULL;
+
+    // Mutex
     k_strcpy(aux_pipe_name + 9, "_mutex");
     aux_pipe->sem_mutex = sem_open(aux_pipe_name, 1);
     if(!aux_pipe->sem_mutex) return NULL;
+
     return aux_pipe;
 }
 
@@ -165,6 +178,7 @@ int delete_pipe(int fd){
     if(sem_close(aux_pipe->sem_to_read)==-1) return -1;
     if(sem_close(aux_pipe->sem_to_write)==-1) return -1;
     if(sem_close(aux_pipe->sem_mutex)==-1) return -1;
+    my_free(aux_pipe->buffer);
     my_free(aux_pipe);
     pipes[fd/2] = NULL;
     return 0;

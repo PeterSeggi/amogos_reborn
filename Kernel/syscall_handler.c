@@ -143,8 +143,8 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
 void sys_write(uint64_t fd, uint64_t message, uint64_t length) {
   switch (fd) {
       case (STDOUT):
-        if (get_pid() == get_foreground()) printCant((char *)message, length);
-        else write_pipe(get_fd(STDOUT), (char*) message, (uint16_t) length);
+        if (get_pid() == get_foreground()) printCant((const char *)message, length);
+        else write_pipe(get_fd(STDOUT), (const char*) message, (uint16_t) length);
         break;
 
       case (STDERR):
@@ -155,7 +155,7 @@ void sys_write(uint64_t fd, uint64_t message, uint64_t length) {
         break;
       
       default:
-        write_pipe((int) fd, (char *) message, (uint16_t) length);
+        write_pipe((int) fd, (const char *) message, (uint16_t) length);
         break;
       }
 }

@@ -11,20 +11,20 @@ static char* char_buffer = " ";
 // Writting
 //================================================================================================================================
 //================================================================================================================================
-void printChar(char charToPrint){
+void printChar(const char charToPrint){
     buffer[0] = charToPrint;
     print(buffer);
 }
 
-void print(char * string){
+void print(const char * string){
     _print(STDOUT, string, strlen(string));
 }
 
-void printCant(char* string, int cant){
+void printCant(const char* string, int cant){
     _print(STDOUT, string, cant);
 }
 
-void printError(char * string){
+void printError(const char * string){
     _print(STDERROR, string, strlen(string));
 }
 
@@ -116,10 +116,10 @@ int strcmp(const char *str1, const char *str2){
     return *(unsigned char *)str1 - *(unsigned char *)str2;
 }
 
-int strlen(char * string){
+int strlen(const char * string){
     int i=0;
     while(string[i++]!=0);
-    return i;
+    return i - 1;
 }
 
 void strcpy(char *destination, const char *source) {
@@ -194,7 +194,7 @@ char *strtok(char *str, const char *delim) {
 }
 
 char *strdup(const char *s) {
-    uint64_t len = strlen((char *)s) + 1;
+    uint64_t len = strlen(s) + 1;
 
     char *dup = (char *)my_malloc(len);
     if (dup == NULL) {

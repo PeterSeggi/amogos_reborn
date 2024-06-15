@@ -96,7 +96,7 @@ void process_command(){
 
 
 
-int parse_command(char *input, int r_fd, int w_fd, boolean foreground) {
+int parse_command(const char *input, int r_fd, int w_fd, boolean foreground) {
     int argc = 0;
     
     char *temp = strdup(input);
@@ -207,6 +207,7 @@ int parse_command(char *input, int r_fd, int w_fd, boolean foreground) {
 
                 case COMMANDS-1:
                     c_pid = 1;
+                    break;
 
                 default:
                     print("Command: '");
@@ -227,14 +228,14 @@ int parse_command(char *input, int r_fd, int w_fd, boolean foreground) {
 
 
 
-void command_wrapper(char* input){
+void command_wrapper(const char* input){
     boolean foreground = TRUE;
     boolean piped = FALSE;
 
     char c1[BUFFER_SIZE / 2];
     char c2[BUFFER_SIZE / 2];
 
-    if(input[strlen(input)-2]=='&'){
+    if(input[strlen(input)-1]=='&'){
         foreground = FALSE;
     }
 

@@ -120,7 +120,7 @@ int k_strcmp(const char *str1, const char *str2){
 int k_strlen(const char * string){
     int i=0;
     while(string[i++]!=0);
-    return i;
+    return i - 1;
 }
 
 void k_strcpy(char *destination, const char *source) {
