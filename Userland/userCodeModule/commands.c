@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include "include/commands.h"
 #include "include/phylo.h"
+#include "include/test_util.h"
 
 
 extern char endOfBinary;
@@ -287,17 +288,17 @@ pid_t init_phylo(int argc, char * argv[], int read_fd, int write_fd, boolean for
 }
 
 
-/*void mem_test(int argc, char ** argv){
+void mem_test(int argc, char ** argv){
     test_mm(argc, argv);
     exit();
 }
 
-pid_t init_mm(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
+pid_t init_test_mm(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
     boolean orphan = FALSE;
     return create_shiny_process(&mem_test, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
 
-void proc_test(int argc, char ** argv){
+/*void proc_test(int argc, char ** argv){
     test_processes(argc, argv);
     exit();
 }

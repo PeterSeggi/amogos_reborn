@@ -142,7 +142,7 @@ void remove_phylo(){
 
 void phylo_command(int argc, char **argv){
     srand(time());
-    char c = 'e';
+    //char c = 'e';
     init_phylos();
     //while(1){
         //sem_down(mutex);
@@ -169,7 +169,7 @@ void phylo_command(int argc, char **argv){
     uintToBase(phylo_amount, aux_cant, 10);
     print(aux_cant);
     print("bai\n");
-    ps();
+    //ps();
     while(1);
 }
 

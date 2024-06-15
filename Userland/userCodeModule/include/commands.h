@@ -21,6 +21,7 @@ pid_t init_cat(int argc, char * argv[], int read_fd, int write_fd, boolean foreg
 pid_t init_wc(int argc, char * argv[], int read_fd, int write_fd, boolean foreground);
 pid_t init_filter(int argc, char * argv[], int read_fd, int write_fd, boolean foreground);
 pid_t init_phylo(int argc, char * argv[], int read_fd, int write_fd, boolean foreground);
+pid_t init_test_mm(int argc, char * argv[], int read_fd, int write_fd, boolean foreground);
 
 
 

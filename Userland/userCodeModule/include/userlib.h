@@ -224,6 +224,10 @@ void getMemState(uint64_t * states);
 
 char byteConverter(uint64_t * amount);
 
+
+void * memcpy(void * destination, const void * source, uint64_t length);
+void * memset(void * destination, int32_t c, uint64_t length);
+
 //================================================================================================================================
 // Processes
 //================================================================================================================================

@@ -5,13 +5,13 @@
 #include <stddef.h>
 #include "include/commands.h"
 
-#define COMMANDS 14
+#define COMMANDS 15
 
 int init_sh(int read_fd, int write_fd){
     char * name = strdup("shell");
     return create_shiny_process(&sh, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
 }
-static char* commands[COMMANDS] = {"ps","loop","mem","help","sleep","kill","nice","block","cat","wc","filter", "phylo", "clear", "exit"};
+static char* commands[COMMANDS] = {"ps","loop","mem","help","sleep","kill","nice","block","cat","wc","filter", "phylo", "test_mm", "clear", "exit"};
 
 char* let = " ";
 //char prompt_start[] = {127, 0};
@@ -198,7 +198,11 @@ int parse_command(char *input, int r_fd, int w_fd, boolean foreground) {
                     c_pid = init_phylo(argc, argv, r_fd, w_fd, foreground);
                     break;
 
-                case 12: //CLEAR
+                case 12:    //test_mm
+                    c_pid = init_test_mm(argc, argv, r_fd, w_fd, foreground);
+                    break;
+
+                case 13: //CLEAR
                     clearScreen();
                     c_pid = 0;
                     break;
@@ -235,8 +239,9 @@ void command_wrapper(char* input){
     }
 
     char *token = strtok(temp, "|");
+    my_free(temp);
     if (token == NULL) {
-        my_free(temp);
+        //my_free(temp);
         return; 
     }
 
@@ -294,12 +299,7 @@ void command_wrapper(char* input){
 
         pid_t cpid = parse_command(c1, pipe_out[0], pipe_in[1], foreground);
         
-        if (cpid > 1 && foreground) waitpid(cpid); 
-
-        int remaining = peek(pipe_in[0]);
-        print("Remaining: ");
-        printDec(remaining);
-        print("\n");
+        if (cpid > 1 && foreground) waitpid(cpid);
 
         pclose(pipe_in[0]);
         pclose(pipe_in[1]);
