@@ -86,10 +86,11 @@ int sem_wait(sem_t *sem){
         sem->blocked_processes[get_pid()] = 1;
         (sem->blocked_size)++;
         blocked = 1;
+        silent_block(get_pid());
         sem_lock_post(&(sem->lock));
     }
     sem_lock_post(&(sem->lock));
-    if (blocked) block_process(get_pid());
+    if (blocked) _force_schedule(); 
     return 0;
 }
 

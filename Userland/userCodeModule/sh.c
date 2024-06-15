@@ -138,9 +138,11 @@ int parse_command(char *input, int r_fd, int w_fd, boolean foreground) {
     my_free(temp);
 
     pid_t c_pid;
+    boolean found = FALSE;
 
-    for(int i=0; i<COMMANDS; i++){
+    for(int i=0; i<COMMANDS && !found; i++){
         if(!strcmp(argv[0], commands[i])){
+            found = TRUE;
             switch(i){
                 case 0: //ps
 
@@ -205,6 +207,13 @@ int parse_command(char *input, int r_fd, int w_fd, boolean foreground) {
 
                 case COMMANDS-1:
                     c_pid = 1;
+
+                default:
+                    print("Command: '");
+                    print(argv[0]);
+                    print("' not found\n");
+                    c_pid = 0;
+                    break;
             }
         }
     }

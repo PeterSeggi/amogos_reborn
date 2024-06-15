@@ -116,7 +116,6 @@ pid_t init_ps(int read_fd, int write_fd, boolean foreground){
 
 
 void loop(int argc, char * argv[]){
-    
     int pid = get_pid();
     if(argc==0) exit();
     else{
@@ -130,7 +129,7 @@ void loop(int argc, char * argv[]){
         }
         exit();
     }
-    }
+}
     
 
 pid_t init_loop(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){

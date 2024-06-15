@@ -158,10 +158,8 @@ void timer_handler() {
 
 void sleep(int sec, int uni) {
 
-
   unsigned long until_ticks = ticks_elapsed() + (sec * 18);
-  timer_lock = 1;
-  create_sleeper(until_ticks, &timer_lock);
+  create_sleeper(until_ticks);
 
     /*
   if (sec == 0) {

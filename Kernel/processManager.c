@@ -310,6 +310,7 @@ pid_t nextProcess(){
 
 pid_t nextProcessInList(ProcessList * list, boolean wasRunning){
     // si no tengo nada q correr voy directo a idle
+    scheduler->runnableProcs = getRunningProceses();
     if(scheduler->runnableProcs == 0){
         // basically el pid del idle
         return scheduler->list[0]->firstProcess->pid;
@@ -412,8 +413,7 @@ int sleepingTableAppend(SleepingProcess * process){
     return 0;
 }
 
-void create_sleeper(unsigned long until_ticks, int* timer_lock){
-    //_cli();
+void create_sleeper(unsigned long until_ticks){
     SleepingProcess* newProc = (SleepingProcess *)my_malloc(sizeof(SleepingProcess));
     if(newProc==NULL)return;
     
