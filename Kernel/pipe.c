@@ -73,8 +73,8 @@ int read_pipe(int fd, char *buffer, uint16_t amount){
 
         done = aux_pipe->to_read_idx == aux_pipe->to_write_idx;
 
-        sem_post(aux_pipe->sem_mutex);
         sem_post(aux_pipe->sem_to_write);
+        sem_post(aux_pipe->sem_mutex);
     }
     return amount_read;
 }
@@ -94,11 +94,13 @@ int write_pipe(int fd, char *message, uint16_t length){
     int amount_written = 0;
     while(amount_written < length){
         sem_wait(aux_pipe->sem_to_write);
+
         sem_wait(aux_pipe->sem_mutex);
         aux_pipe->buffer[aux_pipe->to_write_idx] = message[amount_written++];
         aux_pipe->to_write_idx = (aux_pipe->to_write_idx+1)%PIPE_BUFF;
-        sem_post(aux_pipe->sem_mutex);
+
         sem_post(aux_pipe->sem_to_read);
+        sem_post(aux_pipe->sem_mutex);
     }
 
     return amount_written;
