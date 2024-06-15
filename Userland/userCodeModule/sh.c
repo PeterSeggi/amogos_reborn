@@ -207,6 +207,7 @@ int parse_command(char *input, int r_fd, int w_fd, boolean foreground) {
 
                 case COMMANDS-1:
                     c_pid = 1;
+                    break;
 
                 default:
                     print("Command: '");
