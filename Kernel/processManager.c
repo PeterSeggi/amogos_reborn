@@ -530,13 +530,9 @@ void kill(pid_t pid){
             }
         }
     }
-    found = FALSE;
     for(int i=0; i<MAX_CHILDREN_COUNT && !found; i++){
         pid_t childpid = pcb->processes[pid]->children[i];        
-        if(childpid==0) found=TRUE;
-        else{
-            pcb->processes[childpid]->fatherPid = fatherPid;    //si ese hijo existe, lo adopta el abuelo 
-        }
+        if(childpid!=0) pcb->processes[childpid]->fatherPid = fatherPid;    //si ese hijo existe, lo adopta el abuelo 
     }
     
 
