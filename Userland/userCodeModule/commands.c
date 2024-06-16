@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include "include/commands.h"
 #include "include/phylo.h"
+#include "include/test_util.h"
 
 
 extern char endOfBinary;
@@ -284,6 +285,16 @@ void the_real_phylo(int argc, char ** argv){
 pid_t init_phylo(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
     boolean orphan = FALSE;
     return create_shiny_process(&the_real_phylo, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
+}
+
+void sync_test(int argc, char ** argv){
+    test_sync(argc, argv);
+    exit();
+}
+
+pid_t init_test_sync(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
+    boolean orphan = FALSE;
+    return create_shiny_process(&sync_test, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
 
 

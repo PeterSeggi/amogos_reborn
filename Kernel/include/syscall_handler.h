@@ -61,6 +61,7 @@ void sys_kill(uint64_t pid);
 void sys_change_proc_priority(uint64_t pid);
 void sys_block_proc(uint64_t pid);
 pid_t sys_get_pid();
+void sys_yield();
 
 sem_t * sys_sem_open(uint64_t name, uint64_t value);
 int sys_sem_close(uint64_t sem);

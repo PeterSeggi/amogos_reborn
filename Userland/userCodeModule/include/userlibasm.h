@@ -29,6 +29,7 @@ void _exit(void);
 void _change_proc_priority(pid_t pid);
 void _block_proc(pid_t pid);
 pid_t _get_pid();
+void _yield();
 
 sem_t * _sem_open(const char *name, uint16_t value);
 int _sem_close(sem_t *sem);

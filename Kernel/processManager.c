@@ -662,6 +662,9 @@ uint64_t get_fd(int type){
     return -1;
 }
 
+void yield(){
+    _force_schedule();
+}
 
 // Foreground methods
 int add_foreground(pid_t pid){

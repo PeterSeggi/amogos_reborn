@@ -269,6 +269,7 @@ void exit(void);
 void nice(pid_t pid);
 void block_proc(pid_t pid);
 pid_t get_pid();
+void yield();
 
 //================================================================================================================================
 // Semaphores

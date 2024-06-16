@@ -105,6 +105,10 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
     sys_get_pid();
     break;
 
+  case (0xA9):
+    sys_yield();
+    break;
+
   case (0xB0):
     sys_sem_open(rdi, rsi);
     break;
@@ -367,6 +371,10 @@ void sys_block_proc(uint64_t pid){
   if(get_pcb_size()==0 || check_valid_pid((pid_t) pid)==FALSE) return;
   if(get_pid_state((pid_t) pid)==BLOCKED) unblock_process((pid_t) pid);
   else block_process((pid_t) pid);
+}
+
+void sys_yield(){
+  yield();
 }
 
 int sys_pipe(uint64_t pipefd){

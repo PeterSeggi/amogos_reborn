@@ -130,6 +130,7 @@ void nice(pid_t pid);
 
 void exit_process();
 void kill(pid_t pid);
+void yield();
 
 int wait_pid(pid_t childPid);
 int wait_any_pid();
