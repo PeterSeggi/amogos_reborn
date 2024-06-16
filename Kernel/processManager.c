@@ -288,7 +288,7 @@ void * schedule(void * rsp){
         return rsp;
     } 
 
-    if (pcb->runningPid != 0 && pcb->processes[pcb->runningPid]->state != BLOCKED) pcb->processes[pcb->runningPid]->state = READY;
+    if (pcb->runningPid > 0 && pcb->processes[pcb->runningPid]->state != BLOCKED) pcb->processes[pcb->runningPid]->state = READY;
 
     int priority = scheduler->priority[scheduler->currentPriorityOffset];
     if(scheduler->list[priority]->current != NULL && pcb->runningPid > 0){ //si estoy en el primer proceso no me guardo el stack de kernel
@@ -575,6 +575,7 @@ ProcessNode * delete_from_sched(ProcessNode * current, pid_t pid){
         my_free(current);
         scheduler->size--;
         scheduler->list[pcb->processes[pid]->priority]->size--;
+        scheduler->list[pcb->processes[pid]->priority]->current = NULL;
 
         return toReturn;
     }
