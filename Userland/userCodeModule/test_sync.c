@@ -27,7 +27,7 @@ void my_process_inc(uint64_t argc, char *argv[]) {
   }
 
   if ((n = satoi(argv[1])) <= 0){
-    print("test_sync: Wrong amount of processes\n");
+    print("test_sync: Wrong amount of inc\n");
     exit();
   }
   if ((inc = satoi(argv[2])) == 0){
@@ -52,15 +52,12 @@ void my_process_inc(uint64_t argc, char *argv[]) {
 
   uint64_t i;
   for (i = 0; i < n; i++) {
-    if (use_sem)
-      sem_down(aux_sem);
+    if (use_sem) sem_down(aux_sem);
     slowInc(&global, inc);
-    if (use_sem)
-      sem_up(aux_sem);
+    if (use_sem) sem_up(aux_sem);
   }
 
-  if (use_sem)
-    sem_close(aux_sem);
+  if (use_sem) sem_close(aux_sem);
 
   exit();
 }
