@@ -61,7 +61,6 @@ int sem_close(sem_t *sem){
 }
 
 int sem_post(sem_t *sem){
-    int unblocked = 0;
     pid_t pid_to_unblock;
     if(!check_valid_sem(sem)) return -1;
     sem_lock_wait(&(sem->lock));

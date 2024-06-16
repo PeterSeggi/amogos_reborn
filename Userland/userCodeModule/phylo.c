@@ -165,7 +165,10 @@ int add_phylo(){
             return -1;
         }
     }
-    else print("Max amount of phylos reached\n");
+    else{
+        print("Max amount of phylos reached\n");
+        return -1;
+    }
     
     int aux_argc = 1;
     char * name = strdup(aux_phylo_name);
@@ -211,39 +214,6 @@ void remove_phylo(){
         kill(phylo_table[phylo_amount+1].pid);
     }
     if(!removed) print("Min amount of phylos reached\n");
-}
-
-void phylo_command(int argc, char **argv){
-    srand(time());
-    //char c = 'e';
-    init_phylos();
-    //while(1){
-        //sem_down(mutex);
-        /*if (read(&c, 1) == 1){
-            switch (c){
-                case 'a':
-                    add_phylo();
-                    break;
-                case 'r':
-                    remove_phylo();
-                    break;
-                default:
-                    break;
-            }
-        }*/
-        /*sem_up(mutex);
-        sleep(1, 0);
-        sem_down(mutex);
-        show_phylo_table();
-        sem_up(mutex);*/
-    //}
-    char aux_cant[5] = {0};
-    sem_down(mutex);
-    uintToBase(phylo_amount, aux_cant, 10);
-    print(aux_cant);
-    print("bai\n");
-    //ps();
-    while(1);
 }
 
 /**
