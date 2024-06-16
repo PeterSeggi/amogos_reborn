@@ -2,6 +2,7 @@
 #include "include/commands.h"
 #include "include/phylo.h"
 #include "include/test_util.h"
+#include "include/userlib.h"
 
 
 extern char endOfBinary;
@@ -232,17 +233,38 @@ pid_t init_cat(int argc, char * argv[], int read_fd, int write_fd, boolean foreg
 }
 
 void wc(int argc, char * argv[]){
-    //no se como accede un proceso a su propio stdin
-    int count = 0;
-    int offset = 0;
-    while(argv[1]!=NULL && argv[1][offset]!='\0'){
-        if(argv[1][offset]==' ') count++;
-        offset++;
+    int new_lines = 0;
+    int words = 0;
+    int bytes = 0;
+    int first = TRUE;
+
+    char* let = strdup(" "); 
+    while(read(let, 1) > 0){
+        
+        if (first){
+            words++;
+            first = FALSE;
+        }
+
+        switch (let[0]) {
+        case('\n'):
+            new_lines++;
+
+        case(' '):
+            words++;
+
+        default:
+            bytes++;
+        }
     }
-    print("the count is: ");
-    uintToBase(count, aux, 10);
-    print(aux);
+    printDec(new_lines);
+    print("    ");
+    printDec(words);
+    print("    ");
+    printDec(bytes);
     print("\n");
+    my_free(let);
+
     exit();
 }
 
