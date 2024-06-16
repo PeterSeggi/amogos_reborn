@@ -529,15 +529,24 @@ void kill(pid_t pid){
                 found = TRUE;
             }
         }
+        int children_left = pcb->processes[pid]->children_amount;   //solo itera en la cantidad de hijos
+        for(int i=0; i<MAX_CHILDREN_COUNT && children_left; i++){
+            pid_t childpid = pcb->processes[pid]->children[i];
+            if(childpid!=0){
+                boolean end = FALSE;
+                pcb->processes[childpid]->fatherPid = fatherPid;    //si ese hijo existe, lo adopta el abuelo 
+                for(int j=0; j<MAX_CHILDREN_COUNT && !end; j++){    //busco espacio libre en array de hijos de fatherPid
+                    if(pcb->processes[fatherPid]->children[j]==0){
+                        pcb->processes[fatherPid]->children[j] = childpid;  //ahora hijo es hijo del abuelo (fatherPid)
+                        pcb->processes[fatherPid]->children_amount++;
+                        end=TRUE;
+                    }
+                }
+                children_left--;
+            } 
+        }
     }
-    int children_left = pcb->processes[pid]->children_amount;   //solo itera en la cantidad de hijos
-    for(int i=0; i<MAX_CHILDREN_COUNT && children_left; i++){
-        pid_t childpid = pcb->processes[pid]->children[i];
-        if(childpid!=0){
-            pcb->processes[childpid]->fatherPid = fatherPid;    //si ese hijo existe, lo adopta el abuelo 
-            children_left--;
-        } 
-    }
+    
     
 
     pclose(pcb->processes[pid]->stdin_fd);
