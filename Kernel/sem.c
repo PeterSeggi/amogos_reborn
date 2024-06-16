@@ -69,11 +69,10 @@ int sem_post(sem_t *sem){
             (sem->blocked_size)--;
             pid_to_unblock = get_pid_to_unblock(sem);
             sem->blocked_processes[pid_to_unblock] = 0;
-            unblocked = 1;
+            silent_unblock(pid_to_unblock);
     }
     else sem->value++;
     sem_lock_post(&(sem->lock));
-    if (unblocked) unblock_process(pid_to_unblock);
     return 0;
 }
 
@@ -86,10 +85,10 @@ int sem_wait(sem_t *sem){
         sem->blocked_processes[get_pid()] = 1;
         (sem->blocked_size)++;
         blocked = 1;
-        sem_lock_post(&(sem->lock));
+        silent_block(get_pid());
     }
     sem_lock_post(&(sem->lock));
-    if (blocked) block_process(get_pid());
+    if (blocked) _force_schedule(); 
     return 0;
 }
 

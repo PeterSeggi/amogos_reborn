@@ -33,7 +33,7 @@ char * get_process_foreground(uint8_t foreground){
 void ps(){
     uint16_t process_amount = 0;
     ProcessView ** processes  = get_processes(&process_amount);
-    char aux_aux[BUFFER_SIZE];
+    char aux_aux[BUFFER_SIZE] = {0};
     if(!processes){
         print("No processes\n");
         print("amount:");
@@ -44,7 +44,7 @@ void ps(){
     }
     print("\n");
     print("PID | NAME  | STATE  | PRI |   RSP  |   RBP  | FOR | PAR | CHI |");
-    char aux[BUFFER_SIZE];
+    char aux[BUFFER_SIZE] = {0};
     int dif;
     for(int i = 0; i<process_amount; i++){
 
@@ -117,7 +117,6 @@ pid_t init_ps(int read_fd, int write_fd, boolean foreground){
 
 
 void loop(int argc, char * argv[]){
-    
     int pid = get_pid();
     if(argc==0) exit();
     else{
@@ -131,7 +130,7 @@ void loop(int argc, char * argv[]){
         }
         exit();
     }
-    }
+}
     
 
 pid_t init_loop(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
@@ -216,11 +215,11 @@ pid_t init_block(int argc, char * argv[], int read_fd, int write_fd, boolean for
 }
 
 void cat(int argc, char * argv[]){
-    //no se como accede un proceso a su propio stdin
-    char* let = " "; 
+    char* let = strdup(" "); 
     while(read(let, 1) > 0){
         print(let);
     }
+    my_free(let);
     exit();
 }
 

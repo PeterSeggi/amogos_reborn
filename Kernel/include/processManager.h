@@ -110,7 +110,7 @@ void _hlt();
 void _setUser(void);
 void initializeSleepingTable(void);
 int sleepingTableAppend(SleepingProcess * process);
-void createSleeper(unsigned long until_ticks, int* timer_lock);
+void create_sleeper(unsigned long until_ticks);
 void check_sleepers(unsigned long current_tick);
 
 // queda comentada porq es quasi-privada

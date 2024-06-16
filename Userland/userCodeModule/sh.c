@@ -96,7 +96,7 @@ void process_command(){
 
 
 
-int parse_command(char *input, int r_fd, int w_fd, boolean foreground) {
+int parse_command(const char *input, int r_fd, int w_fd, boolean foreground) {
     int argc = 0;
     
     char *temp = strdup(input);
@@ -138,9 +138,11 @@ int parse_command(char *input, int r_fd, int w_fd, boolean foreground) {
     my_free(temp);
 
     pid_t c_pid;
+    boolean found = FALSE;
 
-    for(int i=0; i<COMMANDS; i++){
+    for(int i=0; i<COMMANDS && !found; i++){
         if(!strcmp(argv[0], commands[i])){
+            found = TRUE;
             switch(i){
                 case 0: //ps
 
@@ -209,6 +211,14 @@ int parse_command(char *input, int r_fd, int w_fd, boolean foreground) {
 
                 case COMMANDS-1:
                     c_pid = 1;
+                    break;
+
+                default:
+                    print("Command: '");
+                    print(argv[0]);
+                    print("' not found\n");
+                    c_pid = 0;
+                    break;
             }
         }
     }
@@ -222,14 +232,14 @@ int parse_command(char *input, int r_fd, int w_fd, boolean foreground) {
 
 
 
-void command_wrapper(char* input){
+void command_wrapper(const char* input){
     boolean foreground = TRUE;
     boolean piped = FALSE;
 
     char c1[BUFFER_SIZE / 2];
     char c2[BUFFER_SIZE / 2];
 
-    if(input[strlen(input)-2]=='&'){
+    if(input[strlen(input)-1]=='&'){
         foreground = FALSE;
     }
 
@@ -269,9 +279,6 @@ void command_wrapper(char* input){
         if(pipe(pipe_mid)) return; 
 
         pid_t cpid1 = parse_command(c1, pipe_out[0], pipe_mid[1], FALSE);
-        
-        if (cpid1 > 1) waitpid(cpid1); 
-
         pid_t cpid2 = parse_command(c2, pipe_mid[0], pipe_in[1], foreground);
 
         if (cpid2 > 1 && foreground) waitpid(cpid2); 

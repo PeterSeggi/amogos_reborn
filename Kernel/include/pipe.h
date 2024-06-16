@@ -34,7 +34,7 @@ int read_pipe(int fd, char *buffer, uint16_t amount);
 *@return    Amount of bytes successfully written, -1 upon failure(invalid fd).
 *@note      If returns 0, the read-end of the pipe is already closed.
 */
-int write_pipe(int fd, char *message, uint16_t length);
+int write_pipe(int fd, const char *message, uint16_t length);
 
 /**
 *@brief     Closes the desired fd of a pipe. If both are closed, deletes the corresponding pipe.
@@ -51,4 +51,24 @@ int pclose(int fd);
 int peek_pipe(int fd);
 
 
+/**
+*@brief     Checks if the next read would be possible.
+*@param[in] fd Desired file descriptor to read.
+*@return    >0 on success, -1 upon failure, 0 means it will block.
+*/
+int peek_read_pipe(int fd);
+
+/**
+*@brief     Checks if the next read would be possible.
+*@param[in] fd Desired file descriptor to read.
+*@return    >0 on success, -1 upon failure, 0 means it will block.
+*/
+int peek_read_pipe(int fd);
+
+/**
+*@brief     Returns the value of the sem_to_read of a pipe with a given fd 
+*@param[in] fd Desired file descriptor to check.
+*@return    Value on success, -1 upon failure.
+*/
+int peek_pipe(int fd);
 #endif //PIPE_H

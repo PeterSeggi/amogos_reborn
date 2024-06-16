@@ -133,8 +133,12 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
     sys_pclose(rdi);
     break;
 
-  case (0xC3): 
-    sys_peek_pipe(rdi);
+  case (0xC2):
+    sys_peek_read_pipe(rdi);
+    break;
+
+  case (0xC3):
+    sys_peek_read_pipe(rdi);
     break;
 
   }
@@ -143,8 +147,8 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
 void sys_write(uint64_t fd, uint64_t message, uint64_t length) {
   switch (fd) {
       case (STDOUT):
-        if (get_pid() == get_foreground()) printCant((char *)message, length);
-        else write_pipe(get_fd(STDOUT), (char*) message, (uint16_t) length);
+        if (get_pid() == get_foreground()) printCant((const char *)message, length);
+        else write_pipe(get_fd(STDOUT), (const char*) message, (uint16_t) length);
         break;
 
       case (STDERR):
@@ -155,7 +159,7 @@ void sys_write(uint64_t fd, uint64_t message, uint64_t length) {
         break;
       
       default:
-        write_pipe((int) fd, (char *) message, (uint16_t) length);
+        write_pipe((int) fd, (const char *) message, (uint16_t) length);
         break;
       }
 }
@@ -295,6 +299,7 @@ void failure_free(ProcessView ** ptr_list, int size){
 
 int sys_create_process(uint64_t function, uint64_t argc, uint64_t argv){
   Process* aux = create_process((void *) function, (int)argc, (char **)argv);
+  if(!aux) return -1;
   return aux->pid;
 }
 
@@ -312,6 +317,7 @@ int sys_create_shiny_process(uint64_t function, uint64_t argc, uint64_t argv, ui
         (uint64_t)createArgs->stdin, 
         (uint64_t)createArgs->stdout
     );
+  if(!aux) return -1;
   return aux->pid;
 }
 
@@ -385,6 +391,15 @@ int sys_pclose(uint64_t fd){
 	return pclose((int) fd);
 }
 
+int sys_peek_read_pipe(uint64_t fd){
+  switch(fd){
+    case (STDIN):
+      fd = get_fd(STDIN);
+
+    default:
+      return peek_read_pipe((int) fd)>0;
+  }
+}
 int sys_peek_pipe(uint64_t fd){
     if (fd == STDIN) fd = get_fd(STDIN);
     return peek_pipe(fd);

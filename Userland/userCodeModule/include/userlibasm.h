@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "userlib.h"
 
-void _print(int fd, char * string, int length);
+void _print(int fd, const char * string, int length);
 int _read(int fd, char * buffer, int length);
 int int_test();
 void _sleep(int cant, int unidad);
@@ -38,6 +38,7 @@ int _sem_down(sem_t *sem);
 
 int _pipe(int pipefd[2]);
 int _pclose(int fd);
+int _peek_read_pipe(int fd);
 int _peek(int fd);
 
 int _write(int fd, char *message, uint16_t length);

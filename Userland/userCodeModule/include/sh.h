@@ -10,8 +10,8 @@ void sh();
 int init_sh(int read_fd, int write_fd);
 void process_command();
 void process(char key);
-int parse_command(char *input, int r_fd, int w_fd, boolean foreground);
-void command_wrapper(char* input);
+int parse_command(const char *input, int r_fd, int w_fd, boolean foreground);
+void command_wrapper(const char* input);
 
 #endif
 
