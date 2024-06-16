@@ -7,9 +7,17 @@
 
 #define COMMANDS 18
 
+void failure_free_chars(char ** ptr_list, int size);
+
 int init_sh(int read_fd, int write_fd){
-    char * name = strdup("shell");
-    return create_shiny_process(&sh, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
+    int argc = 1;
+    char **argv = (char **) my_malloc(sizeof(char *) * argc);
+    if(!argv) return -1;
+    argv[0] = strdup("shell");
+    int to_ret = create_shiny_process(&sh, argc, argv, 4, FALSE, TRUE, read_fd, write_fd);
+    my_free(argv[0]);
+    my_free(argv);
+    return to_ret;
 }
 static char* commands[COMMANDS] = {"ps","loop","mem","help","sleep","kill","nice","block","cat","wc","filter", "phylo", "test_sync", "test_proc", "test_prio", "test_mm", "clear", "exit"};
 
@@ -120,6 +128,7 @@ int parse_command(const char *input, int r_fd, int w_fd, boolean foreground) {
     char ** argv = (char **) my_malloc(sizeof(char *) * argc);
     temp = strdup(input);
     if (temp == NULL) {
+        my_free(argv);
         return 0;
     }
     
@@ -129,6 +138,9 @@ int parse_command(const char *input, int r_fd, int w_fd, boolean foreground) {
     while (token != NULL) {
         argv[i] = strdup(token);
         if (argv[i] == NULL) {
+            failure_free_chars(argv, i-1);
+            my_free(argv);
+            my_free(temp);
             return 0;
         }
         i++;
@@ -263,8 +275,8 @@ void command_wrapper(const char* input){
     }
 
     char *token = strtok(temp, "|");
+    my_free(temp);
     if (token == NULL) {
-        my_free(temp);
         return; 
     }
 
@@ -330,4 +342,11 @@ void command_wrapper(const char* input){
         if (cpid == 1) exit();
 
     }
+}
+
+
+void failure_free_chars(char ** ptr_list, int size){
+  while(size>=0){
+    my_free(ptr_list[size--]);
+  }
 }

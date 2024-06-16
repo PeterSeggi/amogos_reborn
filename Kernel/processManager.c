@@ -70,11 +70,20 @@ void initializeScheduler(){
             scheduler->list[i]->size=0;
         }
     }
-    //createProcess(&my_main);   
-    char* idle_name = "idle";
-    char* init_name = k_strdup("init");
-    create_shiny_process((void *)0x400000, 1, &init_name, 4, TRUE, FALSE, KEY_FD, VID_FD);
-    create_shiny_process(&_idle, 1, &idle_name, 0, TRUE, FALSE, KEY_FD, VID_FD);     //proceso vigilante _hlt
+    //createProcess(&my_main);
+    int argc = 1;
+    char **argv = (char **) my_malloc(sizeof(char *) * argc);
+    if(!argv) return;
+    argv[0] = k_strdup("init");
+    create_shiny_process((void *)0x400000, argc, argv, 4, TRUE, FALSE, KEY_FD, VID_FD);
+    free_argv(argc, argv);
+
+    argc = 1;
+    argv = (char **) my_malloc(sizeof(char *) * argc);
+    if(!argv) return;
+    argv[0] = k_strdup("idle");
+    create_shiny_process(&_idle, argc, argv, 0, TRUE, FALSE, KEY_FD, VID_FD);     //proceso vigilante _hlt
+    free_argv(argc, argv);
 
     schedule_lock = 0;
     _idle();
@@ -194,6 +203,7 @@ void free_argv(int argc, char ** argv){
     for(int i=0; i<argc; i++){
         my_free(argv[i]);
     }
+    my_free(argv);
 }
 
 
@@ -730,7 +740,7 @@ int delete_from_foreground(int pid){
 
     // me aseguro de que el que esta en foreground tenga setteado correctamente el flag
     if (foregroundProcess->size) pcb->processes[foregroundProcess->firstProcess->pid]->foreground = TRUE;
-
+    my_free(current);
     return 0;
 }
 

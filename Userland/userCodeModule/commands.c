@@ -125,8 +125,14 @@ void ps(){
 
 
 pid_t init_ps(int read_fd, int write_fd, boolean foreground){
-    char * name = strdup("ps");
-    return create_shiny_process(&ps, 1, &name, 4, FALSE, foreground, read_fd, write_fd);
+    int argc = 1;
+    char **argv = (char **) my_malloc(sizeof(char *) * argc);
+    if(!argv) return -1;
+    argv[0] = strdup("ps");
+    pid_t to_ret = create_shiny_process(&ps, argc, argv, 4, FALSE, foreground, read_fd, write_fd);
+    my_free(argv[0]);
+    my_free(argv);
+    return to_ret;
 }
 
 
