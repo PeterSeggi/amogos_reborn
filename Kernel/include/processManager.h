@@ -143,6 +143,8 @@ int add_foreground(pid_t pid);
 int get_foreground();
 int get_foreground_fd();
 int delete_from_foreground(int pid);
+int pid_in_foreground(pid_t pid);
+
 int getRunningProceses();
 
 #endif

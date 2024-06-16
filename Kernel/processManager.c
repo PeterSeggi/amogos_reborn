@@ -516,7 +516,7 @@ void kill(pid_t pid){
     _cli();
 
     // bloqueamos el kill de init y de idle
-    if (pid <= 2) return;
+    if (pid <= 2 || !pcb->processes[pid]) return;
 
     pid_t fatherPid = pcb->processes[pid]->fatherPid;
     boolean found;
@@ -677,6 +677,16 @@ int add_foreground(pid_t pid){
 int get_foreground(){
     if (!foregroundProcess->size) return -1;
     return foregroundProcess->firstProcess->pid;
+}
+
+int pid_in_foreground(pid_t pid){
+    if (!foregroundProcess->size) return -1;
+    ProcessNode * current = foregroundProcess->firstProcess;
+    while (current){
+        if (current->pid == pid) return 1;
+        else current = current->next;
+    }
+    return 0;
 }
 
 int get_foreground_fd(){

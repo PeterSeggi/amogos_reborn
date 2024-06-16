@@ -66,4 +66,6 @@ void test_prio(uint64_t argc, char *argv[], int stdin, int stdout) {
 
   for (i = 0; i < TOTAL_PROCESSES; i++)
     kill(pids[i]);
+
+  print("\nTEST FINSIHED\n");
 }
