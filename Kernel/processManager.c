@@ -1,4 +1,4 @@
-#include "include/lib.h"
+#include "include/processManager.h"
 #include <stdint.h>
 #include <mman.h>
 #include <processManager.h>
@@ -288,7 +288,7 @@ void * schedule(void * rsp){
         return rsp;
     } 
 
-    if (pcb->runningPid != 0 && pcb->processes[pcb->runningPid]->state != BLOCKED) pcb->processes[pcb->runningPid]->state = READY;
+    if (pcb->runningPid > 0 && pcb->processes[pcb->runningPid]->state != BLOCKED) pcb->processes[pcb->runningPid]->state = READY;
 
     int priority = scheduler->priority[scheduler->currentPriorityOffset];
     if(scheduler->list[priority]->current != NULL && pcb->runningPid > 0){ //si estoy en el primer proceso no me guardo el stack de kernel
@@ -327,7 +327,7 @@ pid_t nextProcessInList(ProcessList * list, boolean wasRunning){
     }
     if(list->current->next == NULL){      //ultimo proc de la lista
         if(wasRunning == FALSE){
-            return list->current->pid;
+            if (pcb->processes[list->current->pid]->state != BLOCKED) return list->current->pid;
         }
         list->current = NULL;            //reseteo lista
         return nextProcessInList(scheduler->list[getNextPriority()], TRUE);
@@ -519,9 +519,9 @@ void kill(pid_t pid){
     if (pid <= 2) return;
 
     pid_t fatherPid = pcb->processes[pid]->fatherPid;
-
+    boolean found;
     if(fatherPid!=-1){     //borro entry en array de children de padre
-        boolean found = FALSE;
+        found = FALSE;
         for(int i=0; i<MAX_CHILDREN_COUNT && found==FALSE; i++){    //busqueda lineal
             if(pcb->processes[fatherPid]->children[i]==pid){
                 pcb->processes[fatherPid]->children[i]=0;
@@ -530,6 +530,15 @@ void kill(pid_t pid){
             }
         }
     }
+    int children_left = pcb->processes[pid]->children_amount;   //solo itera en la cantidad de hijos
+    for(int i=0; i<MAX_CHILDREN_COUNT && children_left; i++){
+        pid_t childpid = pcb->processes[pid]->children[i];
+        if(childpid!=0){
+            pcb->processes[childpid]->fatherPid = fatherPid;    //si ese hijo existe, lo adopta el abuelo 
+            children_left--;
+        } 
+    }
+    
 
     pclose(pcb->processes[pid]->stdin_fd);
     pclose(pcb->processes[pid]->stdout_fd);
@@ -575,7 +584,10 @@ ProcessNode * delete_from_sched(ProcessNode * current, pid_t pid){
         my_free(current);
         scheduler->size--;
         scheduler->list[pcb->processes[pid]->priority]->size--;
-
+        if( scheduler->list[pcb->processes[pid]->priority]->current->pid == pid){
+            scheduler->list[pcb->processes[pid]->priority]->current = NULL;
+        }
+        
         return toReturn;
     }
     else{

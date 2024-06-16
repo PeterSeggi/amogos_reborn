@@ -62,7 +62,7 @@ void my_process_inc(uint64_t argc, char *argv[]) {
   exit();
 }
 
-void test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
+void test_sync(uint64_t argc, char *argv[]){ //{n, use_sem, 0}
   uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
   if (argc != 3){
@@ -77,10 +77,8 @@ void test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
 
   uint64_t i;
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    boolean orphan = FALSE;
-    boolean foreground = TRUE;
-    pids[i] = create_shiny_process(&my_process_inc, 4, argvDec, DEFAULT_PRIORITY, orphan, foreground, 0, 0);
-    pids[i + TOTAL_PAIR_PROCESSES] = create_shiny_process(&my_process_inc, 4, argvInc, DEFAULT_PRIORITY, orphan, foreground, 0, 0);
+    pids[i] = create_process(&my_process_inc, 4, argvDec);
+    pids[i + TOTAL_PAIR_PROCESSES] = create_process(&my_process_inc, 4, argvInc);
   }
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {

@@ -42,8 +42,7 @@ void ps(){
         print("\n");
         return;
     }
-    print("\n");
-    print("PID | NAME  | STATE  | PRI |   RSP  |   RBP  | FOR | PAR | CHI |");
+    print("PID | NAME | STATE  | PRI |   RSP  |   RBP  | FOR | PAR | CHI |\n");
     char aux[BUFFER_SIZE] = {0};
     int dif;
     for(int i = 0; i<process_amount; i++){
@@ -52,17 +51,20 @@ void ps(){
         uintToBase(processes[i]->pid, aux, 10);
         print(" ");
         print(aux);
-        print("  |");
+        if(processes[i]->pid<10){
+            print(" ");
+        }
+        print(" |");
 
         // name
         print(processes[i]->name);
-        dif = 7 - strlen(processes[i]->name);
+        dif = 6 - strlen(processes[i]->name);
         for (int i = 0; i < dif; i++) print(" ");
         print("|");
 
         // state
         print(get_process_status(processes[i]->state));
-        dif = 9 - strlen(get_process_status(processes[i]->state));
+        dif = 8 - strlen(get_process_status(processes[i]->state));
         for (int i = 0; i < dif; i++) print(" ");
         print("|");
 
@@ -178,7 +180,8 @@ pid_t init_mem(int argc, char * argv[], int read_fd, int write_fd, boolean foreg
 void command_kill(int argc, char ** argv){
 
     //se asume argv[1] como pid
-    pid_t myPid = *argv[1]-'0'; 
+    pid_t myPid = satoi(argv[1]); 
+
     if(myPid>2 && myPid<MAX_PROCESS_COUNT && myPid!=get_pid()){
         kill(myPid);
     }
@@ -191,7 +194,7 @@ pid_t init_kill(int argc, char * argv[], int read_fd, int write_fd, boolean fore
 }
 
 void command_nice(int argc, char * argv[]){
-    pid_t myPid = *argv[1]-'0';
+    pid_t myPid = satoi(argv[1]);
     nice(myPid);    
     exit();
 }
@@ -202,7 +205,7 @@ pid_t init_nice(int argc, char * argv[], int read_fd, int write_fd, boolean fore
 }
 
 void command_block(int argc, char * argv[]){
-    pid_t myPid = *argv[1]-'0'; 
+    pid_t myPid = satoi(argv[1]); 
     if(myPid>2 && myPid<MAX_PROCESS_COUNT){
         block_proc(myPid);
     }    
@@ -306,9 +309,10 @@ pid_t init_mm(int argc, char * argv[], int read_fd, int write_fd, boolean foregr
     boolean orphan = FALSE;
     return create_shiny_process(&mem_test, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
+*/
 
-void proc_test(int argc, char ** argv){
-    test_processes(argc, argv);
+void proc_test(int argc, char ** argv, int read_fd, int write_fd){
+    test_processes(argc, argv, read_fd, write_fd);
     exit();
 }
 
@@ -317,13 +321,5 @@ pid_t init_procs(int argc, char * argv[], int read_fd, int write_fd, boolean for
     return create_shiny_process(&proc_test, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
 
-void proc_test(int argc, char ** argv){
-    test_processes(argc, argv);
-    exit();
-}
 
-pid_t init_procs(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
-    boolean orphan = FALSE;
-    return create_shiny_process(&proc_test, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
-}*/
 

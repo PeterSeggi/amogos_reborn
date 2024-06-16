@@ -1,6 +1,9 @@
 #include <stdint.h>
 #include "include/userlibasm.h"
 #include "include/userlib.h"
+#include <stddef.h>
+#include "include/commands.h"
+#include "include/phylo.h"
 
 // Random
 static uint32_t m_z = 362436069;

@@ -13,4 +13,6 @@ void endless_loop_print(uint64_t wait);
 
 void test_sync(uint64_t argc, char *argv[]);
 
+uint64_t test_mm(uint64_t argc, char *argv[]);
+int64_t test_processes(uint64_t argc, char *argv[], int stdin, int stdout);
 #endif
