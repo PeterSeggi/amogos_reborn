@@ -27,9 +27,21 @@ char * get_process_status(State state){
 }
 char * get_process_foreground(uint8_t foreground){
     if(foreground==TRUE) return "YES";
-    else return "NO";
+    else return "NO ";
 }
 
+
+void pid_to_string(int num, char str[]){
+    int digit0 = num/100;
+    int digit1 = num/10;
+    int digit2 = num % 10;
+
+    str[0] = '0' + digit0;
+    str[1] = '0' + digit1;
+    str[2] = '0' + digit2;
+    str[3] = 0;
+
+}
 
 void ps(){
     uint16_t process_amount = 0;
@@ -43,29 +55,26 @@ void ps(){
         print("\n");
         return;
     }
-    print("|PID | NAME | STATE  | PRI |   RSP  |   RBP  | FOR | PAR | CHI |");
+    print("|PID| NAME | STATE | PRI |   RSP   |   RBP   | FOR | PAR | CHI |");
     char aux[BUFFER_SIZE] = {0};
     int dif;
     for(int i = 0; i<process_amount; i++){
 
         // pid
-        uintToBase(processes[i]->pid, aux, 10);
-        print("| ");
+        pid_to_string(processes[i]->pid, aux);
+        print("|");
         print(aux);
-        if(processes[i]->pid<10){
-            print(" ");
-        }
-        print(" |");
+        print("|");
 
         // name
-        print(processes[i]->name);
+        printCant(processes[i]->name, 6);
         dif = 6 - strlen(processes[i]->name);
         for (int i = 0; i < dif; i++) print(" ");
         print("|");
 
         // state
         print(get_process_status(processes[i]->state));
-        dif = 8 - strlen(get_process_status(processes[i]->state));
+        dif = 7 - strlen(get_process_status(processes[i]->state));
         for (int i = 0; i < dif; i++) print(" ");
         print("|");
 
@@ -79,18 +88,19 @@ void ps(){
         uintToBase(processes[i]->registers.rsp, aux, 16); 
         print(" ");
         print(aux);
+        print("h");
         print(" |");
 
         // rbp
         uintToBase(processes[i]->registers.rbp, aux, 16);
         print(" ");
         print(aux);
+        print("h");
         print(" |");
 
         // foreground
         print(" ");
         print(get_process_foreground(processes[i]->foreground));
-        if (!processes[i]->foreground) print(" ");
         print(" |");
 
         // father
@@ -103,7 +113,8 @@ void ps(){
         uintToBase(processes[i]->children_amount, aux, 10);
         print("  ");
         print(aux);
-        print("  |");
+        if (processes[i]->children_amount < 10) print(" ");
+        print(" |");
 
         my_free(processes[i]);
     }

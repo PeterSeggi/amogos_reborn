@@ -221,14 +221,16 @@ int parse_command(const char *input, int r_fd, int w_fd, boolean foreground) {
                     c_pid = 1;
                     break;
 
-                default:
-                    print("Command: '");
-                    print(argv[0]);
-                    print("' not found\n");
-                    c_pid = 0;
-                    break;
             }
         }
+    }
+
+    if (!found){
+        print("Command: '");
+        print(argv[0]);
+        print("' not found\n");
+        c_pid = 0;
+
     }
 
     for (int i = 0; i < argc; i++){

@@ -21,6 +21,7 @@ void print(const char * string){
 }
 
 void printCant(const char* string, int cant){
+    if (strlen(string) < cant) cant = strlen(string);
     _print(STDOUT, string, cant);
 }
 
@@ -408,3 +409,4 @@ int write(int fd, char *message, uint16_t length){
 int peek(int fd){
     return _peek(fd);
 }
+
