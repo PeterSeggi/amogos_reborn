@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include "include/commands.h"
 #include "include/phylo.h"
+#include "include/test_util.h"
 
 
 extern char endOfBinary;
@@ -297,8 +298,8 @@ pid_t init_mm(int argc, char * argv[], int read_fd, int write_fd, boolean foregr
 }
 */
 
-void proc_test(int argc, char ** argv){
-    test_processes(argc, argv);
+void proc_test(int argc, char ** argv, int read_fd, int write_fd){
+    test_processes(argc, argv, read_fd, write_fd);
     exit();
 }
 

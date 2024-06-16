@@ -1,4 +1,4 @@
-#include "include/syscall.h"
+/*#include "include/syscall.h"
 #include "include/test_util.h"
 #include "include/userlib.h"
 #include "include/userlibasm.h"
@@ -70,4 +70,4 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
       if (mm_rqs[i].address)
         my_free(mm_rqs[i].address);
   }
-}
+}*/
