@@ -42,8 +42,7 @@ void ps(){
         print("\n");
         return;
     }
-    print("\n");
-    print("PID | NAME  | STATE  | PRI |   RSP  |   RBP  | FOR | PAR | CHI |");
+    print("PID | NAME | STATE  | PRI |   RSP  |   RBP  | FOR | PAR | CHI |\n");
     char aux[BUFFER_SIZE] = {0};
     int dif;
     for(int i = 0; i<process_amount; i++){
@@ -59,13 +58,13 @@ void ps(){
 
         // name
         print(processes[i]->name);
-        dif = 7 - strlen(processes[i]->name);
+        dif = 6 - strlen(processes[i]->name);
         for (int i = 0; i < dif; i++) print(" ");
         print("|");
 
         // state
         print(get_process_status(processes[i]->state));
-        dif = 9 - strlen(get_process_status(processes[i]->state));
+        dif = 8 - strlen(get_process_status(processes[i]->state));
         for (int i = 0; i < dif; i++) print(" ");
         print("|");
 
