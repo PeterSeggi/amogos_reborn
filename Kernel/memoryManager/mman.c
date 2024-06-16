@@ -5,7 +5,7 @@
 #define FREE_MEM_START 0x600000
 #define FREE_MEM_END 0x20000000
 
-#define MEM_CHUNK 8 //for alignment
+#define MEM_CHUNK 512 //for alignment
 
 /*
     WORDMAP: 2Byte maps 8 byte(mem_chunk)
