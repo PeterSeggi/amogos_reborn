@@ -43,14 +43,14 @@ void ps(){
         print("\n");
         return;
     }
-    print("PID | NAME | STATE  | PRI |   RSP  |   RBP  | FOR | PAR | CHI |\n");
+    print("|PID | NAME | STATE  | PRI |   RSP  |   RBP  | FOR | PAR | CHI |");
     char aux[BUFFER_SIZE] = {0};
     int dif;
     for(int i = 0; i<process_amount; i++){
 
         // pid
         uintToBase(processes[i]->pid, aux, 10);
-        print(" ");
+        print("| ");
         print(aux);
         if(processes[i]->pid<10){
             print(" ");
@@ -103,7 +103,7 @@ void ps(){
         uintToBase(processes[i]->children_amount, aux, 10);
         print("  ");
         print(aux);
-        print("  |\n");
+        print("  |");
 
         my_free(processes[i]);
     }
