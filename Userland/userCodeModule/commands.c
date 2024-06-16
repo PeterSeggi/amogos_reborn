@@ -300,6 +300,16 @@ pid_t init_test_sync(int argc, char * argv[], int read_fd, int write_fd, boolean
     return create_shiny_process(&sync_test, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
 
+void prio_test(int argc, char ** argv, int read_fd, int write_fd){
+    test_prio(argc, argv, read_fd, write_fd);
+    exit();
+}
+
+pid_t init_test_prio(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
+    boolean orphan = FALSE;
+    return create_shiny_process(&prio_test, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
+}
+
 
 /*void mem_test(int argc, char ** argv){
     test_mm(argc, argv);

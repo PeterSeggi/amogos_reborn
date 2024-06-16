@@ -25,6 +25,7 @@ pid_t init_filter(int argc, char * argv[], int read_fd, int write_fd, boolean fo
 pid_t init_phylo(int argc, char * argv[], int read_fd, int write_fd, boolean foreground);
 pid_t init_test_sync(int argc, char * argv[], int read_fd, int write_fd, boolean foreground);
 pid_t init_procs(int argc, char * argv[], int read_fd, int write_fd, boolean foreground);
+pid_t init_test_prio(int argc, char * argv[], int read_fd, int write_fd, boolean foreground);
 
 
 
