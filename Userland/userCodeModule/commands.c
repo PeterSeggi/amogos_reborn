@@ -50,7 +50,6 @@ void ps(){
         // pid
         uintToBase(processes[i]->pid, aux, 10);
         print(" ");
-        print("a");
         print(aux);
         print("  |");
 
@@ -215,10 +214,11 @@ pid_t init_block(int argc, char * argv[], int read_fd, int write_fd, boolean for
 }
 
 void cat(int argc, char * argv[]){
-    char* let = "a"; 
+    char* let = strdup(" "); 
     while(read(let, 1) > 0){
         print(let);
     }
+    my_free(let);
     exit();
 }
 
