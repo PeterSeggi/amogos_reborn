@@ -1,15 +1,13 @@
-/*#include "include/syscall.h"
 #include "include/test_util.h"
 #include "include/userlib.h"
 #include "include/userlibasm.h"
-
-#include <stdio.h>
+//#include <stddef.h>
 
 #define MAX_BLOCKS 128
 
 typedef struct MM_rq {
   void *address;
-  uint32_t size;
+  uint16_t size;
 } mm_rq;
 
 void * u_memset(void * destination, int32_t c, uint64_t length)
@@ -26,19 +24,29 @@ void * u_memset(void * destination, int32_t c, uint64_t length)
 uint64_t test_mm(uint64_t argc, char *argv[]) {
 
   mm_rq mm_rqs[MAX_BLOCKS];
-  uint8_t rq;
-  uint32_t total;
+  uint64_t rq;
+  uint64_t total;
   uint64_t max_memory;
 
-  if (argc != 1)
+  if (argc != 2)
     return -1;
 
   if ((max_memory = satoi(argv[1])) <= 0)
     return -1;
 
+  // Conversion de megas a bytes
+  max_memory = max_memory * 1024 * 1024;
+
+  int test_loop = 0;
+
   while (1) {
     rq = 0;
     total = 0;
+
+    print("-----------------------------------------------\n");
+    print("Test n:");
+    printDec(test_loop++);
+    print("\n");
 
     // Request as many blocks as we can
     while (rq < MAX_BLOCKS && total < max_memory) {
@@ -51,11 +59,24 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
       }
     }
 
+    printDec(rq);
+    print(" blocks allocated. Memory ");
+    printDec(total);
+    print("B/");
+    printDec(max_memory);
+    print("B\n");
+    print("Setting... ");
+
     // Set
-    uint32_t i;
-    for (i = 0; i < rq; i++)
+    uint64_t i;
+    for (i = 0; i < rq; i++){
       if (mm_rqs[i].address)
         u_memset(mm_rqs[i].address, i, mm_rqs[i].size);
+       
+    }
+    print("done!\n");
+
+    print("Testing... ");
 
     // Check
     for (i = 0; i < rq; i++)
@@ -65,9 +86,17 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
           return -1;
         }
 
+    print("done!\n");
+    print("Freeing.. ");
+
     // Free
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address)
         my_free(mm_rqs[i].address);
+
+    print("done!\n");
+    print("Test ");
+    printDec(test_loop - 1);
+    print(" succesful!\n\n\n");
   }
-}*/
+}
