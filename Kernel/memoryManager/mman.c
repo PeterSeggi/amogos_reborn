@@ -5,10 +5,10 @@
 #define FREE_MEM_START 0x600000
 #define FREE_MEM_END 0x20000000
 
-#define MEM_CHUNK 512 //for alignment
+#define MEM_CHUNK 512 //multiple of 8 for alignment
 
 /*
-    WORDMAP: 2Byte maps 8 byte(mem_chunk)
+    WORDMAP: 2Byte maps MEM_CHUNK byte
     
      ________________ ____
     |________________|____|
@@ -16,7 +16,8 @@
     start free_mem   header
 */
 
-uint16_t * header = NULL;
+uint32_t * header = NULL;
+int header_unit_size = sizeof(uint32_t);
 
 uint64_t total_mem = 0;
 uint64_t vacant_mem = 0;
@@ -28,11 +29,11 @@ void * assign_mem(uint32_t size);
 void mm_init(){
     total_mem = (FREE_MEM_END - FREE_MEM_START);
     total_mem -= total_mem%MEM_CHUNK;
-    total_mem -= (total_mem/MEM_CHUNK)*2;
+    total_mem -= (total_mem/MEM_CHUNK)*header_unit_size;
     vacant_mem = total_mem;
     occupied_mem = 0;
-    header = FREE_MEM_START + total_mem;
-    for(int i = 0; (header+i) < FREE_MEM_END; i++){//fill manager with 0
+    header = (uint32_t *)(FREE_MEM_START + total_mem);
+    for(int i = 0; (header+i) < (uint32_t *)FREE_MEM_END; i++){//fill manager with 0
         *(header+i)=0;
     }
 }
@@ -40,9 +41,9 @@ void mm_init(){
 void * my_malloc(uint32_t size){
     void *to_ret = NULL;
 
-    if(size%MEM_CHUNK)size += (MEM_CHUNK - size%MEM_CHUNK);
+    if(size%MEM_CHUNK) size += (MEM_CHUNK - size%MEM_CHUNK);
 
-    if(size && (get_mem_vacant() >= size)){//TODO: race condition (thread safe? in case multiple assign mem?)
+    if(size && (get_mem_vacant() >= size)){
         to_ret = (void *) assign_mem(size/MEM_CHUNK);
     }
 
@@ -101,7 +102,7 @@ void * assign_mem(uint32_t size){
     }
     if(set){
         *(header + idx) = size;
-        to_ret = FREE_MEM_START + idx*MEM_CHUNK;
+        to_ret = (void *)(FREE_MEM_START + idx*MEM_CHUNK);
 
         vacant_mem-=size*MEM_CHUNK;
         occupied_mem+=size*MEM_CHUNK;
