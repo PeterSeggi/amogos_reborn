@@ -252,25 +252,13 @@ pid_t init_wc(int argc, char * argv[], int read_fd, int write_fd, boolean foregr
 }
 
 void filter(int argc, char * argv[]){
-    if (argc != 2) {
-        print("Uso: filter <string>\n");
-        exit();
+    char* let = strdup(" "); 
+    while(read(let, 1) > 0){
+        if (!(let[0] == 'a' || let[0] == 'A' || let[0] == 'e' || let[0] == 'E' || let[0] == 'i' || let[0] == 'I' ||
+              let[0] == 'o' || let[0] == 'O' || let[0] == 'u' || let[0] == 'U')) print(let);
+
     }
-    char * filtered = strdup(argv[1]);
-    int length = strlen(argv[1]);
-    int j = 0;
-    for (int i = 0; i < length; ++i) {
-        char c = argv[1][i];
-        // chequeo vocal
-        if (!(c == 'a' || c == 'A' || c == 'e' || c == 'E' || c == 'i' || c == 'I' ||
-              c == 'o' || c == 'O' || c == 'u' || c == 'U')) {
-            filtered[j++] = c;
-        }
-    }
-    filtered[j] = '\0'; // Null-terminate the filtered string
-    print(filtered);
-    print("\n");
-    my_free(filtered);
+    my_free(let);
     exit();
 }
 
