@@ -44,7 +44,7 @@ int64_t test_processes(uint64_t argc, char *argv[], int stdin, int stdout) {
 
         // Create max_processes processes
         for (proc_amount = 0; proc_amount < max_processes; proc_amount++) {
-            argvAux[0] = "endless_loop";
+            argvAux[0] = "e_loop";
             procs[proc_amount].pid = create_shiny_process(&local_endless_loop, 1, argvAux, DEFAULT_PRIORITY, FALSE, foreground ,stdin, stdout);
             if (procs[proc_amount].pid == -1) {
                 print("test_processes: ERROR creating process\n");

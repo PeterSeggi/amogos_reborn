@@ -52,7 +52,10 @@ void ps(){
         uintToBase(processes[i]->pid, aux, 10);
         print(" ");
         print(aux);
-        print("  |");
+        if(processes[i]->pid<10){
+            print(" ");
+        }
+        print(" |");
 
         // name
         print(processes[i]->name);
