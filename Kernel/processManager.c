@@ -530,9 +530,13 @@ void kill(pid_t pid){
             }
         }
     }
-    for(int i=0; i<MAX_CHILDREN_COUNT && !found; i++){
-        pid_t childpid = pcb->processes[pid]->children[i];        
-        if(childpid!=0) pcb->processes[childpid]->fatherPid = fatherPid;    //si ese hijo existe, lo adopta el abuelo 
+    int children_left = pcb->processes[pid]->children_amount;   //solo itera en la cantidad de hijos
+    for(int i=0; i<MAX_CHILDREN_COUNT && children_left; i++){
+        pid_t childpid = pcb->processes[pid]->children[i];
+        if(childpid!=0){
+            pcb->processes[childpid]->fatherPid = fatherPid;    //si ese hijo existe, lo adopta el abuelo 
+            children_left--;
+        } 
     }
     
 
@@ -580,8 +584,10 @@ ProcessNode * delete_from_sched(ProcessNode * current, pid_t pid){
         my_free(current);
         scheduler->size--;
         scheduler->list[pcb->processes[pid]->priority]->size--;
-        scheduler->list[pcb->processes[pid]->priority]->current = NULL;
-
+        if( scheduler->list[pcb->processes[pid]->priority]->current->pid == pid){
+            scheduler->list[pcb->processes[pid]->priority]->current = NULL;
+        }
+        
         return toReturn;
     }
     else{

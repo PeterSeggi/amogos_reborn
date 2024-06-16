@@ -180,7 +180,8 @@ pid_t init_mem(int argc, char * argv[], int read_fd, int write_fd, boolean foreg
 void command_kill(int argc, char ** argv){
 
     //se asume argv[1] como pid
-    pid_t myPid = *argv[1]-'0'; 
+    pid_t myPid = satoi(argv[1]); 
+
     if(myPid>2 && myPid<MAX_PROCESS_COUNT && myPid!=get_pid()){
         kill(myPid);
     }
@@ -193,7 +194,7 @@ pid_t init_kill(int argc, char * argv[], int read_fd, int write_fd, boolean fore
 }
 
 void command_nice(int argc, char * argv[]){
-    pid_t myPid = *argv[1]-'0';
+    pid_t myPid = satoi(argv[1]);
     nice(myPid);    
     exit();
 }
@@ -204,7 +205,7 @@ pid_t init_nice(int argc, char * argv[], int read_fd, int write_fd, boolean fore
 }
 
 void command_block(int argc, char * argv[]){
-    pid_t myPid = *argv[1]-'0'; 
+    pid_t myPid = satoi(argv[1]); 
     if(myPid>2 && myPid<MAX_PROCESS_COUNT){
         block_proc(myPid);
     }    

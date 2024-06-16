@@ -131,8 +131,7 @@ void k_strcpy(char *destination, const char *source) {
 }
 
 char *k_strdup(const char *s) {
-    uint16_t len = k_strlen(s);
-
+    uint16_t len = k_strlen(s)+1;
     char *dup = (char *)my_malloc(len);
     if (dup == NULL) {
         return NULL; 
