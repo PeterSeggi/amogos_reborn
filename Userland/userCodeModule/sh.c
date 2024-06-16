@@ -5,13 +5,13 @@
 #include <stddef.h>
 #include "include/commands.h"
 
-#define COMMANDS 14
+#define COMMANDS 15
 
 int init_sh(int read_fd, int write_fd){
     char * name = strdup("shell");
     return create_shiny_process(&sh, 1, &name, 4, FALSE, TRUE, read_fd, write_fd);
 }
-static char* commands[COMMANDS] = {"ps","loop","mem","help","sleep","kill","nice","block","cat","wc","filter", "phylo", "clear", "exit"};
+static char* commands[COMMANDS] = {"ps","loop","mem","help","sleep","kill","nice","block","cat","wc","filter", "phylo", "clear","testproc", "exit"};
 
 char* let = " ";
 //char prompt_start[] = {127, 0};
@@ -204,6 +204,11 @@ int parse_command(const char *input, int r_fd, int w_fd, boolean foreground) {
                     clearScreen();
                     c_pid = 0;
                     break;
+
+                case 13:    //test processes
+                    c_pid = init_procs(argc, argv, r_fd, w_fd, foreground);
+                    break;
+
 
                 case COMMANDS-1:
                     c_pid = 1;

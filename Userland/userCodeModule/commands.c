@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include "include/commands.h"
 #include "include/phylo.h"
+#include "include/test_util.h"
 
 
 extern char endOfBinary;
@@ -51,7 +52,10 @@ void ps(){
         uintToBase(processes[i]->pid, aux, 10);
         print(" ");
         print(aux);
-        print("  |");
+        if(processes[i]->pid<10){
+            print(" ");
+        }
+        print(" |");
 
         // name
         print(processes[i]->name);
@@ -295,9 +299,10 @@ pid_t init_mm(int argc, char * argv[], int read_fd, int write_fd, boolean foregr
     boolean orphan = FALSE;
     return create_shiny_process(&mem_test, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
+*/
 
-void proc_test(int argc, char ** argv){
-    test_processes(argc, argv);
+void proc_test(int argc, char ** argv, int read_fd, int write_fd){
+    test_processes(argc, argv, read_fd, write_fd);
     exit();
 }
 
@@ -306,13 +311,5 @@ pid_t init_procs(int argc, char * argv[], int read_fd, int write_fd, boolean for
     return create_shiny_process(&proc_test, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
 
-void proc_test(int argc, char ** argv){
-    test_processes(argc, argv);
-    exit();
-}
 
-pid_t init_procs(int argc, char * argv[], int read_fd, int write_fd, boolean foreground){
-    boolean orphan = FALSE;
-    return create_shiny_process(&proc_test, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
-}*/
 
