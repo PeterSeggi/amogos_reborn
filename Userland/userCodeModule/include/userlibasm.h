@@ -17,7 +17,7 @@ void _opError();
 void _beep(uint32_t frequency, int duration);
 
 void _getMemState(uint64_t * states);
-void * _my_malloc(uint16_t size);
+void * _my_malloc(uint32_t size);
 void _my_free(void * addr_to_free);
 
 ProcessView ** _get_processes(uint16_t * proc_amount);

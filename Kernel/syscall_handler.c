@@ -236,7 +236,7 @@ void sys_speak(uint64_t frequence, uint64_t duration){
     beep((uint32_t) frequence, (int) duration);
 }
 
-void *sys_malloc(uint16_t size){
+void *sys_malloc(uint32_t size){
   return my_malloc(size);
 }
 

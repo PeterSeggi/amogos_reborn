@@ -26,7 +26,7 @@ typedef struct memNode {
 } memNode;
 
 
-int findAndAlloc(uint16_t size, uint64_t start, uint64_t current_size, int index, uint64_t* found_address);
+int findAndAlloc(uint32_t size, uint64_t start, uint64_t current_size, int index, uint64_t* found_address);
 int findAndFree(uint64_t adddress, uint64_t start, uint64_t current_size, int index);
 
 memNode memMap[NODE_AMOUNT];
@@ -48,7 +48,7 @@ void mm_init()
     }
 }
 
-void * my_malloc(uint16_t size)
+void * my_malloc(uint32_t size)
 {
     if (size < MIN_SIZE)
         size = MIN_SIZE;
@@ -90,7 +90,7 @@ uint64_t get_mem_occupied(){
   | Local functions
   -----------------------*/
 
-int findAndAlloc(uint16_t size, uint64_t start, uint64_t current_size, int index, uint64_t* found_address)
+int findAndAlloc(uint32_t size, uint64_t start, uint64_t current_size, int index, uint64_t* found_address)
 {
     if (size > current_size / 2)
     {

@@ -23,7 +23,7 @@ uint64_t vacant_mem = 0;
 uint64_t occupied_mem = 0;
 
 
-void * assign_mem(uint16_t size);
+void * assign_mem(uint32_t size);
 
 void mm_init(){
     total_mem = (FREE_MEM_END - FREE_MEM_START);
@@ -37,7 +37,7 @@ void mm_init(){
     }
 }
 
-void * my_malloc(uint16_t size){
+void * my_malloc(uint32_t size){
     void *to_ret = NULL;
 
     if(size%MEM_CHUNK)size += (MEM_CHUNK - size%MEM_CHUNK);
@@ -84,7 +84,7 @@ uint64_t get_mem_occupied(){
 *@return    Address for the desired size.
 *@note      If a suitable address isn't found, returns null.
 */
-void * assign_mem(uint16_t size){
+void * assign_mem(uint32_t size){
     void *to_ret = NULL;
 
     uint8_t set = 0;

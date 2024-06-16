@@ -271,7 +271,7 @@ void beep(uint32_t frequency, int duration){
 // Memory
 //================================================================================================================================
 
-void * my_malloc(uint16_t size){
+void * my_malloc(uint32_t size){
     return _my_malloc(size);
 }
 

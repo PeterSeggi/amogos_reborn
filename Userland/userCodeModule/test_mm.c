@@ -7,7 +7,7 @@
 
 typedef struct MM_rq {
   void *address;
-  uint16_t size;
+  uint32_t size;
 } mm_rq;
 
 void * u_memset(void * destination, int32_t c, uint64_t length)

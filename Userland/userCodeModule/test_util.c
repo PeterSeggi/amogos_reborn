@@ -9,16 +9,16 @@
 static uint32_t m_z = 362436069;
 static uint32_t m_w = 521288629;
 
-uint16_t GetUint() {
+uint32_t GetUint() {
   m_z = 36969 * (m_z & 65535) + (m_z >> 16);
   m_w = 18000 * (m_w & 65535) + (m_w >> 16);
-  return (uint16_t) ((m_z << 16) + m_w);
+  return ((m_z << 16) + m_w);
 }
 
-uint16_t GetUniform(uint16_t max) {
-  uint16_t u = GetUint();
-  //return (uint16_t) ((u + 1.0) * 2.328306435454494e-10 * max);
-  return (uint16_t) ((u + 1.0) * (1.0 / UINT16_MAX) * max);
+uint32_t GetUniform(uint32_t max) {
+  uint32_t u = GetUint();
+  return ((u + 1.0) * 2.328306435454494e-10 * max);
+  //return (uint16_t) ((u + 1.0) * (1.0 / UINT16_MAX) * max);
 }
 
 // Memory

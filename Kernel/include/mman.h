@@ -15,7 +15,7 @@ void mm_init();
 *@return    Address of the allocated memory.
 *@note      If a suitable address isn't found, returns null.
 */
-void * my_malloc(uint16_t size);
+void * my_malloc(uint32_t size);
 
 /**
 *@brief     Frees previously allocated memory.

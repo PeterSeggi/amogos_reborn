@@ -44,7 +44,7 @@ void sys_gettimeofday(uint64_t hrs, uint64_t min, uint64_t seg);
 
 int sys_registers(uint64_t regs);
 
-void *sys_malloc(uint16_t size);
+void *sys_malloc(uint32_t size);
 void sys_free(uint64_t addr_to_free);
 void sys_memState(uint64_t states);
 
