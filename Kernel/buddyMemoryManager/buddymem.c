@@ -1,11 +1,7 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
-
 #include "mman.h"
-#include <stdint.h>
-#include <stdio.h>
-
 
 #define EXIT_SUCCESS 0
 
@@ -22,8 +18,6 @@
 #define MEM_SIZE 0x10000000 
 
 #define MIN_SIZE 256
-
-
 
 typedef struct memNode {
     char state;
@@ -94,6 +88,16 @@ uint64_t get_mem_occupied(){
   | Local functions
   -----------------------*/
 
+/**
+*@brief     .
+*@param[in] size .
+*@param[in] start .
+*@param[in] current_size .
+*@param[in] index .
+*@param[in] found_address .
+*@return    .
+*@note      .
+*/
 int findAndAlloc(uint32_t size, uint64_t start, uint64_t current_size, int index, uint64_t* found_address)
 {
     if (size > current_size / 2)
@@ -143,6 +147,15 @@ int findAndAlloc(uint32_t size, uint64_t start, uint64_t current_size, int index
     return 0;
 }
 
+/**
+*@brief     .
+*@param[in] address .
+*@param[in] start .
+*@param[in] current_size .
+*@param[in] index .
+*@return    .
+*@note      .
+*/
 int findAndFree(uint64_t address, uint64_t start, uint64_t current_size, int index)
 {
     char current_state = memMap[index].state;

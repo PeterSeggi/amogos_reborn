@@ -305,7 +305,7 @@ void moveScreen()
 
 void copyPixel(uint64_t new_x, uint64_t new_y, uint64_t old_x, uint64_t old_y)
 {
-	if (new_x >= 0 && new_x < VBE_mode_info->width && new_y >= 0 && new_y < VBE_mode_info->height)
+	if (new_x < VBE_mode_info->width && new_y < VBE_mode_info->height)
 	{
 		uint8_t *framebuffer = (uint8_t *)VBE_mode_info->framebuffer;
 		uint64_t oldOffset = (old_x * ((VBE_mode_info->bpp) / 8)) + (old_y * VBE_mode_info->pitch);

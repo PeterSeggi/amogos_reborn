@@ -1,7 +1,23 @@
 pvs-studio.com/en/docs/warnings/	1	err	Help: The documentation for all analyzer warnings is available here: https://pvs-studio.com/en/docs/warnings/.
+/root/amogos_reborn/Bootloader/BMFS/bmfs.c	240	note	V576 Incorrect format. Consider checking the third actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/amogos_reborn/Bootloader/BMFS/bmfs.c	256	note	V576 Incorrect format. Consider checking the third actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/amogos_reborn/Bootloader/BMFS/bmfs.c	256	note	V576 Incorrect format. Consider checking the fourth actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/amogos_reborn/Bootloader/BMFS/bmfs.c	371	note	V584 The 'diskSize' value is present on both sides of the '>' operator. The expression is incorrect or it can be simplified.
+/root/amogos_reborn/Bootloader/BMFS/bmfs.c	410	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. Under certain conditions the pointer can be null.
+/root/amogos_reborn/Bootloader/BMFS/bmfs.c	454	note	V575 The potential null pointer is passed into 'memset' function. Inspect the first argument.
+/root/amogos_reborn/Bootloader/BMFS/bmfs.c	484	note	V575 The potential null pointer is passed into 'rewind' function. Inspect the first argument.
+/root/amogos_reborn/Bootloader/BMFS/bmfs.c	503	note	V1004 The 'mbr' pointer was used unsafely after it was verified against nullptr. Check lines: 394, 503.
 /root/amogos_reborn/Bootloader/BMFS/bmfs.c	512	err	V595 The 'disk' pointer was utilized before it was verified against nullptr. Check lines: 512, 526.
 /root/amogos_reborn/Bootloader/BMFS/bmfs.c	640	warn	V1032 The pointer 'dir_copy' is cast to a more strictly aligned pointer type.
+/root/amogos_reborn/Bootloader/BMFS/bmfs.c	691	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The SIGNED integer type argument is expected.
 /root/amogos_reborn/Bootloader/BMFS/bmfs.c	696	warn	V1032 The pointer 'Directory' is cast to a more strictly aligned pointer type.
+/root/amogos_reborn/Kernel/kernel.c	28	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (void *) 0x400000
+/root/amogos_reborn/Kernel/kernel.c	29	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (void *) 0x500000
+/root/amogos_reborn/Kernel/naiveConsole.c	11	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (uint8_t *) 0xB8000
+/root/amogos_reborn/Kernel/naiveConsole.c	12	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (uint8_t *) 0xB8000
+/root/amogos_reborn/Kernel/processManager.c	85	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (void *) 0x400000
 /root/amogos_reborn/Kernel/video_drivre.c	334	warn	V536 Be advised that the utilized constant value is represented by an octal form. Oct: '\\033', Dec: 27.
+/root/amogos_reborn/Userland/userCodeModule/commands.c	148	note	V776 Potentially infinite loop.
 /root/amogos_reborn/Userland/userCodeModule/commands.c	277	warn	V522 There might be dereferencing of a potential null pointer 'let'. Check lines: 277, 265.
 /root/amogos_reborn/Userland/userCodeModule/commands.c	311	warn	V522 There might be dereferencing of a potential null pointer 'let'. Check lines: 311, 305.
+/root/amogos_reborn/Userland/userCodeModule/test_prio.c	27	note	V776 Potentially infinite loop.
