@@ -241,6 +241,8 @@ void cat(int argc, char * argv[]){
     while(read(let, 1) > 0){
         print(let);
     }
+
+    // Si se mata cat durante ejecucion con ctrl c sin mandarle antes el eof hay leak del my_free
     my_free(let);
     exit();
 }

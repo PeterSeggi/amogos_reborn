@@ -47,7 +47,7 @@ void sh(){
     command_cursor = 0;
     print(prompt_start);
 
-    while(read(let, 1) != -1){
+    while(!exited && read(let, 1) != -1){
         process(let[0]);
     }
 
@@ -311,7 +311,7 @@ void command_wrapper(const char* input){
 
         if (cpid2 > 1 && foreground) waitpid(cpid2); 
 
-        if (cpid1 == 1 || cpid2 == 1) exit();
+        if (cpid1 == 1 || cpid2 == 1) exited = 1; 
 
         
         // cierro manualmente todos los pipes por si alguno de los comandos no cerro los suyos (builtin)
@@ -341,7 +341,7 @@ void command_wrapper(const char* input){
         pclose(pipe_in[1]);
         pclose(pipe_out[1]);
 
-        if (cpid == 1) exit();
+        if (cpid == 1) exited = 1;
 
     }
 }

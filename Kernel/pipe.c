@@ -4,7 +4,7 @@
 #include <lib.h>
 
 #define MAX_FD 1000
-#define PIPE_BUFF 65400
+#define PIPE_BUFF 32768
 
 #define STDIN 0
 #define STDOUT 1
@@ -119,7 +119,7 @@ int pclose(int fd){
         aux_pipe->read_fd=0;
         release_pids(aux_pipe->sem_to_write);
     }
-    else{
+    else if(aux_pipe->write_fd == fd){
         aux_pipe->write_fd=0;
         release_pids(aux_pipe->sem_to_read);
     }
