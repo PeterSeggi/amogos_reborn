@@ -14,7 +14,9 @@ int init_sh(int read_fd, int write_fd){
     char **argv = (char **) my_malloc(sizeof(char *) * argc);
     if(!argv) return -1;
     argv[0] = strdup("shell");
+
     int to_ret = create_shiny_process(&sh, argc, argv, 4, FALSE, TRUE, read_fd, write_fd);
+
     my_free(argv[0]);
     my_free(argv);
     return to_ret;
@@ -334,9 +336,9 @@ void command_wrapper(const char* input){
         if (cpid > 1 && foreground) waitpid(cpid); 
 
         pclose(pipe_in[0]);
-        pclose(pipe_in[1]);
-
         pclose(pipe_out[0]);
+
+        pclose(pipe_in[1]);
         pclose(pipe_out[1]);
 
         if (cpid == 1) exit();

@@ -13,7 +13,7 @@
 typedef struct pipe_t{
     uint16_t read_fd;
     uint16_t write_fd;
-    char *buffer;
+    char buffer[PIPE_BUFF];
     uint16_t to_read_idx;
     uint16_t to_write_idx;
     sem_t *sem_to_read;
@@ -67,6 +67,9 @@ int read_pipe(int fd, char *buffer, uint16_t amount){
 
     while(amount_read < amount && !done){
         sem_wait(aux_pipe->sem_to_read);
+
+        if(!aux_pipe->write_fd && aux_pipe->to_read_idx==aux_pipe->to_write_idx) return 0;
+
         sem_wait(aux_pipe->sem_mutex);
         buffer[amount_read++] = aux_pipe->buffer[aux_pipe->to_read_idx];
         aux_pipe->to_read_idx = (aux_pipe->to_read_idx+1)%PIPE_BUFF;
@@ -114,10 +117,11 @@ int pclose(int fd){
     if(!aux_pipe) return -1;
     if(aux_pipe->read_fd==fd){
         aux_pipe->read_fd=0;
-        release_pids(aux_pipe->sem_to_read);
+        release_pids(aux_pipe->sem_to_write);
     }
     else{
         aux_pipe->write_fd=0;
+        release_pids(aux_pipe->sem_to_read);
     }
 
     if (aux_pipe->read_fd == 0 && aux_pipe->write_fd == 0) return delete_pipe(fd);
@@ -143,8 +147,7 @@ pipe_t *create_pipe(int read_fd, int write_fd){
     aux_pipe->to_read_idx = 0;
     aux_pipe->to_write_idx = 0;
 
-    aux_pipe->buffer = (char *) my_malloc(PIPE_BUFF);
-    if (!aux_pipe->buffer) return NULL;
+    for (int i = 0; i < PIPE_BUFF; i++) aux_pipe->buffer[i] = 0;
 
     // Nombre
     char aux_pipe_name[20] = "pipe_0000";
@@ -178,7 +181,7 @@ int delete_pipe(int fd){
     if(sem_close(aux_pipe->sem_to_read)==-1) return -1;
     if(sem_close(aux_pipe->sem_to_write)==-1) return -1;
     if(sem_close(aux_pipe->sem_mutex)==-1) return -1;
-    my_free(aux_pipe->buffer);
+    //my_free(aux_pipe->buffer);
     my_free(aux_pipe);
     pipes[fd/2] = NULL;
     return 0;

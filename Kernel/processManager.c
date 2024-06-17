@@ -718,6 +718,8 @@ int delete_from_foreground(int pid){
 
     ProcessNode* current = (ProcessNode *) my_malloc(sizeof(ProcessNode));
     if (!current) return -1;
+    ProcessNode* auxFree = current;
+
 
     current->next = foregroundProcess->firstProcess;
     int found = 0;
@@ -740,7 +742,7 @@ int delete_from_foreground(int pid){
 
     // me aseguro de que el que esta en foreground tenga setteado correctamente el flag
     if (foregroundProcess->size) pcb->processes[foregroundProcess->firstProcess->pid]->foreground = TRUE;
-    my_free(current);
+    my_free(auxFree);
     return 0;
 }
 

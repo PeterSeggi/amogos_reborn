@@ -89,12 +89,12 @@ void insert_key(int key) {
      kill(fore);
   } 
     
-  if (control == 1 && (toWrite == 'd')){
+  else if (control == 1 && (toWrite == 'd')){
      control = 0;
-     pclose(fore_fd);
+     pclose(fore_fd + 1);
   } 
 
-  write_pipe(fore_fd + 1, &toWrite, 1);
+  else write_pipe(fore_fd + 1, &toWrite, 1);
 }
 
 // returns the actual key, 0 if nothing was read

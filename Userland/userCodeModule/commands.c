@@ -212,7 +212,7 @@ pid_t init_kill(int argc, char * argv[], int read_fd, int write_fd, boolean fore
 }
 
 void command_nice(int argc, char * argv[]){
-    if(argc != 3) return;
+    if(argc != 3) exit();
 
     nice(satoi(argv[1]), satoi(argv[2]));    
     exit();
