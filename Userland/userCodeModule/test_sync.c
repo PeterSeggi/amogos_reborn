@@ -62,23 +62,23 @@ void my_process_inc(uint64_t argc, char *argv[]) {
   exit();
 }
 
-void test_sync(uint64_t argc, char *argv[]){ //{n, use_sem, 0}
+void test_sync(uint64_t argc, char *argv[], int stdin, int stdout){ //{n, use_sem, 0}
   uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
   if (argc != 3){
     print("test_sync: Wrong amount of parameters\n");
-    exit();
+    return;
   }
 
-  char *argvDec[] = {"test_sync_dec", argv[1], "-1", argv[2], NULL};
-  char *argvInc[] = {"test_sync_inc", argv[1], "1", argv[2], NULL};
+  char *argvDec[] = {"test_sync_dec", argv[1], "-1", argv[2]};
+  char *argvInc[] = {"test_sync_inc", argv[1], "1", argv[2]};
 
   global = 0;
 
   uint64_t i;
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    pids[i] = create_process(&my_process_inc, 4, argvDec);
-    pids[i + TOTAL_PAIR_PROCESSES] = create_process(&my_process_inc, 4, argvInc);
+    pids[i] = create_shiny_process(&my_process_inc, 4, argvDec, 4, FALSE, TRUE, stdin, stdout);
+    pids[i + TOTAL_PAIR_PROCESSES] = create_shiny_process(&my_process_inc, 4, argvInc, 4, FALSE, TRUE, stdin, stdout);
   }
 
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
@@ -94,5 +94,5 @@ void test_sync(uint64_t argc, char *argv[]){ //{n, use_sem, 0}
   else  printDec(global);
   print("\n");
 
-  exit();
+  return;
 }

@@ -319,8 +319,8 @@ pid_t init_phylo(int argc, char * argv[], int read_fd, int write_fd, boolean for
     return create_shiny_process(&the_real_phylo, argc, argv, DEFAULT_PRIORITY, orphan, foreground, read_fd, write_fd);
 }
 
-void sync_test(int argc, char ** argv){
-    test_sync(argc, argv);
+void sync_test(int argc, char ** argv, int read_fd, int write_fd){
+    test_sync(argc, argv, read_fd, write_fd);
     exit();
 }
 
