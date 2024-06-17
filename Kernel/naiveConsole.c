@@ -1,9 +1,13 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
+
 #include <naiveConsole.h>
 #include <stdint.h>
 
 static uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base);
 
-static char buffer[64] = { '0' };
+static char buffer[64] = {0};
 static uint8_t * const video = (uint8_t*)0xB8000;
 static uint8_t * currentVideo = (uint8_t*)0xB8000;
 static const uint32_t width = 80;

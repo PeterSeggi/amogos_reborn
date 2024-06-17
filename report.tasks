@@ -1,0 +1,7 @@
+pvs-studio.com/en/docs/warnings/	1	err	Help: The documentation for all analyzer warnings is available here: https://pvs-studio.com/en/docs/warnings/.
+/root/amogos_reborn/Bootloader/BMFS/bmfs.c	512	err	V595 The 'disk' pointer was utilized before it was verified against nullptr. Check lines: 512, 526.
+/root/amogos_reborn/Bootloader/BMFS/bmfs.c	640	warn	V1032 The pointer 'dir_copy' is cast to a more strictly aligned pointer type.
+/root/amogos_reborn/Bootloader/BMFS/bmfs.c	696	warn	V1032 The pointer 'Directory' is cast to a more strictly aligned pointer type.
+/root/amogos_reborn/Kernel/video_drivre.c	334	warn	V536 Be advised that the utilized constant value is represented by an octal form. Oct: '\\033', Dec: 27.
+/root/amogos_reborn/Userland/userCodeModule/commands.c	277	warn	V522 There might be dereferencing of a potential null pointer 'let'. Check lines: 277, 265.
+/root/amogos_reborn/Userland/userCodeModule/commands.c	311	warn	V522 There might be dereferencing of a potential null pointer 'let'. Check lines: 311, 305.

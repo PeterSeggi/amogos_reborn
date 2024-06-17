@@ -1,3 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
+
 #include "include/videoDriver.h"
 #include <videoDriver.h>
 #include <fonts.h>
@@ -54,7 +58,7 @@ uint16_t pitch;
 uint16_t width; 
 uint8_t bpp;
 
-static char buffer[64] = {'0'};
+static char buffer[64] = {0};
 
 static void clearLine();
 
@@ -187,7 +191,8 @@ void print(const char * string){
 }
 
 void printCant(const char * string, uint64_t cant){
-	for(int i=0; string[i]!=0 && i<cant;)
+	int i = 0;
+	while(i<cant && string[i]!=0)
         i = process_input(string, i, DEFAULT_FONT, DEFAULT_BACK); 
 }
 
@@ -197,7 +202,8 @@ void printColor(const char * string, uint32_t fontColor, uint32_t bgColor){
 }
 
 void printColorCant(const char * string, uint64_t cant, uint32_t fontColor, uint32_t bgColor){
-	for(int i=0; string[i]!=0 && i<cant;)
+	int i = 0;
+	while(i<cant && string[i]!=0)
 		i = process_input(string, i, fontColor, bgColor);
 }
 

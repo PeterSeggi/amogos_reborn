@@ -1,3 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
+
 /* BareMetal File System Utility */
 /* Written by Ian Seyler of Return Infinity */
 
@@ -519,7 +523,7 @@ int initialize(char *diskname, char *size, char *mbr, char *boot, char *kernel)
 			}
 			else
 			{
-				if (ferror(disk))
+				if (disk && ferror(disk))
 				{
 					printf("Error: Failed to read file '%s'\n", boot);
 					ret = 1;
@@ -547,7 +551,7 @@ int initialize(char *diskname, char *size, char *mbr, char *boot, char *kernel)
 			}
 			else
 			{
-				if (ferror(disk))
+				if (disk && ferror(disk))
 				{
 					printf("Error: Failed to read file '%s'\n", kernel);
 					ret = 1;

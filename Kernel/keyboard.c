@@ -1,3 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
+
 #include "include/processManager.h"
 #include <keyboard.h>
 #include <lib.h>
@@ -99,7 +103,7 @@ void insert_key(int key) {
 
 // returns the actual key, 0 if nothing was read
 int read_key(int fd) {
-  int toRet;
+  int toRet = 0;
 
   if (fd == STDIN) {
     if (!ascii_to_read)
