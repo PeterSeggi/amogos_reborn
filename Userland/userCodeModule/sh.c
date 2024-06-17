@@ -21,7 +21,7 @@ int init_sh(int read_fd, int write_fd){
     my_free(argv);
     return to_ret;
 }
-static char* commands[COMMANDS] = {"ps","loop","mem","help","sleep","kill","nice","block","cat","wc","filter", "phylo", "test_sync", "test_proc", "test_prio", "test_mm", "clear", "exit"};
+static char* commands[COMMANDS] = {"ps","loop","mem","help","sleep","kill","nice","block","cat","wc","filter", "phylos", "test_sync", "test_proc", "test_prio", "test_mm", "clear", "exit"};
 
 char* let = " ";
 //char prompt_start[] = {127, 0};

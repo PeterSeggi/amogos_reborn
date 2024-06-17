@@ -17,6 +17,7 @@ GLOBAL _create_shiny_process
 GLOBAL _waitpid
 GLOBAL _exit
 GLOBAL _kill
+GLOBAL _kill_children
 GLOBAL _change_proc_priority
 GLOBAL _block_proc
 GLOBAL _get_pid
@@ -520,6 +521,22 @@ _kill:
 	mov rbp, rsp
 
     mov rax, 0xA4   ;sys_kill ID
+    int 80h;
+	mov rsp, rbp
+	pop rbp
+	ret
+
+;================================================================================================================================
+;_kill_children
+;int 80h para usar la syscall
+;IN: pid_t pid;
+;================================================================================================================================
+;================================================================================================================================
+_kill_children:
+	push rbp
+	mov rbp, rsp
+
+    mov rax, 0xAA   ;sys_kill_children ID
     int 80h;
 	mov rsp, rbp
 	pop rbp

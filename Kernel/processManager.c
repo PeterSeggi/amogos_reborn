@@ -20,6 +20,9 @@ boolean add_child(pid_t fatherPid, pid_t childPid);
 void free_argv(int argc, char ** argv);
 void change_priority(pid_t pid, int priority);
 
+void silent_kill(pid_t pid);
+void silent_kill_children(pid_t pid);
+
 //variables globales
 ProcessTable * pcb = NULL;
 PriorityArray * scheduler = NULL;
@@ -525,6 +528,13 @@ void silent_unblock(pid_t pid){
 void kill(pid_t pid){         
     _cli();
 
+    silent_kill(pid);
+
+    _force_schedule();
+}
+
+void silent_kill(pid_t pid){
+
     // bloqueamos el kill de init y de idle
     if (pid <= 2 || !pcb->processes[pid]) return;
 
@@ -585,7 +595,25 @@ void kill(pid_t pid){
 
     scheduler->runnableProcs = getRunningProceses();
 
+}
+
+void kill_children(pid_t pid){
+    _cli();
+
+    silent_kill_children(pid);
+
     _force_schedule();
+}
+
+void silent_kill_children(pid_t pid){
+    if (pcb->processes[pid] <= 0) return;
+         
+    pid_t *children = pcb->processes[pid]->children;
+    for (int i = 0; pcb->processes[pid]->children_amount > 0; i++){
+        if (pcb->processes[children[i]]->children_amount > 0) silent_kill_children(children[i]);
+        silent_kill(children[i]);
+    }
+
 }
 
 void unschedule(pid_t pid){

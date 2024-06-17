@@ -342,6 +342,10 @@ void kill(pid_t pid){
     _kill(pid);
 }
 
+void kill_children(pid_t pid){
+    _kill_children(pid);
+}
+
 void exit(void){
     _exit();
 }

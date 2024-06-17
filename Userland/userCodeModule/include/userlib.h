@@ -265,6 +265,7 @@ int create_process(void * function, int argc, char **argv);
 int create_shiny_process(void * function, int argc, char ** argv, int priority, boolean orphan, boolean foreground, uint16_t stdin, uint16_t stdout);
 int waitpid(pid_t pid);
 void kill(pid_t pid);
+void kill_children(pid_t pid);
 void exit(void);
 void nice(pid_t pid, int priority);
 void block_proc(pid_t pid);

@@ -26,6 +26,7 @@ boolean new_state = FALSE;
 Phylo phylo_table[PHYLO_MAX]={0};
 
 sem_t *mutex = NULL;
+int finished = 0;
 
 void init_phylos();
 void show_phylo_table();
@@ -45,7 +46,8 @@ void phylo_command(int argc, char **argv){
     srand(time());
     char *c = " ";
     init_phylos();
-    while(1){
+    finished = 0;
+    while(!finished){
         if(peek(STDIN)>0){
             read(c,1);
             switch (c[0]){
@@ -59,9 +61,19 @@ void phylo_command(int argc, char **argv){
                     remove_phylo();
                     sem_up(mutex);
                     break;
-                default:
-                    print("heyo\n");
+                case 'q':
+                    finished = 1;
+                    sem_close(mutex);
+                    kill_children(get_pid());
+                    for(int i = 0; i < phylo_amount; i++){
+                        sem_close(phylo_table[i].sem);
+                        phylo_table[i].sem = NULL;
+                    }
+                    new_state = FALSE;
+                    phylo_amount = 0;
+                    exit();
                     break;
+                    
             }
         }
         
@@ -196,6 +208,8 @@ int add_phylo(){
         return -1;
     }
     print("new phylo!\n");
+    my_free(name);
+    my_free(aux_argv);
     phylo_amount++;
     
     return 0;
@@ -206,7 +220,7 @@ int add_phylo(){
 */
 void remove_phylo(){
     uint8_t removed = 0;
-    if(phylo_amount>PHYLO_MIN){
+    if(phylo_amount>PHYLO_MIN || (finished && phylo_amount > 0)){
         sem_close(phylo_table[phylo_amount].sem);
         phylo_table[phylo_amount].sem=NULL;
         phylo_amount--;
