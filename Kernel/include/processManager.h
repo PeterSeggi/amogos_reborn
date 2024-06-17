@@ -101,7 +101,6 @@ void stackTest(int myrsp);
 void createStack(void);
 void stackPrep(void);
 void stackUnprep(void);
-uint64_t initializeStack(void * rsp, void * rip, int argc, char ** argv);
 void initialize_pcb(void);
 void initializeScheduler(void);
 void _cli();

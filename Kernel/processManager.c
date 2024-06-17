@@ -136,7 +136,7 @@ Process * create_shiny_process(void * function, int argc, char ** argv, int prio
     process->registers.rbp = ( (uint64_t)process + INITIAL_PROCESS_SIZE - 1); 
     process->registers.rsp = process->registers.rbp;        //inicialmente stack vacio
     process->registers.rip = (uint64_t)function;  //direccion de la funcion a ejecutar
-    process->registers.rsp = initializeStack((void *)process->registers.rsp, (void *)process->registers.rip, process->argc, process->argv); 
+    process->registers.rsp = _initialize_stack((void *)process->registers.rsp, (void *)process->registers.rip, process->argc, process->argv); 
     process->pid = new_pid();       //cada nuevo proceso recibe el pid siguiente en orden natural
     process->stdin_fd = stdin;
     process->stdout_fd = stdout;
