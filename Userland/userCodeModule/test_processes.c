@@ -27,16 +27,19 @@ int64_t test_processes(uint64_t argc, char *argv[], int stdin, int stdout) {
     uint8_t action;
     uint64_t max_processes;
     char *argvAux[] = {0};
-    boolean foreground = FALSE;   //los procesos no interactuan con stdout
+    boolean foreground = FALSE;   //processes wont interact with stdout
 
     if (argc != 2){
-        print("Wrong argument count...\n");
-        print("Use: testproc <max_processes>\n");
+        print("test_proc: Wrong argument count...\n");
+        print("test_proc: Use: testproc <max_processes>\n");
         return -1;
     } 
 
-    max_processes = satoi(argv[1]);             //argv[1] es el primer argumento del comando con nombre argv[0]
-    if (max_processes <= 0 || max_processes>20) return -1;
+    max_processes = satoi(argv[1]);
+    if (max_processes <= 0 || max_processes>20){
+        print("test_proc: Max processes must be a positive number, lesser than 20\n");
+        return -1;
+    }
 
     TestProcess procs[max_processes];
 
@@ -47,7 +50,7 @@ int64_t test_processes(uint64_t argc, char *argv[], int stdin, int stdout) {
             argvAux[0] = "e_loop";
             procs[proc_amount].pid = create_shiny_process(&local_endless_loop, 1, argvAux, DEFAULT_PRIORITY, FALSE, foreground ,stdin, stdout);
             if (procs[proc_amount].pid == -1) {
-                print("test_processes: ERROR creating process\n");
+                print("test_proc: ERROR creating process\n");
                 return -1;
             } 
             else {

@@ -28,11 +28,15 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
   uint64_t total;
   uint64_t max_memory;
 
-  if (argc != 2)
+  if (argc != 2){
+    print("test_mm: Wrong amount of parameters\n");
     return -1;
-
-  if ((max_memory = satoi(argv[1])) <= 0)
+  }
+    
+  if ((max_memory = satoi(argv[1])) <= 0){
+    print("test_mm: Max memory must be positive\n");
     return -1;
+  }
 
   // Conversion de megas a bytes
   max_memory = max_memory * 1024 * 1024;
@@ -82,7 +86,7 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address)
         if (!memcheck(mm_rqs[i].address, i, mm_rqs[i].size)) {
-          print("test_mm ERROR\n");
+          print("test_mm: ERROR\n");
           return -1;
         }
 

@@ -18,7 +18,6 @@ GLOBAL _irq128Handler
 
 GLOBAL _exception0Handler
 GLOBAL _exception6Handler
-GLOBAL _regsInterrupt
 
 GLOBAL regsBuf
 GLOBAL regs_saved
@@ -273,10 +272,6 @@ _idle:
     sti
     hlt
     jmp _idle
-
-_regsInterrupt:
-    mov rax, regsBuf
-	ret 
 
 SECTION .data
     regs_saved db 0

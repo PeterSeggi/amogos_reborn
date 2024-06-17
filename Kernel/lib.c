@@ -53,12 +53,6 @@ void * memcpy(void * destination, const void * source, uint64_t length)
 }
 
 
-void charcpy(char* dest, char* src, int length){
-    for(int i = 0; i < length; i++)
-        dest[i] = src[i];
-}
-
-
 uint32_t uintToBase(uint64_t value, char * buffer, uint32_t base)
 {
 	char *p = buffer;
