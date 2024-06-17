@@ -41,6 +41,7 @@ int exited = 0;
 
 void sh(){
 
+    exited = 0;
     clearScreen();
     strcpy(command_buffer, "");
     strcpy(c1_buf, "");
