@@ -12,7 +12,7 @@
 #define ERROR_FONT 0xDADADA
 #define ERROR_BACK 0xa70000
 
-typedef struct vbe_mode_info_structure {
+typedef struct __attribute__((packed)) {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
 	uint8_t window_a;			// deprecated
 	uint8_t window_b;			// deprecated
@@ -48,9 +48,9 @@ typedef struct vbe_mode_info_structure {
 	uint32_t off_screen_mem_off;
 	uint16_t off_screen_mem_size;	// size of memory in the framebuffer but not being displayed on the screen
 	uint8_t reserved1[206];
-}__attribute__((packed));
+}VBEInfo;
 
-typedef struct vbe_mode_info_structure * VBEInfoPtr;
+typedef VBEInfo * VBEInfoPtr;
 
 VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x0000000000005C00;
 uint16_t pitch; 
@@ -92,7 +92,7 @@ uint8_t getDrawSize(){
 
 void putPixel(uint32_t hexColor, uint64_t x, uint64_t y){
 	if( (x < getScreenWidth()) && (y < getScreenHeight())){
-		uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
+		uint8_t * framebuffer = (uint8_t *)(uintptr_t) VBE_mode_info->framebuffer;
 		uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch); //3 ya que son RGB(3) (24bits)
 		framebuffer[offset]=(hexColor) & 0x000000FF;	//agarro la parte baja del hexColor que es el azul
 		framebuffer[offset+1]=(hexColor >> 8) & 0x0000FF;
@@ -100,7 +100,7 @@ void putPixel(uint32_t hexColor, uint64_t x, uint64_t y){
         
 	}
 	if( (x < getScreenWidth()) && (y < getScreenHeight())){
-		uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
+		uint8_t * framebuffer = (uint8_t *)(uintptr_t) VBE_mode_info->framebuffer;
 		uint64_t offset = (x * ((VBE_mode_info->bpp)/8)) + (y * VBE_mode_info->pitch); //3 ya que son RGB(3) (24bits)
 		framebuffer[offset]=(hexColor) & 0x000000FF;	//agarro la parte baja del hexColor que es el azul
 		framebuffer[offset+1]=(hexColor >> 8) & 0x0000FF;
@@ -304,7 +304,7 @@ void copyPixel(uint64_t new_x, uint64_t new_y, uint64_t old_x, uint64_t old_y)
 {
 	if (new_x < VBE_mode_info->width && new_y < VBE_mode_info->height)
 	{
-		uint8_t *framebuffer = (uint8_t *)VBE_mode_info->framebuffer;
+		uint8_t *framebuffer = (uint8_t *)(uintptr_t)VBE_mode_info->framebuffer;
 		uint64_t oldOffset = (old_x * ((VBE_mode_info->bpp) / 8)) + (old_y * VBE_mode_info->pitch);
 		uint64_t offset = (new_x * ((VBE_mode_info->bpp) / 8)) + (new_y * VBE_mode_info->pitch);
 		framebuffer[offset] = framebuffer[oldOffset];
