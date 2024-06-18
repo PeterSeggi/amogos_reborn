@@ -289,7 +289,6 @@ int sem_down(sem_t *sem);
 
 int pipe(int pipefd[2]);
 int pclose(int fd);
-int peek_read_pipe();
 
 int read_fd(int fd, char *buffer, uint16_t length);
 int peek(int fd);

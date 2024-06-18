@@ -119,6 +119,19 @@ void delete_pid_from_sems(pid_t pid_to_delete){
     sem_lock_post(&(list.lock));
 }
 
+void release_pids(sem_t * sem){
+        if (sem->blocked_size){
+            int amount = sem->blocked_size;
+            for (int i = 0; i<MAX_PROCESS_NAME && amount; i++){
+                if (sem->blocked_processes[i]){
+                    silent_unblock(i);
+                    amount--;  
+                }
+            }
+        }
+}
+
+
 /*----------------------
   | Local functions
   -----------------------*/
@@ -194,19 +207,4 @@ pid_t get_pid_to_unblock(sem_t *sem){
         i++;
     }
     return found;
-}
-
-
-
-void release_pids(sem_t * sem){
-        // saco despierto a todos los procesos que esto tenia dormido
-        if (sem->blocked_size){
-            int amount = sem->blocked_size;
-            for (int i = 0; i<MAX_PROCESS_NAME && amount; i++){
-                if (sem->blocked_processes[i]){
-                    silent_unblock(i);
-                    amount--;  
-                }
-            }
-        }
 }

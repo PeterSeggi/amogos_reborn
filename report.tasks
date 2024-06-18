@@ -16,7 +16,7 @@ pvs-studio.com/en/docs/warnings/	1	err	Help: The documentation for all analyzer 
 /root/amogos_reborn/Kernel/naiveConsole.c	11	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (uint8_t *) 0xB8000
 /root/amogos_reborn/Kernel/naiveConsole.c	12	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (uint8_t *) 0xB8000
 /root/amogos_reborn/Kernel/processManager.c	85	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (void *) 0x400000
-/root/amogos_reborn/Kernel/video_drivre.c	334	warn	V536 Be advised that the utilized constant value is represented by an octal form. Oct: '\\033', Dec: 27.
+/root/amogos_reborn/Kernel/video_drivre.c	337	warn	V536 Be advised that the utilized constant value is represented by an octal form. Oct: '\\033', Dec: 27.
 /root/amogos_reborn/Userland/userCodeModule/commands.c	148	note	V776 Potentially infinite loop.
 /root/amogos_reborn/Userland/userCodeModule/commands.c	277	warn	V522 There might be dereferencing of a potential null pointer 'let'. Check lines: 277, 265.
 /root/amogos_reborn/Userland/userCodeModule/commands.c	311	warn	V522 There might be dereferencing of a potential null pointer 'let'. Check lines: 311, 305.

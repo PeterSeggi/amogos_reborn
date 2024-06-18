@@ -59,6 +59,12 @@ int sem_wait(sem_t *sem);
 */
 void delete_pid_from_sems(pid_t pid_to_delete);
 
+/**
+*@brief     Wakes all sleeping processes of a process.
+*@param[in] sem Target semaphore.
+*/
+void release_pids(sem_t * sem);
+
 /*----------------------
   | ASM functions
   -----------------------*/
@@ -76,5 +82,4 @@ void sem_lock_wait(uint8_t * lock);
 void sem_lock_post(uint8_t * lock);
 
 
-void release_pids(sem_t * sem);
 #endif //SEM_H

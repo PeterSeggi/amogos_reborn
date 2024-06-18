@@ -241,12 +241,3 @@ void set_pipe_name(int num, char str[]){
     str[8] = '0' + digit4;
 }
 
-
-
-int peek_pipe(int fd){
-    pipe_t *aux_pipe = check_valid_fd(fd, READ);
-    if(!aux_pipe) return -1;
-
-    return (int) aux_pipe->sem_to_read->value;
-
-}
