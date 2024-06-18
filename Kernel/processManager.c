@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "include/processManager.h"
 #include <stdint.h>
 #include <mman.h>
@@ -34,7 +37,7 @@ int schedule_lock = 1;
 //funciones publicas 
 void initialize_pcb(void){
     int size = sizeof(ProcessTable);
-    if(size%8!=0){size+=8-(size%8);}
+    //if(size%8!=0){size+=8-(size%8);} typedef struct is always multiple of 8 thanks to compiler padding
     pcb = (ProcessTable *)my_malloc(size);
     pcb->size = 0;
     pcb->runningPid = 0;
@@ -81,7 +84,6 @@ void initializeScheduler(){
     create_shiny_process((void *)0x400000, argc, argv, 4, TRUE, FALSE, KEY_FD, VID_FD);
     free_argv(argc, argv);
 
-    argc = 1;
     argv = (char **) my_malloc(sizeof(char *) * argc);
     if(!argv) return;
     argv[0] = k_strdup("idle");
@@ -174,7 +176,7 @@ Process * create_shiny_process(void * function, int argc, char ** argv, int prio
     }
 
     int size = sizeof(ProcessNode);
-    if(size%8!=0){size+=8-(size%8);}
+    //if(size%8!=0){size+=8-(size%8);} typedef struct is always multiple of 8 thanks to compiler padding
     ProcessNode * node = (ProcessNode *)my_malloc(size);
     if(node == NULL){
         free_argv(argc, argv);  
@@ -606,7 +608,7 @@ void kill_children(pid_t pid){
 }
 
 void silent_kill_children(pid_t pid){
-    if (pcb->processes[pid] <= 0) return;
+    if (pid <=2 || pcb->processes[pid] == 0) return;
          
     pid_t *children = pcb->processes[pid]->children;
     for (int i = 0; pcb->processes[pid]->children_amount > 0; i++){

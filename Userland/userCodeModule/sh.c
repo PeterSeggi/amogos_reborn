@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "include/sh.h"
 #include "include/userlibasm.h"
 #include "include/userlib.h"
@@ -34,7 +37,6 @@ char c1_buf[BUFFER_SIZE] = {0};
 char * argv1[BUFFER_SIZE] = {0};
 const char delim[2] = {32, 0};
 int argc1;
-int ex;
 int exited = 0;
 
 

@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include <stdint.h>
 #include "include/userlibasm.h"
 #include "include/userlib.h"
@@ -18,7 +21,6 @@ uint32_t GetUint() {
 uint32_t GetUniform(uint32_t max) {
   uint32_t u = GetUint();
   return ((u + 1.0) * 2.328306435454494e-10 * max);
-  //return (uint16_t) ((u + 1.0) * (1.0 / UINT16_MAX) * max);
 }
 
 // Memory

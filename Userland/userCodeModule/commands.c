@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include <stddef.h>
 #include "include/commands.h"
 #include "include/phylo.h"
@@ -258,7 +261,11 @@ void wc(int argc, char * argv[]){
     int bytes = 0;
     int first = TRUE;
 
-    char* let = strdup(" "); 
+    char* let = strdup(" ");
+    if(!let){
+        print("wc: ERROR in strdup\n");
+        exit();
+    } 
     while(read(let, 1) > 0){
         
         if (first){
@@ -295,6 +302,10 @@ pid_t init_wc(int argc, char * argv[], int read_fd, int write_fd, boolean foregr
 
 void filter(int argc, char * argv[]){
     char* let = strdup(" "); 
+    if(!let){
+        print("filter: ERROR in strdup\n");
+        exit();
+    } 
     while(read(let, 1) > 0){
         if (!(let[0] == 'a' || let[0] == 'A' || let[0] == 'e' || let[0] == 'E' || let[0] == 'i' || let[0] == 'I' ||
               let[0] == 'o' || let[0] == 'O' || let[0] == 'u' || let[0] == 'U')) print(let);

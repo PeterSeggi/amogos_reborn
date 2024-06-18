@@ -376,7 +376,7 @@ _peek:
 	push rbp
 	mov rbp, rsp
 
-    mov rax, 0xC3   ;sys_pclose ID
+    mov rax, 0xC2   ;sys_pclose ID
     int 80h;
 	mov rsp, rbp
 	pop rbp

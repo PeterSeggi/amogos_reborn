@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "include/userlib.h"
 #include "include/userlibasm.h"
 #include "include/file_descriptors.h"
@@ -35,12 +38,6 @@ void clearScreen(){
 
 void flushBuffer(){
     _print(STDOUT, "\033[C", 3);
-}
-
-void change_font(int size){
-    char* msg = "\033[nF";
-    msg[2] = size + '0';
-    print(msg);
 }
 
 int read(char* buffer, int length){

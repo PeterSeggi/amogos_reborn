@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include <keyboard.h>
 #include <lib.h>
 #include <stdint.h>
@@ -100,6 +103,7 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
 
   case (0xA7):
     sys_block_proc(rdi);
+    break;
 
   case (0xA8):
     sys_get_pid();
@@ -138,10 +142,6 @@ void syscall_handler(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uin
     break;
 
   case (0xC2):
-    sys_peek_read_pipe(rdi);
-    break;
-
-  case (0xC3):
     sys_peek_read_pipe(rdi);
     break;
 

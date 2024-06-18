@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "include/videoDriver.h"
 #include <videoDriver.h>
 #include <fonts.h>
@@ -187,7 +190,7 @@ void print(const char * string){
 }
 
 void printCant(const char * string, uint64_t cant){
-	for(int i=0; string[i]!=0 && i<cant;)
+	for(int i=0; i<cant && string[i]!=0;)
         i = process_input(string, i, DEFAULT_FONT, DEFAULT_BACK); 
 }
 
@@ -197,7 +200,7 @@ void printColor(const char * string, uint32_t fontColor, uint32_t bgColor){
 }
 
 void printColorCant(const char * string, uint64_t cant, uint32_t fontColor, uint32_t bgColor){
-	for(int i=0; string[i]!=0 && i<cant;)
+	for(int i=0; i<cant && string[i]!=0;)
 		i = process_input(string, i, fontColor, bgColor);
 }
 
@@ -299,7 +302,7 @@ void moveScreen()
 
 void copyPixel(uint64_t new_x, uint64_t new_y, uint64_t old_x, uint64_t old_y)
 {
-	if (new_x >= 0 && new_x < VBE_mode_info->width && new_y >= 0 && new_y < VBE_mode_info->height)
+	if (new_x < VBE_mode_info->width && new_y < VBE_mode_info->height)
 	{
 		uint8_t *framebuffer = (uint8_t *)VBE_mode_info->framebuffer;
 		uint64_t oldOffset = (old_x * ((VBE_mode_info->bpp) / 8)) + (old_y * VBE_mode_info->pitch);

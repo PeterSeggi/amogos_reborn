@@ -1,8 +1,10 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 
 #include "include/sh.h"
 #include "include/userlibasm.h"
 #include "include/drawings.h"
-#include "include/snake.h"
 #include "include/rand.h"
 #include "include/userlib.h"
 #include <stdint.h>
