@@ -17,7 +17,6 @@ pvs-studio.com/en/docs/warnings/	1	err	Help: The documentation for all analyzer 
 /root/amogos_reborn/Kernel/naiveConsole.c	10	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (uint8_t *) 0xB8000
 /root/amogos_reborn/Kernel/naiveConsole.c	11	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (uint8_t *) 0xB8000
 /root/amogos_reborn/Kernel/processManager.c	84	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (void *) 0x400000
-/root/amogos_reborn/Kernel/time.c	15	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (uint8_t *) 0xB808E
 /root/amogos_reborn/Kernel/video_drivre.c	60	warn	V1009 Check the array initialization. Only the first element is initialized explicitly. The rest elements are initialized with zeros.
 /root/amogos_reborn/Kernel/video_drivre.c	331	warn	V536 Be advised that the utilized constant value is represented by an octal form. Oct: '\\033', Dec: 27.
 /root/amogos_reborn/Userland/userCodeModule/commands.c	147	note	V776 Potentially infinite loop.

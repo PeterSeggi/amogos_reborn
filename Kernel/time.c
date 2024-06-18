@@ -12,7 +12,7 @@
 #define CENTURY 0      // lo usamos para calcular la fecha completa
 
 static unsigned long ticks = 0;
-uint8_t *clockLocation = (uint8_t *)0xB808E;
+//uint8_t *clockLocation = (uint8_t *)0xB808E;
 
 char *dayNames[] = {"Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"};
 
@@ -26,7 +26,7 @@ unsigned long seconds_elapsed() { return ticks / 18; }
 
 int timer_lock;
 
-void update_clock() {
+/*void update_clock() {
   if (ticks % 18 == 0) {
 
     uint8_t *current = getCurrentVideo();
@@ -34,9 +34,9 @@ void update_clock() {
     // printTime();
     setCurrentVideo(current);
   }
-}
+}*/
 
-void set_clock_location(uint8_t *location) { clockLocation = location; }
+//void set_clock_location(uint8_t *location) { clockLocation = location; }
 
 void formatTime(uint8_t *hour, uint8_t *min, uint8_t *sec) {
   *sec = _getSeconds();
