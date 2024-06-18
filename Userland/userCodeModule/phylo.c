@@ -210,7 +210,7 @@ int add_phylo(){
         phylo_table[aux_phylo_num].sem=NULL;
         return -1;
     }
-    print("new phylo!\n");
+    //print("new phylo!\n");
     my_free(name);
     my_free(aux_argv);
     phylo_amount++;
